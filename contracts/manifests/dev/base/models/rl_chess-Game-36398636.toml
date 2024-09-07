@@ -1,0 +1,76 @@
+kind = "DojoModel"
+class_hash = "0x1a7ef4429b3a4fb226b2b833887955bb6e7ef78166b141ebe6951a4193422bd"
+original_class_hash = "0x1a7ef4429b3a4fb226b2b833887955bb6e7ef78166b141ebe6951a4193422bd"
+abi = "manifests/dev/base/abis/models/rl_chess-Game-36398636.json"
+tag = "rl_chess-Game"
+manifest_name = "rl_chess-Game-36398636"
+
+[[members]]
+name = "game_id"
+type = "u128"
+key = true
+
+[[members]]
+name = "game_format_id"
+type = "u16"
+key = false
+
+[[members]]
+name = "room_owner_address"
+type = "ContractAddress"
+key = false
+
+[[members]]
+name = "invitee_address"
+type = "ContractAddress"
+key = false
+
+[[members]]
+name = "invite_state"
+type = "InviteState"
+key = false
+
+[[members]]
+name = "invite_expiry"
+type = "u64"
+key = false
+
+[[members]]
+name = "result"
+type = "u8"
+key = false
+
+[[members]]
+name = "winner"
+type = "ContractAddress"
+key = false
+
+[[members]]
+name = "room_start"
+type = "u64"
+key = false
+
+[[members]]
+name = "room_end"
+type = "u64"
+key = false
+
+[[members]]
+name = "w_turn_expiry_time"
+type = "u64"
+key = false
+
+[[members]]
+name = "b_turn_expiry_time"
+type = "u64"
+key = false
+
+[[members]]
+name = "w_total_time_left"
+type = "u64"
+key = false
+
+[[members]]
+name = "b_total_time_left"
+type = "u64"
+key = false

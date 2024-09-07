@@ -1,0 +1,36 @@
+kind = "DojoModel"
+class_hash = "0x7d0746147d3951f32fb4424bf2f3ab7cd2e899fa4dd0a43ffd7b7d2cc2de500"
+original_class_hash = "0x7d0746147d3951f32fb4424bf2f3ab7cd2e899fa4dd0a43ffd7b7d2cc2de500"
+abi = "manifests/dev/base/abis/models/rl_chess-Format-6da30a59.json"
+tag = "rl_chess-Format"
+manifest_name = "rl_chess-Format-6da30a59"
+
+[[members]]
+name = "format_id"
+type = "u16"
+key = true
+
+[[members]]
+name = "description"
+type = "felt252"
+key = false
+
+[[members]]
+name = "turn_expiry"
+type = "u64"
+key = false
+
+[[members]]
+name = "total_time_per_side"
+type = "u64"
+key = false
+
+[[members]]
+name = "total_time_string"
+type = "felt252"
+key = false
+
+[[members]]
+name = "increment"
+type = "u8"
+key = false

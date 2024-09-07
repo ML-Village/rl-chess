@@ -4,7 +4,7 @@ mod errors {
     const COLOR_INVALID_VALUE: felt252 = 'Color: invalid value';
 }
 
-#[derive(Copy, Drop)]
+#[derive(Copy, Drop, Serde, Introspect)]
 enum Color {
     None,
     White,
@@ -13,6 +13,8 @@ enum Color {
 
 #[generate_trait]
 impl ColorImpl of ColorTrait {
+
+    // (origin: starter-chess) this for using 32 index pieces 
     #[inline]
     fn from(index: u8) -> Color {
         if index < 16 {
@@ -24,8 +26,18 @@ impl ColorImpl of ColorTrait {
         }
     }
 
+    // (origin: starter-chess)
     #[inline]
     fn next(self: Color) -> Color {
+        match self {
+            Color::None => Color::None,
+            Color::White => Color::Black,
+            Color::Black => Color::White,
+        }
+    }
+
+    #[inline]
+    fn opposite(self: Color) -> Color {
         match self {
             Color::None => Color::None,
             Color::White => Color::Black,

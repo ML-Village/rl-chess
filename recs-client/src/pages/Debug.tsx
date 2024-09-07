@@ -46,7 +46,7 @@ export const Debug = () => {
                         account, 
                         name: BigInt(torii.cairoShortStringToFelt("Tester1")), 
                         profile_pic_type: {type: ProfilePicType[1]} as models.ProfilePicType, 
-                        profile_pic_uri: BigInt(torii.cairoShortStringToFelt("Tester1")),
+                        profile_pic_uri: 1,
                     });
             }}>Register Player</button>
 
