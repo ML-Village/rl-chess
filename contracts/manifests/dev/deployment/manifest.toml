@@ -1,0 +1,72 @@
+[world]
+kind = "WorldContract"
+class_hash = "0x458d0ce5b14a4844092bdb62050f462d53362304a13febbac6d973691d61be2"
+original_class_hash = "0x458d0ce5b14a4844092bdb62050f462d53362304a13febbac6d973691d61be2"
+abi = "manifests/dev/deployment/abis/dojo-world.json"
+address = "0x1fadc313fe86b107b5efb841a1ab04986500f1ab1b7b6589b9a003459471c20"
+transaction_hash = "0x2eab14a32a56577c2fd8f2e33ae0011208ead4cbdbc16d6616e106590ef600e"
+block_number = 3
+seed = "dojo_rl_chess"
+manifest_name = "dojo-world"
+
+[world.metadata]
+profile_name = "dev"
+rpc_url = "http://localhost:5050/"
+
+[base]
+kind = "Class"
+class_hash = "0x2427dd10a58850ac9a5ca6ce04b7771b05330fd18f2e481831ad903b969e6b2"
+original_class_hash = "0x2427dd10a58850ac9a5ca6ce04b7771b05330fd18f2e481831ad903b969e6b2"
+abi = "manifests/dev/deployment/abis/dojo-base.json"
+tag = "dojo-base"
+manifest_name = "dojo-base"
+
+[[contracts]]
+kind = "DojoContract"
+address = "0x4eb3d8e90d8eded32effdb92b7c514dd4287eed52c737b4565efdb1d750c76d"
+class_hash = "0x3d44d2988a886e44e68712da0513e05ea5f762545ad0d3bbf6c98d531e4d93f"
+original_class_hash = "0x3d44d2988a886e44e68712da0513e05ea5f762545ad0d3bbf6c98d531e4d93f"
+base_class_hash = "0x2427dd10a58850ac9a5ca6ce04b7771b05330fd18f2e481831ad903b969e6b2"
+abi = "manifests/dev/deployment/abis/contracts/rl_chess-lobby-aac486b8.json"
+reads = []
+writes = ["rl_chess-Player"]
+init_calldata = []
+tag = "rl_chess-lobby"
+systems = [
+    "register_player",
+    "update_player",
+]
+manifest_name = "rl_chess-lobby-aac486b8"
+
+[[models]]
+kind = "DojoModel"
+class_hash = "0x5f98989ea987972fa15146b6ab078e63ea3783d1ca97e2edc930ff826933910"
+original_class_hash = "0x5f98989ea987972fa15146b6ab078e63ea3783d1ca97e2edc930ff826933910"
+abi = "manifests/dev/deployment/abis/models/rl_chess-Player-737dac4e.json"
+tag = "rl_chess-Player"
+manifest_name = "rl_chess-Player-737dac4e"
+
+[[models.members]]
+name = "address"
+type = "ContractAddress"
+key = true
+
+[[models.members]]
+name = "name"
+type = "felt252"
+key = false
+
+[[models.members]]
+name = "profile_pic_type"
+type = "ProfilePicType"
+key = false
+
+[[models.members]]
+name = "profile_pic_uri"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "timestamp"
+type = "u64"
+key = false

@@ -1,0 +1,14 @@
+kind = "DojoContract"
+class_hash = "0x3d44d2988a886e44e68712da0513e05ea5f762545ad0d3bbf6c98d531e4d93f"
+original_class_hash = "0x3d44d2988a886e44e68712da0513e05ea5f762545ad0d3bbf6c98d531e4d93f"
+base_class_hash = "0x0"
+abi = "manifests/dev/base/abis/contracts/rl_chess-lobby-aac486b8.json"
+reads = []
+writes = []
+init_calldata = []
+tag = "rl_chess-lobby"
+systems = [
+    "register_player",
+    "update_player",
+]
+manifest_name = "rl_chess-lobby-aac486b8"

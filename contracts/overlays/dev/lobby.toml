@@ -1,0 +1,5 @@
+tag = "rl_chess-lobby"
+writes = [
+    "rl_chess-Player",
+]
+init_calldata = []
