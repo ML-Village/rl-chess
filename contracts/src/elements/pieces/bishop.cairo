@@ -10,7 +10,7 @@ use rl_chess::types::color::{Color, ColorTrait};
 
 impl Bishop of PieceTrait {
     #[inline]
-    fn can(index: u8, from: u8, to: u8, whites: u64, blacks: u64) -> bool {
+    fn can(bitboard: u64, from: u8, to: u8, whites: u64, blacks: u64) -> bool {
         // [Check] The new position is a valid one
         true
         // [Return] Move validity

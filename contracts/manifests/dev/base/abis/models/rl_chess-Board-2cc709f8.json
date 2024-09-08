@@ -393,12 +393,36 @@
         "type": "core::integer::u128"
       },
       {
-        "name": "pieces",
-        "type": "core::array::Array::<core::integer::u64>"
+        "name": "whites",
+        "type": "core::integer::u64"
       },
       {
-        "name": "colors",
-        "type": "core::array::Array::<core::integer::u64>"
+        "name": "blacks",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "pawns",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "rooks",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "knights",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "bishops",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "queens",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "kings",
+        "type": "core::integer::u64"
       },
       {
         "name": "side_to_move",
@@ -419,14 +443,6 @@
       {
         "name": "fullmove_number",
         "type": "core::integer::u16"
-      },
-      {
-        "name": "move_history",
-        "type": "core::array::Array::<(core::integer::u8, core::integer::u8)>"
-      },
-      {
-        "name": "move_history_string",
-        "type": "core::array::Array::<core::felt252>"
       },
       {
         "name": "last_move_time",

@@ -18,6 +18,7 @@ mod errors {
 
 #[generate_trait]
 impl GameImpl of GameTrait {
+    
     #[inline]
     fn new(
         game_id: u128,
@@ -49,4 +50,5 @@ impl GameImpl of GameTrait {
             b_total_time_left: 0,
         }
     }
+
 }

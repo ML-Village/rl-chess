@@ -39,7 +39,11 @@ mod elements {
 }
 
 mod helpers {
+    mod bitmap;
     mod seeder;
+    mod masker;
+    mod mapper;
+    mod math;
 }
 
 mod utils {

@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x7722d5c63e5efd7f580ac50ac3563c0affec6748504d8b46e4cb4f302945af6"
-original_class_hash = "0x7722d5c63e5efd7f580ac50ac3563c0affec6748504d8b46e4cb4f302945af6"
+class_hash = "0x5ec028775b8802b5c6bd8c744a98a84a5666f4b7fb885416cf5c96bac2be527"
+original_class_hash = "0x5ec028775b8802b5c6bd8c744a98a84a5666f4b7fb885416cf5c96bac2be527"
 abi = "manifests/dev/base/abis/models/rl_chess-Board-2cc709f8.json"
 tag = "rl_chess-Board"
 manifest_name = "rl_chess-Board-2cc709f8"
@@ -11,13 +11,43 @@ type = "u128"
 key = true
 
 [[members]]
-name = "pieces"
-type = "Array<u64>"
+name = "whites"
+type = "u64"
 key = false
 
 [[members]]
-name = "colors"
-type = "Array<u64>"
+name = "blacks"
+type = "u64"
+key = false
+
+[[members]]
+name = "pawns"
+type = "u64"
+key = false
+
+[[members]]
+name = "rooks"
+type = "u64"
+key = false
+
+[[members]]
+name = "knights"
+type = "u64"
+key = false
+
+[[members]]
+name = "bishops"
+type = "u64"
+key = false
+
+[[members]]
+name = "queens"
+type = "u64"
+key = false
+
+[[members]]
+name = "kings"
+type = "u64"
 key = false
 
 [[members]]
@@ -43,16 +73,6 @@ key = false
 [[members]]
 name = "fullmove_number"
 type = "u16"
-key = false
-
-[[members]]
-name = "move_history"
-type = "Array<(u8, u8)>"
-key = false
-
-[[members]]
-name = "move_history_string"
-type = "Array<felt252>"
 key = false
 
 [[members]]

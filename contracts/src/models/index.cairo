@@ -10,6 +10,8 @@ use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 use rl_chess::types::profile::ProfilePicType;
 use rl_chess::types::invite::InviteState;
 use rl_chess::types::color::Color;
+use rl_chess::constants;
+
 
 
 #[derive(Clone, Drop, Serde)]   // ByteArray is not copiable!
@@ -55,14 +57,26 @@ pub struct Game {
 
 
 
-#[derive(Drop, Serde)]
+#[derive(Copy, Drop, Serde)]
 #[dojo::model]
 pub struct Board {
     #[key]
     pub game_id: u128,
+    
     // Board States
-    pub pieces: Array<u64>, // [u64; 6],  // One bitboard for each piece type
-    pub colors: Array<u64>, // [u64; 2],  // One bitboard for each color
+    // pub pieces: Array<u64>, // [u64; 6],  // One bitboard for each piece type
+    // pub colors: Array<u64>, // [u64; 2],  // One bitboard for each color
+
+    pub whites: u64,
+    pub blacks: u64,
+
+    // tracking each piece type seperately and not in arrays
+    pub pawns: u64,
+    pub rooks: u64,
+    pub knights: u64,
+    pub bishops: u64,
+    pub queens: u64,
+    pub kings: u64,
 
     pub side_to_move: Color,
     pub castling_rights: u8, // New field to store castling rights
@@ -70,9 +84,23 @@ pub struct Board {
     //position_history: Vec<u64>, // Zobrist hash history for threefold repetition
     pub halfmove_clock: u8, // For fifty-move rule
     pub fullmove_number: u16,
+    pub last_move_time: u64,
+}
+
+
+
+
+// Keeping History Arrays seperate so that copy can be done on Board
+
+#[derive(Drop, Serde)]
+#[dojo::model]
+pub struct History {
+
+    #[key]
+    pub game_id: u128,
+
     pub move_history: Array<(u8, u8)>,
     pub move_history_string: Array<felt252>,
-    pub last_move_time: u64,
 }
 
 #[derive(Copy, Drop, Serde)]

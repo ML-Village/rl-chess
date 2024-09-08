@@ -87,15 +87,15 @@ impl PieceImpl of PieceTrait {
     }
 
     #[inline]
-    fn can(self: Piece, index: u8, from: u8, to: u8, whites: u64, blacks: u64) -> bool {
+    fn can(self: Piece, bitboard: u64, from: u8, to: u8, whites: u64, blacks: u64) -> bool {
         match self {
             Piece::None => false,
-            Piece::Pawn => pieces::pawn::Pawn::can(index, from, to, whites, blacks),
-            Piece::Rook => pieces::rook::Rook::can(index, from, to, whites, blacks),
-            Piece::Knight => pieces::knight::Knight::can(index, from, to, whites, blacks),
-            Piece::Bishop => pieces::bishop::Bishop::can(index, from, to, whites, blacks),
-            Piece::Queen => pieces::queen::Queen::can(index, from, to, whites, blacks),
-            Piece::King => pieces::king::King::can(index, from, to, whites, blacks),
+            Piece::Pawn => pieces::pawn::Pawn::can(bitboard, from, to, whites, blacks),
+            Piece::Rook => pieces::rook::Rook::can(bitboard, from, to, whites, blacks),
+            Piece::Knight => pieces::knight::Knight::can(bitboard, from, to, whites, blacks),
+            Piece::Bishop => pieces::bishop::Bishop::can(bitboard, from, to, whites, blacks),
+            Piece::Queen => pieces::queen::Queen::can(bitboard, from, to, whites, blacks),
+            Piece::King => pieces::king::King::can(bitboard, from, to, whites, blacks),
         }
     }
 }
@@ -108,8 +108,8 @@ impl PieceAssert of AssertTrait {
     }
 
     #[inline]
-    fn assert_valid_move(self: Piece, index: u8, from: u8, to: u8, whites: u64, blacks: u64) {
-        assert(self.can(index, from, to, whites, blacks), errors::PIECE_INVALID_MOVE);
+    fn assert_valid_move(self: Piece, bitboard: u64, from: u8, to: u8, whites: u64, blacks: u64) {
+        assert(self.can(bitboard, from, to, whites, blacks), errors::PIECE_INVALID_MOVE);
     }
 }
 
