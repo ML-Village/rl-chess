@@ -44,6 +44,7 @@ mod helpers {
     mod masker;
     mod mapper;
     mod math;
+    mod from_to;
 }
 
 mod utils {
@@ -52,6 +53,7 @@ mod utils {
     mod math;
     mod short_string;
     mod timestamp;
+    mod bitboard;
 }
 
 #[cfg(test)]

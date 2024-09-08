@@ -1,11 +1,14 @@
 use rl_chess::elements::pieces;
 use rl_chess::types::color::Color;
+use rl_chess::utils::bitboard::{piece_at, color_at};
+use rl_chess::models::board::Board;
 
 // Errors
 
 mod errors {
     const PIECE_INVALID_VALUE: felt252 = 'Piece: invalid value';
     const PIECE_INVALID_MOVE: felt252 = 'Piece: invalid move';
+    const BOARD_NO_PIECE_TO_MOVE: felt252 = 'Board: no piece to move';
 }
 
 #[derive(Copy, Drop)]
@@ -98,6 +101,21 @@ impl PieceImpl of PieceTrait {
             Piece::King => pieces::king::King::can(bitboard, from, to, whites, blacks),
         }
     }
+
+    #[inline]
+    fn friendly_occupied(from:u8, board: Board) -> u64 {
+        let color_from  = color_at(board, from);
+        assert(color_from != Option::None, errors::BOARD_NO_PIECE_TO_MOVE);
+        let color_from = color_from.unwrap();
+
+        if color_from == Color::White {
+            board.whites
+        }else{
+            board.blacks
+        }
+
+    }
+
 }
 
 #[generate_trait]

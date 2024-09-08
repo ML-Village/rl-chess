@@ -208,4 +208,5 @@ pub impl Bitmap<
             (Option::None, Option::None) => Option::None,
         }
     }
+    
 }

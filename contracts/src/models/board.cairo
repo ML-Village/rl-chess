@@ -12,6 +12,7 @@ use rl_chess::models::index::Board;
 use rl_chess::types::color::{Color, ColorTrait};
 use rl_chess::types::piece::{Piece, PieceTrait};
 use rl_chess::helpers::bitmap::Bitmap;
+use rl_chess::utils::bitboard::{piece_at, color_at};
 use rl_chess::constants;
 
 mod errors {
@@ -89,24 +90,12 @@ impl BoardImpl of BoardTrait {
 
     #[inline]
     fn piece_at(ref self: Board, square: u8) -> Option<Piece> {
-
-        if Bitmap::get_bit_at(self.pawns, square) { return Option::Some(Piece::Pawn); }
-        if Bitmap::get_bit_at(self.rooks, square) { return Option::Some(Piece::Rook); }
-        if Bitmap::get_bit_at(self.knights, square) { return Option::Some(Piece::Knight); }
-        if Bitmap::get_bit_at(self.bishops, square) { return Option::Some(Piece::Bishop); }
-        if Bitmap::get_bit_at(self.queens, square) { return Option::Some(Piece::Queen); }
-        if Bitmap::get_bit_at(self.kings, square) { return Option::Some(Piece::King); }
-
-        Option::None
+        piece_at(self, square)
     }
 
     #[inline]
     fn color_at(ref self: Board, square: u8) -> Option<Color> {
-
-        if Bitmap::get_bit_at(self.whites, square) { return Option::Some(Color::White); }
-        if Bitmap::get_bit_at(self.blacks, square) { return Option::Some(Color::Black); }
-
-        Option::None
+        color_at(self, square)
     }
 
     // this is just for general moving without checking for legalities
