@@ -1,16 +1,21 @@
 // Core imports
 
 use core::debug::PrintTrait;
-use rl_chess::models::index::Board;
-use rl_chess::utils::bitboard::{color_at};
 
 // Internal imports
-
+use rl_chess::types::piece::{Piece};
 use rl_chess::elements::pieces::interface::PieceTrait;
 use rl_chess::types::color::{Color, ColorTrait};
+use rl_chess::helpers::from_to::FROM_TO_VEC;
+use rl_chess::models::board::Board;
+use rl_chess::utils::bitboard::{piece_at, color_at, 
+    Magic, generate_rook_masks, generate_sliding_moves};
+use rl_chess::helpers::bitmap::Bitmap;
+use rl_chess::constants::{FILE_A, FILE_H, RANK_1, RANK_8};
 
 mod errors {
     const BOARD_NO_PIECE_TO_MOVE: felt252 = 'Board: no piece to move';
+    const INVALID_PIECE_TYPE: felt252 = 'Invalid piece type for sliding';
 }
 
 

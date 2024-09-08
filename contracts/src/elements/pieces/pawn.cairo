@@ -116,7 +116,20 @@ impl PawnImpl of PawnTrait {
             capture_index += 1;
         };
 
-        
+        // En passant captures
+        if (board.en_passant != 88) {
+            let ep_bitboard = Bitmap::set_bit_at(0, board.en_passant, true);
+            if capture_bitboard & ep_bitboard != 0 {
+                moves.append(
+                    FROM_TO_VEC {
+                        from,
+                        to: board.en_passant
+                    }
+                );
+            }
+        }
+
+        // TODO: Check if need add promotion moves
 
         moves
     }
