@@ -54,6 +54,7 @@ mod utils {
     mod short_string;
     mod timestamp;
     mod bitboard;
+    mod bitboardIterator;
 }
 
 #[cfg(test)]

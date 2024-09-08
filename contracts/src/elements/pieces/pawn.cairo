@@ -5,18 +5,18 @@ use traits::{Into, TryInto};
 
 // Internal imports
 
+use rl_chess::helpers::math::Math;
 use rl_chess::elements::pieces::interface::PieceTrait;
 use rl_chess::types::color::{Color, ColorTrait};
 use rl_chess::helpers::from_to::FROM_TO_VEC;
 use rl_chess::models::board::Board;
 use rl_chess::utils::bitboard::{piece_at, color_at};
 use rl_chess::helpers::bitmap::Bitmap;
+use rl_chess::constants::{FILE_A, FILE_H, RANK_1, RANK_8};
 
 mod errors {
     const BOARD_NO_PIECE_TO_MOVE: felt252 = 'Board: no piece to move';
 }
-
-
 
 impl Pawn of PieceTrait {
     #[inline]
@@ -60,21 +60,63 @@ impl PawnImpl of PawnTrait {
         //let piece_from = piece_from.unwrap();
         let color_from = color_from.unwrap();
         
-        //let from_bitboard:u64 = Bitmap::set_bit_at(0, from, true);
+        let from_bitboard:u64 = Bitmap::set_bit_at(0, from, true);
         
         //Single Push
         let single_push_to_index = if color_from == Color::White { from + 8 } else { from - 8 };
 
         let to_bitboard:u64 = Bitmap::set_bit_at(0, single_push_to_index, true);
         
-        if to_bitboard & PieceTrait::friendly_occupied(from, board) == 0 {
+        if to_bitboard & ( board.whites | board.blacks ) == 0 {
             moves.append(
                 FROM_TO_VEC{
                     from, 
                     to: single_push_to_index
                 }
             );
+
+            // Double push from starting rank (this is inside single push to check for empty square infront)
+            if (color_from == Color::White && from / 8 == 1) || (color_from == Color::Black && from / 8 == 6) {
+                let double_push_to_index = if color_from == Color::White { from + 16 } else { from - 16 };
+                let double_to_bitboard = Bitmap::set_bit_at(0, double_push_to_index, true);
+                if double_to_bitboard & ( board.whites | board.blacks ) == 0 {
+                    moves.append(
+                        FROM_TO_VEC{
+                            from, 
+                            to: double_push_to_index
+                        }
+                    );
+                }
+            }
+
         }
+
+        // Captures
+        let capture_bitboard = if color_from == Color::White {
+            ((from_bitboard & (0xFFFFFFFFFFFFFFFF_u64 -FILE_A)) * Math::pow(2_u8.into(), 7)) | ((from_bitboard & (0xFFFFFFFFFFFFFFFF_u64 - FILE_H)) * Math::pow(2_u8.into(), 9))
+        } else {
+            ((from_bitboard & (0xFFFFFFFFFFFFFFFF_u64 -FILE_A)) / Math::pow(2_u8.into(), 9)) | ((from_bitboard & (0xFFFFFFFFFFFFFFFF_u64 - FILE_H)) / Math::pow(2_u8.into(), 7))
+        };
+        let enemy_pieces = if color_from == Color::White { board.blacks } else { board.whites };
+        let captures = capture_bitboard & enemy_pieces;
+        
+        let mut capture_index: u8 = 0;
+        loop {
+            if capture_index >= 64 {
+                break;
+            }
+            if (captures & Bitmap::set_bit_at(0, capture_index, true)) != 0 {
+                moves.append(
+                    FROM_TO_VEC {
+                        from,
+                        to: capture_index
+                    }
+                );
+            }
+            capture_index += 1;
+        };
+
+        
 
         moves
     }
