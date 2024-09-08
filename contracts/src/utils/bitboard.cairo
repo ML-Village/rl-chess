@@ -9,6 +9,9 @@ use rl_chess::models::board::Board;
 use rl_chess::types::piece::Piece;
 use rl_chess::types::color::Color;
 use rl_chess::helpers::from_to::FROM_TO_VEC;
+use rl_chess::constants::{FILE_A, FILE_H, RANK_1, RANK_8,
+    DIAGONAL_MASK, ANTI_DIAGONAL_MASK
+};
 
 pub fn piece_at(board: Board, square: u8) -> Option<Piece> {
     if Bitmap::get_bit_at(board.pawns, square) { return Option::Some(Piece::Pawn); }
@@ -20,6 +23,57 @@ pub fn piece_at(board: Board, square: u8) -> Option<Piece> {
     Option::None
 }
 
+pub fn is_square_attacked(board: Board, square: u8, by_color: Color) -> bool {
+    let square_bb = Bitmap::set_bit_at(0, square, true);
+    let enemy_bitboard: u64 = match by_color {
+        Color::White => board.whites,
+        Color::Black => board.blacks,
+        _ => 0,
+    };
+
+    let enemy_pawns = board.pawns & enemy_bitboard;
+    let enemy_knights = board.knights & enemy_bitboard;
+    let enemy_king = board.kings & enemy_bitboard;
+    let enemy_bishops_queens = (board.bishops | board.queens ) & enemy_bitboard;
+    let enemy_rooks_queens = (board.rooks | board.queens) & enemy_bitboard;
+
+    // Pawn attacks
+    let pawn_attacks:u64 = match by_color {
+        Color::White => (square_bb / Bitmap::set_bit_at(0,7,true)) & (0xFFFFFFFFFFFFFFFF_u64 - FILE_H) | (square_bb  / Bitmap::set_bit_at(0,9,true)) & (0xFFFFFFFFFFFFFFFF_u64 - FILE_A),
+        Color::Black => (square_bb * Bitmap::set_bit_at(0,7,true)) & (0xFFFFFFFFFFFFFFFF_u64 - FILE_A) | (square_bb  * Bitmap::set_bit_at(0,9,true)) & (0xFFFFFFFFFFFFFFFF_u64 - FILE_H),
+        _ => 0,
+    };
+    if pawn_attacks & enemy_pawns != 0 {
+        return true;
+    }
+
+    // Knight attacks
+    let KNIGHT_MOVES: Array<u64> = generate_knight_moves();
+    let knight_moves_at_square = *KNIGHT_MOVES[square.into()];
+    if knight_moves_at_square & enemy_knights != 0 {
+        return true;
+    }
+
+    // King attacks
+    let KING_MOVES: Array<u64> = generate_king_moves();
+    let king_moves_at_square = *KING_MOVES[square.into()];
+    if king_moves_at_square & enemy_king != 0 {
+        return true;
+    }
+
+    // Bishop and Queen attacks
+    let bishop_attacks = get_bishop_attacks(square);
+    if bishop_attacks & enemy_bishops_queens != 0 {
+        return true;
+    }
+
+    // Rook and Queen attacks
+    let rook_attacks = get_rook_attacks(square);
+    if rook_attacks & enemy_rooks_queens != 0 {
+        return true;
+    }
+    false
+}
 
 pub fn color_at(board: Board, square: u8) -> Option<Color> {
     if Bitmap::get_bit_at(board.whites, square) { return Option::Some(Color::White); }
@@ -56,6 +110,130 @@ pub fn count_ones(mut n: u64) -> u8 {
         n = n & (n - 1);
     };
     count
+}
+
+pub fn generate_knight_moves() -> Array<u64> {
+    let mut moves: Array<u64> = ArrayTrait::new();
+    // iterate through all 0 to 63 squares and generate knight moves for each square
+    let mut square = 0;
+    loop {
+        if square == 64 {
+            break;
+        }
+        let row = square / 8;
+        let col = square % 8;
+        let mut knight_moves = 0_u64;
+
+        // Define all possible knight move offsets
+        let offsets: Array<(i8, i8)> = array![
+            (-2, -1), (-2, 1), (-1, -2), (-1, 2),
+            (1, -2), (1, 2), (2, -1), (2, 1)
+        ];
+
+        let mut i = 0;
+        loop {
+            if i == offsets.len() {
+                break;
+            }
+            let (row_offset, col_offset) = *offsets[i];
+            let new_row = row + row_offset;
+            let new_col = col + col_offset;
+
+            if new_row >= 0 && new_row < 8 && new_col >= 0 && new_col < 8 {
+                let new_square:u8 = (new_row * 8 + new_col).try_into().unwrap();
+                knight_moves = Bitmap::set_bit_at(knight_moves, new_square, true);
+            }
+
+            i += 1;
+        };
+
+        moves.append(knight_moves);
+        square += 1;
+    };
+
+    moves
+}
+
+fn generate_king_moves() -> Array<u64> {
+    let mut moves: Array<u64> = ArrayTrait::new();
+    let mut square = 0;
+    loop {
+        if square == 64 {
+            break;
+        }
+        let row = square / 8;
+        let col = square % 8;
+        let mut king_moves = 0_u64;
+
+        // Define all possible king move offsets
+        let offsets: Array<(i8, i8)> = array![
+            (-1, -1), (-1, 0), (-1, 1),
+            (0, -1),           (0, 1),
+            (1, -1),  (1, 0),  (1, 1)
+        ];
+
+        let mut i = 0;
+        loop {
+            if i == offsets.len() {
+                break;
+            }
+            let (row_offset, col_offset) = *offsets[i];
+            let new_row = row + row_offset;
+            let new_col = col + col_offset;
+
+            if new_row >= 0 && new_row < 8 && new_col >= 0 && new_col < 8 {
+                let new_square: u8 = (new_row * 8 + new_col).try_into().unwrap();
+                king_moves = Bitmap::set_bit_at(king_moves, new_square, true);
+            }
+
+            i += 1;
+        };
+
+        moves.append(king_moves);
+        square += 1;
+    };
+
+    moves
+}
+
+fn get_bishop_attacks(square: u8) -> u64 {
+    let file = square % 8;
+    let rank = square / 8;
+
+    // Generate diagonal attacks
+    let diagonal = 7 + file - rank;
+    let diagonal_attacks = DIAGONAL_MASK / Bitmap::set_bit_at(0, (8 * (diagonal & 7)), true);
+
+    // Generate anti-diagonal attacks
+    let anti_diagonal = file + rank;
+    let anti_diagonal_attacks = ANTI_DIAGONAL_MASK / Bitmap::set_bit_at(0, (8 * (anti_diagonal & 7)), true);
+
+    // Combine diagonal and anti-diagonal attacks
+    let mut attacks = diagonal_attacks | anti_diagonal_attacks;
+
+    // Remove the bishop's own square from the attacks
+    attacks = Bitmap::set_bit_at(attacks, square, false);
+
+    attacks
+}
+
+fn get_rook_attacks(square: u8) -> u64 {
+    let file = square % 8;
+    let rank = square / 8;
+
+    // Generate file attacks
+    let file_attacks = FILE_A * Bitmap::set_bit_at(0, file, true);
+
+    // Generate rank attacks
+    let rank_attacks = RANK_1 * Bitmap::set_bit_at(0, (8 * rank), true);
+
+    // Combine file and rank attacks
+    let mut attacks = file_attacks | rank_attacks;
+
+    // Remove the rook's own square from the attacks
+    attacks = Bitmap::set_bit_at(attacks, square, false);
+
+    attacks
 }
 
 pub fn generate_rook_masks() -> Array<u64> {
