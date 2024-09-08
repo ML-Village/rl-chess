@@ -10,6 +10,7 @@ use rl_chess::helpers::from_to::FROM_TO_VEC;
 use rl_chess::models::board::Board;
 use rl_chess::utils::bitboard::{piece_at, color_at, 
     Magic, generate_rook_masks, generate_sliding_moves};
+
 use rl_chess::helpers::bitmap::Bitmap;
 use rl_chess::constants::{FILE_A, FILE_H, RANK_1, RANK_8};
 
@@ -22,9 +23,24 @@ mod errors {
 
 impl Rook of PieceTrait {
     #[inline]
-    fn can(bitboard: u64, from: u8, to: u8, whites: u64, blacks: u64) -> bool {
+    fn can(board: Board, from: u8, to: u8) -> bool {
         // [Check] The new position is a valid one
-        true
+        let possible_moves = RookImpl::generate_possible_rook_moves(from, board);
+        
+        // Check if the (from, to) move is in the possible moves
+
+        let mut i = 0;
+        loop {
+            if i == possible_moves.len() {
+                break false;
+            }
+            let move = *possible_moves[i];
+            if move.from == from && move.to == to {
+                break true;
+            }
+            i += 1;
+        }
+
         // [Return] Move validity
         // is_available
         //     && is_free
@@ -49,7 +65,7 @@ impl Rook of PieceTrait {
 
 
 #[generate_trait]
-impl RookImpl of RoomTrait {
+impl RookImpl of RookTrait {
     #[inline]
     fn generate_possible_rook_moves(from:u8, board: Board) -> Array<FROM_TO_VEC> {
         generate_sliding_moves(from, board)

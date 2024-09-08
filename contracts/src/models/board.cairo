@@ -108,18 +108,18 @@ impl BoardImpl of BoardTrait {
 
         assert(piece_from != Option::None && color_from != Option::None, errors::BOARD_NO_PIECE_TO_MOVE);
 
-        let bitmap_of_piece_from: u64 = match piece_from {
-            Option::None => 0,
-            Option::Some(piece) => match piece {
-                Piece::None => 0,
-                Piece::Pawn => self.pawns,
-                Piece::Rook => self.rooks,
-                Piece::Knight => self.knights,
-                Piece::Bishop => self.bishops,
-                Piece::Queen => self.queens,
-                Piece::King => self.kings,
-            },
-        };
+        // let bitmap_of_piece_from: u64 = match piece_from {
+        //     Option::None => 0,
+        //     Option::Some(piece) => match piece {
+        //         Piece::None => 0,
+        //         Piece::Pawn => self.pawns,
+        //         Piece::Rook => self.rooks,
+        //         Piece::Knight => self.knights,
+        //         Piece::Bishop => self.bishops,
+        //         Piece::Queen => self.queens,
+        //         Piece::King => self.kings,
+        //     },
+        // };
 
         // [Check] if there is no piece at the destination that is of similar color
         //let piece_to = self.piece_at(to);
@@ -128,7 +128,7 @@ impl BoardImpl of BoardTrait {
         assert(color_to != color_from, errors::BOARD_FRIENDLY_PIECE_AT_DESTINATION);
 
         // [Check] if move is within piece's move range
-        let piece_can_move = piece_from.unwrap().can(bitmap_of_piece_from, from, to, self.whites, self.blacks);
+        let piece_can_move = piece_from.unwrap().can(self, from, to);
 
         assert(piece_can_move, errors::BOARD_INVALID_MOVE);
 
