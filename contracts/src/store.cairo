@@ -64,4 +64,10 @@ impl StoreImpl of StoreTrait {
         set!(self.world, (format))
     }
 
+
+    #[inline]
+    fn delete_format(self: Store, format: Format) {
+        delete!(self.world, (format))
+    }
+
 }

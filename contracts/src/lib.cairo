@@ -21,6 +21,7 @@ mod components {
 }
 
 mod systems {
+    mod admin;
     mod lobby;
 }
 

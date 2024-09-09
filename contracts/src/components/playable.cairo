@@ -3,6 +3,7 @@ mod PlayableComponent {
     // Core imports
 
     use core::debug::PrintTrait;
+    use traits::{Into, TryInto};
 
     // Starknet imports
 
@@ -31,7 +32,9 @@ mod PlayableComponent {
     // Storage
 
     #[storage]
-    struct Storage {}
+    struct Storage {
+        format_id: u16,
+    }
 
     // Events
 
@@ -73,6 +76,41 @@ mod PlayableComponent {
             player.profile_pic_type = profile_pic_type;
             player.profile_pic_uri = profile_pic_uri;
             store.set_player(player);
+        }
+
+        fn addGameFormat(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            description: felt252, 
+            turn_expiry: u64, 
+            total_time_per_side: u64, 
+            total_time_string: felt252, 
+            increment: u8
+        ){
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+
+
+            store.set_format(Format {
+                format_id: (world.uuid() + 1).try_into().unwrap(),
+                description,
+                turn_expiry,
+                total_time_per_side,
+                total_time_string,
+                increment
+            });
+
+        }
+
+        fn removeGameFormat(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            format_id: u16,
+        ){
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+            let gameFormat = store.get_format(format_id);
+            store.delete_format(gameFormat);
         }
     }
 
