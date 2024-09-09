@@ -101,7 +101,7 @@ impl KingImpl of KingTrait {
         };
 
 
-        // Castling moves
+        // Castling moves (do they check if squares are attacked etc?)
         if Self::can_castle_kingside(board) {
             let kingside_to = if board.side_to_move == Color::White { 6 } else { 62 };
             moves.append(

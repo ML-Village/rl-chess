@@ -82,6 +82,7 @@ impl PawnImpl of PawnTrait {
 
         let to_bitboard:u64 = Bitmap::set_bit_at(0, single_push_to_index, true);
         
+        // if there is no obstruction at desitnation, add to moves
         if to_bitboard & ( board.whites | board.blacks ) == 0 {
             moves.append(
                 FROM_TO_VEC{
@@ -91,7 +92,7 @@ impl PawnImpl of PawnTrait {
             );
 
             // Double push from starting rank (this is inside single push to check for empty square infront)
-            if (color_from == Color::White && from / 8 == 1) || (color_from == Color::Black && from / 8 == 6) {
+            if (color_from == Color::White && (from / 8 == 1)) || (color_from == Color::Black && (from / 8 == 6)) {
                 let double_push_to_index = if color_from == Color::White { from + 16 } else { from - 16 };
                 let double_to_bitboard = Bitmap::set_bit_at(0, double_push_to_index, true);
                 if double_to_bitboard & ( board.whites | board.blacks ) == 0 {
@@ -106,7 +107,7 @@ impl PawnImpl of PawnTrait {
 
         }
 
-        // Captures
+        // Captures (moving diagonally)
         let capture_bitboard = if color_from == Color::White {
             ((from_bitboard & (0xFFFFFFFFFFFFFFFF_u64 -FILE_A)) * Math::pow(2_u8.into(), 7)) | ((from_bitboard & (0xFFFFFFFFFFFFFFFF_u64 - FILE_H)) * Math::pow(2_u8.into(), 9))
         } else {
@@ -116,6 +117,8 @@ impl PawnImpl of PawnTrait {
         let captures = capture_bitboard & enemy_pieces;
         
         let mut capture_index: u8 = 0;
+
+        // generate the few possible captures via loop (max 64 times)
         loop {
             if capture_index >= 64 {
                 break;

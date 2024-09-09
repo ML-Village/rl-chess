@@ -78,6 +78,18 @@ pub struct Board {
     pub queens: u64,
     pub kings: u64,
 
+    pub wcp: u8,
+    pub wcr: u8,
+    pub wck: u8,
+    pub wcb: u8,
+    pub wcq: u8,
+
+    pub bcp: u8,
+    pub bcr: u8,
+    pub bck: u8,
+    pub bcb: u8,
+    pub bcq: u8,
+
     pub side_to_move: Color,
     pub castling_rights: u8, // New field to store castling rights
     pub en_passant: u8, // New field to store the en passant square

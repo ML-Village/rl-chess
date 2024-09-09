@@ -23,6 +23,12 @@ pub fn piece_at(board: Board, square: u8) -> Option<Piece> {
     Option::None
 }
 
+pub fn color_at(board: Board, square: u8) -> Option<Color> {
+    if Bitmap::get_bit_at(board.whites, square) { return Option::Some(Color::White); }
+    if Bitmap::get_bit_at(board.blacks, square) { return Option::Some(Color::Black); }
+    Option::None
+}
+
 pub fn is_square_attacked(board: Board, square: u8, by_color: Color) -> bool {
     let square_bb = Bitmap::set_bit_at(0, square, true);
     let enemy_bitboard: u64 = match by_color {
@@ -73,12 +79,6 @@ pub fn is_square_attacked(board: Board, square: u8, by_color: Color) -> bool {
         return true;
     }
     false
-}
-
-pub fn color_at(board: Board, square: u8) -> Option<Color> {
-    if Bitmap::get_bit_at(board.whites, square) { return Option::Some(Color::White); }
-    if Bitmap::get_bit_at(board.blacks, square) { return Option::Some(Color::Black); }
-    Option::None
 }
 
 #[derive(Copy, Drop, Serde)]

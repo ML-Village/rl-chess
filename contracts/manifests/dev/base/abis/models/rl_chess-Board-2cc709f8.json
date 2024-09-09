@@ -425,6 +425,46 @@
         "type": "core::integer::u64"
       },
       {
+        "name": "wcp",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "wcr",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "wck",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "wcb",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "wcq",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "bcp",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "bcr",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "bck",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "bcb",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "bcq",
+        "type": "core::integer::u8"
+      },
+      {
         "name": "side_to_move",
         "type": "rl_chess::types::color::Color"
       },
