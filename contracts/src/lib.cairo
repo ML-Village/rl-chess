@@ -57,6 +57,7 @@ mod utils {
     mod timestamp;
     mod bitboard;
     mod bitboardIterator;
+    mod seeder;
 }
 
 #[cfg(test)]

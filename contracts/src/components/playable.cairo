@@ -24,10 +24,20 @@ mod PlayableComponent {
     use rl_chess::models::player::{PlayerTrait, PlayerAssert};
     use rl_chess::models::game::{GameTrait};
     use rl_chess::types::profile::ProfilePicType;
+    use rl_chess::types::gamestate::GameState;
+    use rl_chess::utils::seeder::{make_seed};
 
     // Errors
 
-    mod errors {}
+    mod errors {
+        const NOT_OWNER:felt252 = 'Not owner of game';
+        const NOT_INVITEE:felt252 = 'Not invitee to game';
+        const NOT_PLAYER_OF_GAME:felt252 = 'Not player of game';
+        const ALREADY_OCCUPIED:felt252 = 'Game occupied';
+        const GAME_IN_PROGRESS:felt252 = 'Game in progress';
+        const GAME_NOT_ACCEPTED:felt252 = 'Game not accepted';
+        const NOT_ALL_READY:felt252 = 'Not all players ready';
+    }
 
     // Storage
 
@@ -111,6 +121,172 @@ mod PlayableComponent {
             let store: Store = StoreTrait::new(world);
             let gameFormat = store.get_format(format_id);
             store.delete_format(gameFormat);
+        }
+
+        fn createInviteGame(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            game_format_id: u16,
+            room_owner_address: ContractAddress,
+            invitee_address: ContractAddress,
+            invite_expiry: u64,
+        ){
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+            let game_id = make_seed(room_owner_address, world.uuid());
+
+            let mut game = GameTrait::new(
+                    game_id,
+                    game_format_id,
+                    room_owner_address,
+                    invitee_address,
+                    invite_expiry,
+                );
+
+            let game_format = store.get_format(game_format_id);
+
+            game.w_turn_expiry_time = game_format.turn_expiry;
+            game.b_turn_expiry_time = game_format.turn_expiry;
+            game.w_total_time_left = game_format.total_time_per_side;
+            game.b_total_time_left = game_format.total_time_per_side;
+
+            // Format {
+            //     format_id,
+            //     description,
+            //     turn_expiry,
+            //     total_time_per_side,
+            //     total_time_string,
+            //     increment,  // left with increment to use in Move!
+            // }
+
+            store.set_game(game);
+
+        }
+
+        fn updateInvitee(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            game_id: u128,
+            room_owner_address: ContractAddress,
+            invitee_address: ContractAddress,
+            invite_expiry: u64,
+        ){
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+            let mut game = store.get_game(game_id);
+            assert(game.room_owner_address == room_owner_address, errors::NOT_OWNER);
+
+            game.invitee_address = invitee_address;
+            game.invite_expiry = invite_expiry; // TODO: update with real calculation of time + expiry
+            store.set_game(game);
+        }
+
+        fn replyInvite(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            invitee_address: ContractAddress,
+            game_id: u128,
+            accepted: bool,
+        ){
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+
+            let mut game = store.get_game(game_id);
+            assert(game.invitee_address == invitee_address, errors::NOT_INVITEE);
+
+            if accepted {
+                game.game_state = GameState::Accepted;
+            } else {
+                game.invitee_address = starknet::contract_address_const::<0x0>();
+            }
+            store.set_game(game);
+        }
+
+        fn joinGame(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            game_id: u128,
+            invitee_address: ContractAddress,
+        ){
+            let store: Store = StoreTrait::new(world);
+            let mut game = store.get_game(game_id);
+            assert(game.invitee_address == starknet::contract_address_const::<0x0>(), 
+                errors::ALREADY_OCCUPIED);
+
+            game.invitee_address = invitee_address;
+            game.game_state = GameState::Accepted;
+            store.set_game(game);
+        }
+
+        fn leaveGame(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            game_id: u128,
+            invitee_address: ContractAddress,
+        ){
+            let store: Store = StoreTrait::new(world);
+            let mut game = store.get_game(game_id);
+            assert(game.game_state != GameState::InProgress, errors::GAME_IN_PROGRESS);
+            assert(game.invitee_address == invitee_address, errors::NOT_INVITEE);
+
+            game.invitee_address = starknet::contract_address_const::<0x0>();
+            game.game_state = GameState::Awaiting;
+            store.set_game(game);
+        }
+
+        fn ownerWithdrawGame(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            game_id: u128,
+            room_owner_address: ContractAddress,
+        ){
+            let store: Store = StoreTrait::new(world);
+            let mut game = store.get_game(game_id);
+            assert(game.room_owner_address == room_owner_address, errors::NOT_OWNER);
+
+            game.game_state = GameState::Withdrawn;
+            store.set_game(game);
+        }
+
+        fn readyUp(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            game_id: u128,
+            caller_address: ContractAddress,
+        ){
+            let store: Store = StoreTrait::new(world);
+            let mut game = store.get_game(game_id);
+            assert(
+                (game.room_owner_address == caller_address
+                || game.invitee_address == caller_address), errors::NOT_PLAYER_OF_GAME);
+            assert(game.game_state == GameState::Accepted, errors::GAME_NOT_ACCEPTED);
+
+            if(caller_address == game.room_owner_address){
+                game.owner_ready = true;
+            } else {
+                game.invitee_ready = true;
+            }
+            store.set_game(game);
+        }
+
+        fn startGame(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            game_id: u128,
+            caller_address: ContractAddress,
+        ){
+            let store: Store = StoreTrait::new(world);
+            let mut game = store.get_game(game_id);
+            assert(
+                (game.room_owner_address == caller_address
+                || game.invitee_address == caller_address), errors::NOT_PLAYER_OF_GAME);
+
+            assert(game.game_state == GameState::Accepted, errors::GAME_NOT_ACCEPTED);
+
+            assert(game.owner_ready && game.invitee_ready, errors::NOT_ALL_READY);
+
+            game.game_state = GameState::InProgress;
+            store.set_game(game);
         }
     }
 

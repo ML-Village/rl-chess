@@ -9,7 +9,7 @@ enum GameState {
     Null,       // 0  
     Awaiting,   // 1
     Withdrawn,  // 2
-    Refused,    // 3
+    Accepted,    // 3
     Expired,    // 4
     InProgress, // 5
     Resolved,   // 6

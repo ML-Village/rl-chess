@@ -29,26 +29,59 @@ trait ILobby<TContractState> {
     );
 
     // do an invite
-    fn invite(
+    fn create_invite_game(
         self: @TContractState, 
         game_format_id: u16,
         invitee_address: ContractAddress,
-        invite_expiry: u64) -> u128;
+        invite_expiry: u64
+    );
     
+    
+    fn update_invitee(
+        self: @TContractState,
+        game_id: u128,
+        invitee_address: ContractAddress,
+        invite_expiry: u64,
+    );
     
     fn reply_invite(
         self: @TContractState,
         game_id: u128,
-        accepted: bool) -> bool;
+        accepted: bool
+    );
     
     // regular create/wait games
     fn create_game(
         self: @TContractState,
-        game_format_id: u16) -> u128;
+        game_format_id: u16,
+        invite_expiry: u64,
+    );
 
     fn join_game(
         self: @TContractState,
-        game_id: u128) -> bool;
+        game_id: u128
+    );
+    
+    fn leave_game(
+        self: @TContractState,
+        game_id: u128,
+    );
+    
+    fn ready_up(
+        self: @TContractState,
+        game_id: u128,
+    );
+
+    fn owner_withdraw_game(
+        self: @TContractState,
+        game_id: u128,
+    );
+
+    fn start_game(
+        self: @TContractState,
+        game_id: u128,
+    );
+
 }
 
 // Contracts
@@ -121,37 +154,118 @@ mod lobby {
             );
         }
 
-        fn invite(
+        fn create_invite_game(
             self: @ContractState,
             game_format_id: u16,
             invitee_address: ContractAddress,
             invite_expiry: u64,
-        ) -> u128 {
-            88
+        ){
+
+            self.playable.createInviteGame(
+                world: self.world(),
+                game_format_id: game_format_id,
+                room_owner_address: get_caller_address(),
+                invitee_address: invitee_address,
+                invite_expiry: invite_expiry,
+            );
+        }
+
+        fn update_invitee(
+            self: @ContractState,
+            game_id: u128,
+            invitee_address: ContractAddress,
+            invite_expiry: u64,
+        ){
+            self.playable.updateInvitee(
+                world: self.world(),
+                game_id: game_id,
+                room_owner_address: get_caller_address(),
+                invitee_address: invitee_address,
+                invite_expiry: invite_expiry,
+            );
         }
 
         fn reply_invite(
             self: @ContractState,
             game_id: u128,
             accepted: bool,
-        ) -> bool {
-            true
+        ){
+            self.playable.replyInvite(
+                world: self.world(),
+                invitee_address: get_caller_address(),
+                game_id: game_id,
+                accepted: accepted,
+            );
         }
 
         fn create_game(
             self: @ContractState,
             game_format_id: u16,
-        ) -> u128 {
-            88
+            invite_expiry: u64,
+        ){
+            self.playable.createInviteGame(
+                world: self.world(),
+                game_format_id: game_format_id,
+                room_owner_address: get_caller_address(),
+                invitee_address: starknet::contract_address_const::<0x0>(),
+                invite_expiry: invite_expiry,
+            );
         }
 
         fn join_game(
             self: @ContractState,
             game_id: u128,
-        ) -> bool {
-            true
+        ){
+            self.playable.joinGame(
+                world: self.world(),
+                game_id: game_id,
+                invitee_address: get_caller_address(),
+            );
         }
 
+        fn leave_game(
+            self: @ContractState,
+            game_id: u128,
+        ){
+            self.playable.leaveGame(
+                world: self.world(),
+                game_id: game_id,
+                player_address: get_caller_address(),
+            );
+        }
+
+        fn owner_withdraw_game(
+            self: @ContractState,
+            game_id: u128,
+        ){
+            self.playable.ownerWithdrawGame(
+                world: self.world(),
+                game_id: game_id,
+                room_owner_address: get_caller_address(),
+            );
+        }
+
+        fn ready_up(
+            self: @ContractState,
+            game_id: u128,
+        ){
+            self.playable.readyUp(
+                world: self.world(),
+                game_id: game_id,
+                caller_address: get_caller_address(),
+            );
+        }
+
+        fn start_game(
+            self: @ContractState,
+            game_id: u128,
+        ){
+            self.playable.startGame(
+                world: self.world(),
+                game_id: game_id,
+                caller_address: get_caller_address(),
+            );
+        }
 
     }
 }

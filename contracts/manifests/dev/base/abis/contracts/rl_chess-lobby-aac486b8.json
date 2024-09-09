@@ -205,7 +205,7 @@
       },
       {
         "type": "function",
-        "name": "invite",
+        "name": "create_invite_game",
         "inputs": [
           {
             "name": "game_format_id",
@@ -220,11 +220,27 @@
             "type": "core::integer::u64"
           }
         ],
-        "outputs": [
+        "outputs": [],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "update_invitee",
+        "inputs": [
           {
+            "name": "game_id",
             "type": "core::integer::u128"
+          },
+          {
+            "name": "invitee_address",
+            "type": "core::starknet::contract_address::ContractAddress"
+          },
+          {
+            "name": "invite_expiry",
+            "type": "core::integer::u64"
           }
         ],
+        "outputs": [],
         "state_mutability": "view"
       },
       {
@@ -240,11 +256,7 @@
             "type": "core::bool"
           }
         ],
-        "outputs": [
-          {
-            "type": "core::bool"
-          }
-        ],
+        "outputs": [],
         "state_mutability": "view"
       },
       {

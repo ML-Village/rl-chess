@@ -121,16 +121,47 @@ pub mod lobby {
                     profile_pic_uri: profile_pic_uri,
                 );
         }
-        fn invite(
+        fn create_invite_game(
             self: @ContractState,
             game_format_id: u16,
             invitee_address: ContractAddress,
             invite_expiry: u64
-        ) -> u128 {
-            88
+        ) {
+            self
+                .playable
+                .createInviteGame(
+                    world: self.world(),
+                    game_format_id: game_format_id,
+                    room_owner_address: get_caller_address(),
+                    invitee_address: invitee_address,
+                    invite_expiry: invite_expiry,
+                );
         }
-        fn reply_invite(self: @ContractState, game_id: u128, accepted: bool) -> bool {
-            true
+        fn update_invitee(
+            self: @ContractState,
+            game_id: u128,
+            invitee_address: ContractAddress,
+            invite_expiry: u64
+        ) {
+            self
+                .playable
+                .updateInvitee(
+                    world: self.world(),
+                    game_id: game_id,
+                    room_owner_address: get_caller_address(),
+                    invitee_address: invitee_address,
+                    invite_expiry: invite_expiry,
+                );
+        }
+        fn reply_invite(self: @ContractState, game_id: u128, accepted: bool) {
+            self
+                .playable
+                .replyInvite(
+                    world: self.world(),
+                    invitee_address: get_caller_address(),
+                    game_id: game_id,
+                    accepted: accepted,
+                );
         }
         fn create_game(self: @ContractState, game_format_id: u16) -> u128 {
             88
