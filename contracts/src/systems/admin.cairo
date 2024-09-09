@@ -2,8 +2,9 @@ use starknet::ContractAddress;
 
 #[dojo::interface]
 trait IAdmin {
-    fn set_game_format(
+    fn add_game_format(
         self: @TContractState,
+        ref world: IWorldDispatcher, 
         format_id: u16,
         description: felt252,
         turn_expiry: u64,
@@ -14,17 +15,43 @@ trait IAdmin {
 
     fn remove_game_format(
         self: @TContractState,
+        ref world: IWorldDispatcher, 
         format_id: u16,
     );
 }
 
 #[dojo::contract]
 mod admin {
+    // Component imports
+
+    use rl_chess::components::playable::PlayableComponent;
+
+    // Starknet imports
     use debug::PrintTrait;
     use traits::{Into, TryInto};
     use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
 
+    // Local imports
+
+    use super::IAdmin;
     use rl_chess::models::index::Format;
+
+
+    // Components
+
+    component!(path: PlayableComponent, storage: playable, event: PlayableEvent);
+    impl PlayableInternalImpl = PlayableComponent::InternalImpl<ContractState>;
+
+    // Storage
+
+    #[storage]
+    struct Storage {
+        #[substorage(v0)]
+        playable: PlayableComponent::Storage,
+
+        format_id: u16,
+    }
+
 
     mod Errors {
 
@@ -32,6 +59,7 @@ mod admin {
 
 
     fn dojo_init(
+        self: @TContractState,
         ref world: IWorldDispatcher,
     ) {    
         // initialize game formats
@@ -216,20 +244,23 @@ mod admin {
 
             )
         );
+
+        self.format_id.write(20);
     }
 
     // impl: implement functions specified in trait
     #[abi(embed_v0)]
-    impl AdminImpl of super::IAdmin<ContractState> {
-        fn set_game_format(ref world: IWorldDispatcher, 
-            format_id: u16, 
+    impl AdminImpl of IAdmin<ContractState> {
+        fn add_game_format(ref world: IWorldDispatcher, 
             description: felt252, 
             turn_expiry: u64, 
             total_time_per_side: u64, 
             total_time_string: felt252, 
             increment: u8) {
+
+            let format_id = self.format_id.read();
                 let format = Format {
-                    format_id,
+                    format_id: format_id + 1,
                     description,
                     turn_expiry,
                     total_time_per_side,
@@ -237,7 +268,8 @@ mod admin {
                     increment
                 };
 
-                set!(world, (format));
+            set!(world, (format));
+            self.format_id.write(format_id + 1);
         }
         
         fn remove_game_format(ref world: IWorldDispatcher, format_id: u16) {

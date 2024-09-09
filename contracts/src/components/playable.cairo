@@ -74,33 +74,6 @@ mod PlayableComponent {
             player.profile_pic_uri = profile_pic_uri;
             store.set_player(player);
         }
-
-
-        fn setGameFormat(
-            self: @ComponentState<TContractState>, 
-            world: IWorldDispatcher,
-            format_id: u16,
-            description: felt252,
-            turn_expiry: u64,
-            total_time_per_side: u64,
-            total_time_string: felt252,
-            increment: u8,
-        ){
-            // [Setup] Datastore
-            let store: Store = StoreTrait::new(world);
-
-            let format = Format {
-                format_id, 
-                description, 
-                turn_expiry, 
-                total_time_per_side, 
-                total_time_string, 
-                increment
-            };
-
-            store.set_format(format);
-        }
     }
-
 
 }
