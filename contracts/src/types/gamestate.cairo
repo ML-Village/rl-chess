@@ -5,7 +5,7 @@ mod errors {
 }
 
 #[derive(Copy, Drop, Serde, PartialEq, Introspect)]
-enum InviteState {
+enum GameState {
     Null,       // 0  
     Awaiting,   // 1
     Withdrawn,  // 2

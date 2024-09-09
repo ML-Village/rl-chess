@@ -8,7 +8,7 @@ use starknet::ContractAddress;
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
 use rl_chess::types::profile::ProfilePicType;
-use rl_chess::types::invite::InviteState;
+use rl_chess::types::gamestate::GameState;
 use rl_chess::types::color::Color;
 use rl_chess::constants;
 
@@ -32,27 +32,36 @@ pub struct Game {
     #[key]
     pub game_id: u128,
 
+    // configs
     pub game_format_id:u16,
+    pub w_turn_expiry_time: u64,
+    pub b_turn_expiry_time: u64,
+
+
+    pub invite_expiry: u64, // Unix time, time for challenge to expire (0 for unlimited)
 
     pub room_owner_address: ContractAddress, //creator wallet address
     pub invitee_address: ContractAddress, //invitee wallet address
 
-    pub invite_state: InviteState,
-    pub invite_expiry: u64, // Unix time, time for challenge to expire (0 for unlimited)
+    pub white_player_address: ContractAddress,
+    pub black_player_address: ContractAddress,
 
-    pub result: u8, //  0:unresolved, 1:owner, 2:invitee, 3:draw
-    pub winner: ContractAddress, // winner wallet address
-    
+    // ===== Game States =====
+    pub game_state: GameState,
+
     // timestamps in unix epoch
     pub room_start: u64,       // Unix time, started
     pub room_end: u64,         // Unix time, ended
 
-
-    // Game States
-    pub w_turn_expiry_time: u64,
-    pub b_turn_expiry_time: u64,
+    pub w_last_move_time: u64,
+    pub b_last_move_time: u64,
     pub w_total_time_left: u64, // Unix time, total game time (0 for unlimited)
     pub b_total_time_left: u64, // Unix time, total game time (0 for unlimited)
+
+
+    // Result
+    pub result: u8, //  0:unresolved, 1:owner, 2:invitee, 3:draw
+    pub winner: ContractAddress, // winner wallet address
 }
 
 

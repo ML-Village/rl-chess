@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x1a7ef4429b3a4fb226b2b833887955bb6e7ef78166b141ebe6951a4193422bd"
-original_class_hash = "0x1a7ef4429b3a4fb226b2b833887955bb6e7ef78166b141ebe6951a4193422bd"
+class_hash = "0x65a720f2ff6a90065dcce6a3525dca6ae90f9cd9ad1bda83ffb88fc667f92b4"
+original_class_hash = "0x65a720f2ff6a90065dcce6a3525dca6ae90f9cd9ad1bda83ffb88fc667f92b4"
 abi = "manifests/dev/base/abis/models/rl_chess-Game-36398636.json"
 tag = "rl_chess-Game"
 manifest_name = "rl_chess-Game-36398636"
@@ -16,6 +16,21 @@ type = "u16"
 key = false
 
 [[members]]
+name = "w_turn_expiry_time"
+type = "u64"
+key = false
+
+[[members]]
+name = "b_turn_expiry_time"
+type = "u64"
+key = false
+
+[[members]]
+name = "invite_expiry"
+type = "u64"
+key = false
+
+[[members]]
 name = "room_owner_address"
 type = "ContractAddress"
 key = false
@@ -26,23 +41,18 @@ type = "ContractAddress"
 key = false
 
 [[members]]
-name = "invite_state"
-type = "InviteState"
-key = false
-
-[[members]]
-name = "invite_expiry"
-type = "u64"
-key = false
-
-[[members]]
-name = "result"
-type = "u8"
-key = false
-
-[[members]]
-name = "winner"
+name = "white_player_address"
 type = "ContractAddress"
+key = false
+
+[[members]]
+name = "black_player_address"
+type = "ContractAddress"
+key = false
+
+[[members]]
+name = "game_state"
+type = "GameState"
 key = false
 
 [[members]]
@@ -56,12 +66,12 @@ type = "u64"
 key = false
 
 [[members]]
-name = "w_turn_expiry_time"
+name = "w_last_move_time"
 type = "u64"
 key = false
 
 [[members]]
-name = "b_turn_expiry_time"
+name = "b_last_move_time"
 type = "u64"
 key = false
 
@@ -73,4 +83,14 @@ key = false
 [[members]]
 name = "b_total_time_left"
 type = "u64"
+key = false
+
+[[members]]
+name = "result"
+type = "u8"
+key = false
+
+[[members]]
+name = "winner"
+type = "ContractAddress"
 key = false

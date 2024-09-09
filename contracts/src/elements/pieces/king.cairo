@@ -93,6 +93,8 @@ impl KingImpl of KingTrait {
                 let to_bitboard = Bitmap::set_bit_at(0, to, true);
 
                 if to_bitboard & friendly_pieces == 0 {
+
+                    // TODO: check if king is in check at to-square
                     moves.append(FROM_TO_VEC { from, to });
                 }
             }
@@ -129,11 +131,11 @@ impl KingImpl of KingTrait {
             _ => (0, 0, 0, 0),
         };
         castling_rights & rights_mask != 0
-            && piece_at(board, king_square) == Option::Some(Piece::King)
-            && piece_at(board, rook_square) == Option::Some(Piece::Rook)
-            && (board.whites | board.blacks) & empty_squares == 0
-            && !is_square_attacked(board, king_square, side_to_move.opposite())
-            && !is_square_attacked(board, king_square + 1, side_to_move.opposite())
+            && piece_at(board, king_square) == Option::Some(Piece::King) // king is there
+            && piece_at(board, rook_square) == Option::Some(Piece::Rook) // rook is there
+            && (board.whites | board.blacks) & empty_squares == 0 // no pieces in between
+            && !is_square_attacked(board, king_square, side_to_move.opposite()) // king is not attacked
+            && !is_square_attacked(board, king_square + 1, side_to_move.opposite()) // king's path is not attacked
     }
 
     fn can_castle_queenside(board: Board) -> bool {
@@ -146,11 +148,11 @@ impl KingImpl of KingTrait {
             _ => (0, 0, 0, 0),
         };
         castling_rights & rights_mask != 0
-            && piece_at(board, king_square) == Option::Some(Piece::King)
-            && piece_at(board, rook_square) == Option::Some(Piece::Rook)
-            && (board.whites | board.blacks) & empty_squares == 0
-            && !is_square_attacked(board, king_square, side_to_move.opposite())
-            && !is_square_attacked(board, king_square - 1, side_to_move.opposite())
+            && piece_at(board, king_square) == Option::Some(Piece::King) // king is there
+            && piece_at(board, rook_square) == Option::Some(Piece::Rook) // rook is there
+            && (board.whites | board.blacks) & empty_squares == 0 // no pieces in between
+            && !is_square_attacked(board, king_square, side_to_move.opposite()) // king is not attacked
+            && !is_square_attacked(board, king_square - 1, side_to_move.opposite()) // king's path is not attacked
     }
 
 }

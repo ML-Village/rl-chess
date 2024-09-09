@@ -8,6 +8,7 @@ use traits::{Into, TryInto};
 // 2. System contract takes care of starting game and ending game (with check on draw etc)
 // 3. Slowly migrate functions that are game rules based to system contract and leave only plain piece rules here
 // Note TODO: .try_into().unwrap_or(88_u8); (check if some unwraps fail)
+// 4. check if king is in check 
 
 // Inernal imports
 

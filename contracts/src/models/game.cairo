@@ -9,7 +9,7 @@ use traits::{Into, TryInto};
 
 //use rl_chess::constants::{};
 use rl_chess::models::index::Game;
-use rl_chess::models::invite_state::InviteState;
+use rl_chess::models::gamestate::GameState;
 
 mod errors {
     const GAME_INVALID_ID: felt252 = 'Game: invalid id';
@@ -35,20 +35,93 @@ impl GameImpl of GameTrait {
         Game {
             game_id,
             game_format_id,
+            w_turn_expiry_time: 0,
+            b_turn_expiry_time: 0,
+
+            invite_expiry,
+
             room_owner_address,
             invitee_address,
-            invite_expiry,
-            invite_state: InviteState::Awaiting,
-            result: 0,
-            winner: starknet::contract_address_const::<0x0>(),
+            white_player_address: room_owner_address,
+            black_player_address: inivtee_address,
+            
+            // ===== Game States =====
+            game_state: GameState::Awaiting,
+            
             room_start: get_block_timestamp(),
             room_end: 0,
 
-            w_turn_expiry_time: 0,
-            b_turn_expiry_time: 0,
+            w_last_move_time: 0,
+            b_last_move_time: 0,
             w_total_time_left: 0,
             b_total_time_left: 0,
+
+
+            // Result
+            result: 0, //  0:unresolved, 1:owner, 2:invitee, 3:draw
+            winner: starknet::contract_address_const::<0x0>(),
         }
     }
+
+    #[inline]
+    fn set_invitee_address(invitee_address: ContractAddress) {
+        self.invitee_address = invitee_address;
+    }
+
+    #[inline]
+    fn switch_sides() {
+        assert(self.game_state != GameState::InProgress, 'Game: game in progress');
+
+        let temp = self.white_player_address;
+        self.white_player_address = self.black_player_address;
+        self.black_player_address = temp;
+    }
+
+    #[inline]
+    fn set_game_state(game_state: GameState) {
+        self.game_state = game_state;
+    }
+
+    #[inline]
+    fn set_result(result: u8)-> u8 {
+        
+        if result == 1 {
+            self.winner = self.room_owner_address;
+
+        } else if result == 2 {
+            self.winner = self.invitee_address;
+        } else if result == 3 {
+            self.winner = starknet::contract_address_const::<0x0>();
+        } else {
+            self.winner = starknet::contract_address_const::<0x0>();
+            assert(false, 'Game: invalid result');
+            return 88;
+        };
+        self.result = result;
+        self.room_end = get_block_timestamp();
+        result
+    }
+
+    #[inline]
+    fn set_total_time_left(side: u8){
+        // 1 == white, 2 == black
+        if side == 1 {
+            self.w_total_time_left = self.w_total_time_left - (get_block_timestamp() - self.b_last_move_time);
+            self.w_last_move_time = get_block_timestamp();
+        } else if side == 2 {
+            self.b_total_time_left = self.b_total_time_left - (get_block_timestamp() - self.w_last_move_time);
+            self.b_last_move_time = get_block_timestamp();
+        }
+    }
+
+    #[inline]
+    fn set_game_start(){
+        self.w_last_move_time = get_block_timestamp();
+        self.b_last_move_time = get_block_timestamp();
+    }
+
+
+
+
 
 }

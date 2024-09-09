@@ -368,7 +368,7 @@
   },
   {
     "type": "enum",
-    "name": "rl_chess::types::invite::InviteState",
+    "name": "rl_chess::types::gamestate::GameState",
     "variants": [
       {
         "name": "Null",
@@ -417,6 +417,18 @@
         "type": "core::integer::u16"
       },
       {
+        "name": "w_turn_expiry_time",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "b_turn_expiry_time",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "invite_expiry",
+        "type": "core::integer::u64"
+      },
+      {
         "name": "room_owner_address",
         "type": "core::starknet::contract_address::ContractAddress"
       },
@@ -425,20 +437,16 @@
         "type": "core::starknet::contract_address::ContractAddress"
       },
       {
-        "name": "invite_state",
-        "type": "rl_chess::types::invite::InviteState"
-      },
-      {
-        "name": "invite_expiry",
-        "type": "core::integer::u64"
-      },
-      {
-        "name": "result",
-        "type": "core::integer::u8"
-      },
-      {
-        "name": "winner",
+        "name": "white_player_address",
         "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "black_player_address",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "game_state",
+        "type": "rl_chess::types::gamestate::GameState"
       },
       {
         "name": "room_start",
@@ -449,11 +457,11 @@
         "type": "core::integer::u64"
       },
       {
-        "name": "w_turn_expiry_time",
+        "name": "w_last_move_time",
         "type": "core::integer::u64"
       },
       {
-        "name": "b_turn_expiry_time",
+        "name": "b_last_move_time",
         "type": "core::integer::u64"
       },
       {
@@ -463,6 +471,14 @@
       {
         "name": "b_total_time_left",
         "type": "core::integer::u64"
+      },
+      {
+        "name": "result",
+        "type": "core::integer::u8"
+      },
+      {
+        "name": "winner",
+        "type": "core::starknet::contract_address::ContractAddress"
       }
     ]
   },

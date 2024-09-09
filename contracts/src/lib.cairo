@@ -5,7 +5,7 @@ mod types {
     mod profile;
     mod color;
     mod piece;
-    mod invite;
+    mod gamestate;
 }
 
 mod models {
