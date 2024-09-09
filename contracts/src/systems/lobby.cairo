@@ -77,6 +77,11 @@ trait ILobby<TContractState> {
         game_id: u128,
     );
 
+    fn switch_sides(
+        self: @TContractState,
+        game_id: u128,
+    );
+
     fn start_game(
         self: @TContractState,
         game_id: u128,
@@ -266,6 +271,19 @@ mod lobby {
                 caller_address: get_caller_address(),
             );
         }
+
+        fn switch_sides(
+            self: @ContractState,
+            game_id: u128,
+        ){
+            self.playable.switchSides(
+                world: self.world(),
+                game_id: game_id,
+                caller_address: get_caller_address(),
+            );
+        }
+
+
 
     }
 }

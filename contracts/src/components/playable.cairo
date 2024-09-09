@@ -37,6 +37,7 @@ mod PlayableComponent {
         const GAME_IN_PROGRESS:felt252 = 'Game in progress';
         const GAME_NOT_ACCEPTED:felt252 = 'Game not accepted';
         const NOT_ALL_READY:felt252 = 'Not all players ready';
+        const NOT_ENOUGH_PLAYERS:felt252 = 'Not enough players';
     }
 
     // Storage
@@ -286,6 +287,22 @@ mod PlayableComponent {
             assert(game.owner_ready && game.invitee_ready, errors::NOT_ALL_READY);
 
             game.game_state = GameState::InProgress;
+            store.set_game(game);
+        }
+
+        fn switchSides(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            game_id: u128,
+            caller_address: ContractAddress,
+        ){
+            let store: Store = StoreTrait::new(world);
+            let mut game = store.get_game(game_id);
+            assert(game.room_owner_address == caller_address, errors::NOT_OWNER);
+            assert(game.invitee_address != starknet::contract_address_const::<0x0>(),
+                errors::NOT_ENOUGH_PLAYERS);
+
+            game.switch_sides();
             store.set_game(game);
         }
     }
