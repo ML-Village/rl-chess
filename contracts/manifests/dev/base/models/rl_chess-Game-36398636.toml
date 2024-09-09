@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x65a720f2ff6a90065dcce6a3525dca6ae90f9cd9ad1bda83ffb88fc667f92b4"
-original_class_hash = "0x65a720f2ff6a90065dcce6a3525dca6ae90f9cd9ad1bda83ffb88fc667f92b4"
+class_hash = "0x6b4f09314e2182059a6b9e35cda064ff38ad5ad937e7bc1ac75f538f16f6636"
+original_class_hash = "0x6b4f09314e2182059a6b9e35cda064ff38ad5ad937e7bc1ac75f538f16f6636"
 abi = "manifests/dev/base/abis/models/rl_chess-Game-36398636.json"
 tag = "rl_chess-Game"
 manifest_name = "rl_chess-Game-36398636"
@@ -53,6 +53,16 @@ key = false
 [[members]]
 name = "game_state"
 type = "GameState"
+key = false
+
+[[members]]
+name = "owner_ready"
+type = "bool"
+key = false
+
+[[members]]
+name = "invitee_ready"
+type = "bool"
 key = false
 
 [[members]]

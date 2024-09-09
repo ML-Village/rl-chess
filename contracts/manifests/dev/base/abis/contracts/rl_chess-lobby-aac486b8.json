@@ -192,10 +192,6 @@
         "name": "update_player",
         "inputs": [
           {
-            "name": "name",
-            "type": "core::felt252"
-          },
-          {
             "name": "profile_pic_type",
             "type": "rl_chess::types::profile::ProfilePicType"
           },

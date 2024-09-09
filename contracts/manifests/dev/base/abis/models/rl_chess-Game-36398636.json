@@ -405,6 +405,20 @@
     ]
   },
   {
+    "type": "enum",
+    "name": "core::bool",
+    "variants": [
+      {
+        "name": "False",
+        "type": "()"
+      },
+      {
+        "name": "True",
+        "type": "()"
+      }
+    ]
+  },
+  {
     "type": "struct",
     "name": "rl_chess::models::index::Game",
     "members": [
@@ -447,6 +461,14 @@
       {
         "name": "game_state",
         "type": "rl_chess::types::gamestate::GameState"
+      },
+      {
+        "name": "owner_ready",
+        "type": "core::bool"
+      },
+      {
+        "name": "invitee_ready",
+        "type": "core::bool"
       },
       {
         "name": "room_start",

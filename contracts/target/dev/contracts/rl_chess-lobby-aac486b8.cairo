@@ -101,16 +101,26 @@ pub mod lobby {
         ) {
             self
                 .playable
-                .register_player(
-                    self.world(), get_caller_address(), name, profile_pic_type, profile_pic_uri
+                .registerPlayer(
+                    world: self.world(),
+                    address: get_caller_address(),
+                    name: name,
+                    profile_pic_type: profile_pic_type,
+                    profile_pic_uri: profile_pic_uri
                 );
         }
         fn update_player(
-            self: @ContractState,
-            name: felt252,
-            profile_pic_type: ProfilePicType,
-            profile_pic_uri: u64
-        ) {}
+            self: @ContractState, profile_pic_type: ProfilePicType, profile_pic_uri: u64
+        ) {
+            self
+                .playable
+                .updatePlayer(
+                    world: self.world(),
+                    address: get_caller_address(),
+                    profile_pic_type: profile_pic_type,
+                    profile_pic_uri: profile_pic_uri,
+                );
+        }
         fn invite(
             self: @ContractState,
             game_format_id: u16,

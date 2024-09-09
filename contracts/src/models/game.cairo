@@ -9,7 +9,7 @@ use traits::{Into, TryInto};
 
 //use rl_chess::constants::{};
 use rl_chess::models::index::Game;
-use rl_chess::models::gamestate::GameState;
+use rl_chess::types::gamestate::GameState;
 
 mod errors {
     const GAME_INVALID_ID: felt252 = 'Game: invalid id';
@@ -43,7 +43,7 @@ impl GameImpl of GameTrait {
             room_owner_address,
             invitee_address,
             white_player_address: room_owner_address,
-            black_player_address: inivtee_address,
+            black_player_address: invitee_address,
             
             // ===== Game States =====
             game_state: GameState::Awaiting,
@@ -66,12 +66,12 @@ impl GameImpl of GameTrait {
     }
 
     #[inline]
-    fn set_invitee_address(invitee_address: ContractAddress) {
+    fn set_invitee_address(ref self: Game, invitee_address: ContractAddress) {
         self.invitee_address = invitee_address;
     }
 
     #[inline]
-    fn set_ready(address:ContractAddress, ready:bool) {
+    fn set_ready(ref self: Game, address:ContractAddress, ready:bool) {
         if (address == self.room_owner_address) {
             self.owner_ready = ready;
         } else if address == self.invitee_address {
@@ -80,7 +80,7 @@ impl GameImpl of GameTrait {
     }
 
     #[inline]
-    fn switch_sides() {
+    fn switch_sides(ref self: Game) {
         assert(self.game_state != GameState::InProgress, 'Game: game in progress');
 
         let temp = self.white_player_address;
@@ -89,12 +89,12 @@ impl GameImpl of GameTrait {
     }
 
     #[inline]
-    fn set_game_state(game_state: GameState) {
+    fn set_game_state(ref self: Game, game_state: GameState) {
         self.game_state = game_state;
     }
 
     #[inline]
-    fn set_result(result: u8)-> u8 {
+    fn set_result(ref self: Game, result: u8)-> u8 {
         
         if result == 1 {
             self.winner = self.room_owner_address;
@@ -114,7 +114,7 @@ impl GameImpl of GameTrait {
     }
 
     #[inline]
-    fn set_total_time_left(side: u8){
+    fn set_total_time_left(ref self: Game, side: u8){
         // 1 == white, 2 == black
         if side == 1 {
             self.w_total_time_left = self.w_total_time_left - (get_block_timestamp() - self.b_last_move_time);
@@ -126,7 +126,7 @@ impl GameImpl of GameTrait {
     }
 
     #[inline]
-    fn set_game_start(){
+    fn set_game_start(ref self: Game){
         self.w_last_move_time = get_block_timestamp();
         self.b_last_move_time = get_block_timestamp();
     }
