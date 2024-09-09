@@ -19,7 +19,9 @@ mod PlayableComponent {
 
     use rl_chess::constants;
     use rl_chess::store::{Store, StoreTrait};
-    use rl_chess::models::player::{Player, PlayerTrait, PlayerAssert};
+    use rl_chess::models::index::{Player, Game, Format};
+    use rl_chess::models::player::{PlayerTrait, PlayerAssert};
+    use rl_chess::models::game::{GameTrait};
     use rl_chess::types::profile::ProfilePicType;
 
     // Errors
@@ -42,7 +44,7 @@ mod PlayableComponent {
         TContractState, +HasComponent<TContractState>
     > of InternalTrait<TContractState> {
         
-        fn register_player(
+        fn registerPlayer(
             self: @ComponentState<TContractState>, 
             world: IWorldDispatcher,
             address: ContractAddress,
@@ -56,5 +58,49 @@ mod PlayableComponent {
             let player = PlayerTrait::new(address,name,profile_pic_type,profile_pic_uri);
             store.set_player(player);
         }
+
+        fn updatePlayer(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            address: ContractAddress,
+            profile_pic_type: ProfilePicType,
+            profile_pic_uri: u64,
+        ){
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+
+            let mut player = store.get_player(address);
+            player.profile_pic_type = profile_pic_type;
+            player.profile_pic_uri = profile_pic_uri;
+            store.set_player(player);
+        }
+
+
+        fn setGameFormat(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            format_id: u16,
+            description: felt252,
+            turn_expiry: u64,
+            total_time_per_side: u64,
+            total_time_string: felt252,
+            increment: u8,
+        ){
+            // [Setup] Datastore
+            let store: Store = StoreTrait::new(world);
+
+            let format = Format {
+                format_id, 
+                description, 
+                turn_expiry, 
+                total_time_per_side, 
+                total_time_string, 
+                increment
+            };
+
+            store.set_format(format);
+        }
     }
+
+
 }

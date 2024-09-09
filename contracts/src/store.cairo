@@ -12,7 +12,9 @@ use starknet::ContractAddress;
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
 // Models imports
-use rl_chess::models::player::{Player, PlayerTrait};
+use rl_chess::models::index::{ Player, Game, Format };
+use rl_chess::models::player::{PlayerTrait};
+use rl_chess::models::game::{GameTrait};
 
 // Structs
 
@@ -31,28 +33,35 @@ impl StoreImpl of StoreTrait {
     }
 
     #[inline]
-    fn get_state(self: Store, player_id: felt252) {
-    //->(Player, Dungeon) {
-        //get!(self.world, player_id, (Player, Dungeon))
-    }
-
-    #[inline]
     fn get_player(self: Store, address: ContractAddress)-> Player {
         get!(self.world, address, (Player))
     }
 
     #[inline]
-    fn set_state(self: Store, player: Player) {
-        //set!(self.world, (player))
+    fn get_game(self: Store, game_id: u128)-> Game {
+        get!(self.world, game_id, (Game))
     }
+
+    #[inline]
+    fn get_format(self: Store, format_id: u16)-> Format {
+        get!(self.world, format_id, (Format))
+    }
+
+    // ===== Setters ===== //
 
     #[inline]
     fn set_player(self: Store, player: Player) {
         set!(self.world, (player))
     }
 
-    // #[inline]
-    // fn set_dungeon(self: Store, dungeon: Dungeon) {
-    //     set!(self.world, (dungeon))
-    // }
+    #[inline]
+    fn set_game(self: Store, game: Game) {
+        set!(self.world, (game))
+    }
+
+    #[inline]
+    fn set_format(self: Store, format: Format) {
+        set!(self.world, (format))
+    }
+
 }

@@ -47,6 +47,8 @@ impl GameImpl of GameTrait {
             
             // ===== Game States =====
             game_state: GameState::Awaiting,
+            owner_ready: false,
+            invitee_ready: false,
             
             room_start: get_block_timestamp(),
             room_end: 0,
@@ -66,6 +68,15 @@ impl GameImpl of GameTrait {
     #[inline]
     fn set_invitee_address(invitee_address: ContractAddress) {
         self.invitee_address = invitee_address;
+    }
+
+    #[inline]
+    fn set_ready(address:ContractAddress, ready:bool) {
+        if (address == self.room_owner_address) {
+            self.owner_ready = ready;
+        } else if address == self.invitee_address {
+            self.invitee_ready = ready;
+        }
     }
 
     #[inline]

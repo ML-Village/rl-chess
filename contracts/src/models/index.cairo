@@ -48,6 +48,8 @@ pub struct Game {
 
     // ===== Game States =====
     pub game_state: GameState,
+    pub owner_ready: bool,
+    pub invitee_ready: bool,
 
     // timestamps in unix epoch
     pub room_start: u64,       // Unix time, started

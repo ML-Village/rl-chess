@@ -24,7 +24,6 @@ trait ILobby<TContractState> {
 
     fn update_player(
         self: @TContractState,
-        name: felt252,
         profile_pic_type: ProfilePicType,
         profile_pic_uri: u64,
     );
@@ -101,21 +100,25 @@ mod lobby {
             profile_pic_type: ProfilePicType,
             profile_pic_uri: u64,
         ){
-            self.playable.register_player(
-                self.world(),
-                get_caller_address(),
-                name, 
-                profile_pic_type, 
-                profile_pic_uri);
+            self.playable.registerPlayer(
+                world: self.world(),
+                address: get_caller_address(),
+                name: name, 
+                profile_pic_type: profile_pic_type, 
+                profile_pic_uri: profile_pic_uri);
         }
 
         fn update_player(
             self: @ContractState,
-            name: felt252,
             profile_pic_type: ProfilePicType,
             profile_pic_uri: u64,
         ){
-        
+            self.playable.updatePlayer(
+                world: self.world(),
+                address: get_caller_address(),
+                profile_pic_type: profile_pic_type,
+                profile_pic_uri: profile_pic_uri,
+            );
         }
 
         fn invite(

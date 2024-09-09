@@ -11,6 +11,7 @@ mod types {
 mod models {
     mod index;
     mod player;
+    mod game;
     mod board;
     mod format;
 }
