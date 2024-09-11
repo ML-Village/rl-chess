@@ -6,7 +6,9 @@ mod setup {
     // Starknet imports
 
     use starknet::ContractAddress;
-    use starknet::testing::{set_contract_address, set_caller_address};
+    use starknet::testing::{
+        set_contract_address, set_caller_address, 
+        set_block_number, set_block_timestamp };
 
     // Dojo imports
 
@@ -22,10 +24,16 @@ mod setup {
     use rl_chess::models::board::Board;
     
     use rl_chess::types::profile::ProfilePicType;
+    use rl_chess::systems::admin::{admin, 
+        IAdmin, IAdminDispatcher, IAdminDispatcherTrait};
     use rl_chess::systems::lobby::{lobby, 
         ILobby, ILobbyDispatcher, ILobbyDispatcherTrait};
+    use rl_chess::systems::gameroom::{gameroom, 
+        IGameRoom, IGameRoomDispatcher, IGameRoomDispatcherTrait};
 
     // Constants
+    const INITIAL_TIMESTAMP: u64 = 0x100000000;
+    const INITIAL_STEP: u64 = 0x10;
 
     fn PLAYER() -> ContractAddress {
         starknet::contract_address_const::<'PLAYER'>()
@@ -41,7 +49,9 @@ mod setup {
 
     #[derive(Drop)]
     struct Systems {
+        admin: IAdminDispatcher,
         lobby: ILobbyDispatcher,
+        gameroom: IGameRoomDispatcher,
     }
 
     #[derive(Drop)]
@@ -51,6 +61,15 @@ mod setup {
         anyone_id: ContractAddress,
         player_name: felt252,
         anyone_name: felt252,
+    }
+
+    fn elapse_timestamp(delta: u64) -> (u64, u64) {
+        let block_info = starknet::get_block_info().unbox();
+        let new_block_number = block_info.block_number + 1;
+        let new_block_timestamp = block_info.block_timestamp + delta;
+        set_block_number(new_block_number);
+        set_block_timestamp(new_block_timestamp);
+        (new_block_number, new_block_timestamp)
     }
 
     #[inline(always)]
@@ -64,17 +83,36 @@ mod setup {
             ];
         let world = spawn_test_world(array!["rl_chess"].span(), models.span());
 
-        // [Setup] Systems
+        // [Setup] Systems'
+        let admin_address = world
+            .deploy_contract('salt_admin', admin::TEST_CLASS_HASH.try_into().unwrap());
         let lobby_address = world
-            .deploy_contract('salt', lobby::TEST_CLASS_HASH.try_into().unwrap());
+            .deploy_contract('salt_lobby', lobby::TEST_CLASS_HASH.try_into().unwrap());
+        let gameroom_address = world
+            .deploy_contract('salt_gameroom', gameroom::TEST_CLASS_HASH.try_into().unwrap());
+
         let systems = Systems {
+            admin: IAdminDispatcher { contract_address: admin_address },
             lobby: ILobbyDispatcher { contract_address: lobby_address },
+            gameroom: IGameRoomDispatcher { contract_address: gameroom_address },
         };
+        world.grant_writer(dojo::utils::bytearray_hash(@"rl_chess"), admin_address);
         world.grant_writer(dojo::utils::bytearray_hash(@"rl_chess"), lobby_address);
+        world.grant_writer(dojo::utils::bytearray_hash(@"rl_chess"), gameroom_address);
         world.grant_writer(dojo::utils::bytearray_hash(@"rl_chess"), PLAYER());
 
         // [Setup] Context
+        set_block_timestamp(INITIAL_TIMESTAMP);
         set_contract_address(PLAYER());
+
+        //0 . add game format
+        systems.admin.add_game_format(
+            description:'Daily-1',
+            turn_expiry: 0,
+            total_time_per_side: 60*60*24, // 1 day
+            total_time_string: '1-day',
+            increment: 0
+        );
 
         // 1. register players
         println!("setup: registering player -> {}", PLAYER_NAME);
@@ -120,7 +158,7 @@ mod setup {
 
     fn ready_game() -> (IWorldDispatcher, Systems, Context) {
         let (world, systems, context) = create_game();
-        
+        elapse_timestamp(INITIAL_STEP);
         set_contract_address(ANYONE());
         systems.lobby.reply_invite(context.game_id, true);
 
@@ -134,7 +172,7 @@ mod setup {
 
     fn start_game() -> (IWorldDispatcher, Systems, Context) {
         let (world, systems, context) = ready_game();
-        
+        elapse_timestamp(INITIAL_STEP);
         set_contract_address(ANYONE());
         systems.lobby.start_game(context.game_id);
 

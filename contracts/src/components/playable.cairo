@@ -159,6 +159,7 @@ mod PlayableComponent {
                 );
 
             let game_format = store.get_format(game_format_id);
+            let mut board = BoardTrait::new(game_id);
 
             game.w_turn_expiry_time = game_format.turn_expiry;
             game.b_turn_expiry_time = game_format.turn_expiry;
@@ -175,6 +176,7 @@ mod PlayableComponent {
             // }
 
             store.set_game(game);
+            store.set_board(board);
             game.game_id
 
         }
@@ -316,6 +318,7 @@ mod PlayableComponent {
         ){
             let store: Store = StoreTrait::new(world);
             let mut game = store.get_game(game_id);
+            let mut board = store.get_board(game_id);
             assert(
                 (game.room_owner_address == caller_address
                 || game.invitee_address == caller_address), errors::NOT_PLAYER_OF_GAME);
@@ -324,9 +327,6 @@ mod PlayableComponent {
 
             assert(game.owner_ready && game.invitee_ready, errors::NOT_ALL_READY);
             
-
-            //TODO: move new board routine to inside board's start_game() func or in create game funcs
-            let mut board = BoardTrait::new(game_id);
             game.set_game_start();
             store.set_game(game);
             

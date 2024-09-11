@@ -9,6 +9,7 @@ use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 use rl_chess::store::{Store, StoreTrait};
 use rl_chess::models::player::{Player, PlayerTrait};
 use rl_chess::models::game::{Game, GameTrait};
+use rl_chess::models::format::{Format, FormatTrait};
 use rl_chess::types::color::Color;
 use rl_chess::systems::lobby::ILobbyDispatcherTrait;
 
@@ -44,7 +45,9 @@ fn test_lobby_setup() {
     println!("game.game_id: {:?}", game.game_id);
     assert(game.game_id == context.game_id, 'Setup: game id');
 
-
+    let gameformat = store.get_format(1);
+    println!("game format description: {}", gameformat.description);
+    println!("total time per side: {}", gameformat.total_time_per_side);
     // let white = store.player(context.game_id, Color::White.into());
     // assert(white.id == context.player_id, 'Setup: white id');
     // let black = store.player(context.game_id, Color::Black.into());

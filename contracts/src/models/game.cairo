@@ -131,8 +131,10 @@ impl GameImpl of GameTrait {
     #[inline]
     fn set_game_start(ref self: Game){
         self.game_state = GameState::InProgress;
+        self.room_start = get_block_timestamp();
         self.w_last_move_time = get_block_timestamp();
         self.b_last_move_time = get_block_timestamp();
+        println!("game started at: {}", get_block_timestamp());
     }
 
 }

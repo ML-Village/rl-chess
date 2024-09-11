@@ -71,5 +71,21 @@ fn test_lobby_startgame() {
     
     board.print_board();
     println!("board started at: {}", board.last_move_time);
+    println!("room started at: {}", game.room_start);
+    // match board.side_to_move {
+    //     Color::White => {
+    //         println!("side_to_move: W");
+    //     },
+    //     Color::Black => {
+    //         println!("side_to_move: B");
+    //     },
+    //     _ => {
+    //         println!("side_to_move: null");
+    //     }
+    // } // Side to Move printed in print_board()
+    println!("w_last_move_time: {}", game.w_last_move_time);
+    println!("b_last_move_time: {}", game.b_last_move_time);
+    println!("w_total_time_left: {}", game.w_total_time_left);
+    println!("b_total_time_left: {}", game.b_total_time_left);
 
 }

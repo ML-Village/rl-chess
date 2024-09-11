@@ -67,13 +67,14 @@ impl BoardImpl of BoardTrait {
             en_passant: 88, // 88 is the square index for "no square"
             halfmove_clock: 0,
             fullmove_number: 1,
-            last_move_time: get_block_timestamp(),
+            last_move_time: 0,
         }
     }
 
     #[inline]
     fn start_board(ref self: Board) {
         self.side_to_move = Color::White;
+        self.last_move_time = get_block_timestamp();
     }
 
     #[inline]
