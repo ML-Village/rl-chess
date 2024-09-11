@@ -7,6 +7,7 @@ use starknet::ContractAddress;
 use dojo::world::IWorldDispatcher;
 
 // Internal imports
+use rl_chess::models::index::{Player, Game};
 use rl_chess::types::profile::ProfilePicType;
 
 // Interfaces
@@ -20,7 +21,7 @@ trait ILobby<TContractState> {
         name: felt252,
         profile_pic_type: ProfilePicType,
         profile_pic_uri: u64
-    );
+    )->Player;
 
     fn update_player(
         self: @TContractState,
@@ -34,7 +35,7 @@ trait ILobby<TContractState> {
         game_format_id: u16,
         invitee_address: ContractAddress,
         invite_expiry: u64
-    );
+    )->u128;
     
     
     fn update_invitee(
@@ -104,6 +105,7 @@ mod lobby {
     // Local imports
 
     use super::ILobby;
+    use rl_chess::models::index::{Player, Game};
     use rl_chess::types::profile::ProfilePicType;
 
     // Components
@@ -137,13 +139,13 @@ mod lobby {
             name: felt252,
             profile_pic_type: ProfilePicType,
             profile_pic_uri: u64,
-        ){
+        ) -> Player {
             self.playable.registerPlayer(
                 world: self.world(),
                 address: get_caller_address(),
                 name: name, 
                 profile_pic_type: profile_pic_type, 
-                profile_pic_uri: profile_pic_uri);
+                profile_pic_uri: profile_pic_uri)
         }
 
         fn update_player(
@@ -164,7 +166,7 @@ mod lobby {
             game_format_id: u16,
             invitee_address: ContractAddress,
             invite_expiry: u64,
-        ){
+        )->u128{
 
             self.playable.createInviteGame(
                 world: self.world(),
@@ -172,7 +174,7 @@ mod lobby {
                 room_owner_address: get_caller_address(),
                 invitee_address: invitee_address,
                 invite_expiry: invite_expiry,
-            );
+            )
         }
 
         fn update_invitee(
@@ -235,7 +237,7 @@ mod lobby {
             self.playable.leaveGame(
                 world: self.world(),
                 game_id: game_id,
-                player_address: get_caller_address(),
+                invitee_address: get_caller_address(),
             );
         }
 

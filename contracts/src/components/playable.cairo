@@ -20,11 +20,13 @@ mod PlayableComponent {
 
     use rl_chess::constants;
     use rl_chess::store::{Store, StoreTrait};
-    use rl_chess::models::index::{Player, Game, Format};
+    use rl_chess::models::index::{Player, Game, Format, Board};
     use rl_chess::models::player::{PlayerTrait, PlayerAssert};
     use rl_chess::models::game::{GameTrait};
+    use rl_chess::models::board::{BoardTrait};
     use rl_chess::types::profile::ProfilePicType;
     use rl_chess::types::gamestate::GameState;
+    use rl_chess::types::color::Color;
     use rl_chess::utils::seeder::{make_seed};
 
     // Errors
@@ -33,11 +35,15 @@ mod PlayableComponent {
         const NOT_OWNER:felt252 = 'Not owner of game';
         const NOT_INVITEE:felt252 = 'Not invitee to game';
         const NOT_PLAYER_OF_GAME:felt252 = 'Not player of game';
+        const OWNER_CANNOT_INVITE_SELF:felt252 = 'Owner cannot invite self';
         const ALREADY_OCCUPIED:felt252 = 'Game occupied';
         const GAME_IN_PROGRESS:felt252 = 'Game in progress';
+        const GAME_NOT_IN_PROGRESS:felt252 = 'Game not in progress';
         const GAME_NOT_ACCEPTED:felt252 = 'Game not accepted';
         const NOT_ALL_READY:felt252 = 'Not all players ready';
         const NOT_ENOUGH_PLAYERS:felt252 = 'Not enough players';
+
+        const NOT_PLAYERS_TURN:felt252 = 'Not player move turn';
     }
 
     // Storage
@@ -58,6 +64,7 @@ mod PlayableComponent {
         TContractState, +HasComponent<TContractState>
     > of InternalTrait<TContractState> {
         
+        // ===== Player Funcs =====
         fn registerPlayer(
             self: @ComponentState<TContractState>, 
             world: IWorldDispatcher,
@@ -65,12 +72,15 @@ mod PlayableComponent {
             name: felt252,
             profile_pic_type: ProfilePicType,
             profile_pic_uri: u64,
-        ){
+        )-> Player{
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
 
             let player = PlayerTrait::new(address,name,profile_pic_type,profile_pic_uri);
+            
             store.set_player(player);
+            
+            store.get_player(address)
         }
 
         fn updatePlayer(
@@ -88,6 +98,8 @@ mod PlayableComponent {
             player.profile_pic_uri = profile_pic_uri;
             store.set_player(player);
         }
+
+        // ===== Game Format Funcs =====
 
         fn addGameFormat(
             self: @ComponentState<TContractState>, 
@@ -124,6 +136,7 @@ mod PlayableComponent {
             store.delete_format(gameFormat);
         }
 
+        // ===== Game Model Funcs (Lobby) =====
         fn createInviteGame(
             self: @ComponentState<TContractState>, 
             world: IWorldDispatcher,
@@ -131,10 +144,11 @@ mod PlayableComponent {
             room_owner_address: ContractAddress,
             invitee_address: ContractAddress,
             invite_expiry: u64,
-        ){
+        )->u128{
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
             let game_id = make_seed(room_owner_address, world.uuid());
+            assert(room_owner_address != invitee_address, errors::OWNER_CANNOT_INVITE_SELF);
 
             let mut game = GameTrait::new(
                     game_id,
@@ -161,6 +175,7 @@ mod PlayableComponent {
             // }
 
             store.set_game(game);
+            game.game_id
 
         }
 
@@ -193,6 +208,11 @@ mod PlayableComponent {
             let store: Store = StoreTrait::new(world);
 
             let mut game = store.get_game(game_id);
+            // println!("reply Invite");
+            // println!("caller_address: {:?}", invitee_address);
+            // println!("room_owner_address: {:?}", game.room_owner_address);
+            // println!("invitee_address: {:?}", game.invitee_address);
+            assert(game.invitee_address != game.room_owner_address, errors::OWNER_CANNOT_INVITE_SELF);
             assert(game.invitee_address == invitee_address, errors::NOT_INVITEE);
 
             if accepted {
@@ -270,6 +290,24 @@ mod PlayableComponent {
             store.set_game(game);
         }
 
+
+        // ===== Game Funcs (Game Starters) =====
+        fn switchSides(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            game_id: u128,
+            caller_address: ContractAddress,
+        ){
+            let store: Store = StoreTrait::new(world);
+            let mut game = store.get_game(game_id);
+            assert(game.room_owner_address == caller_address, errors::NOT_OWNER);
+            assert(game.invitee_address != starknet::contract_address_const::<0x0>(),
+                errors::NOT_ENOUGH_PLAYERS);
+
+            game.switch_sides(); // internal asserts game not in progress
+            store.set_game(game);
+        }
+
         fn startGame(
             self: @ComponentState<TContractState>, 
             world: IWorldDispatcher,
@@ -285,25 +323,55 @@ mod PlayableComponent {
             assert(game.game_state == GameState::Accepted, errors::GAME_NOT_ACCEPTED);
 
             assert(game.owner_ready && game.invitee_ready, errors::NOT_ALL_READY);
+            
 
-            game.game_state = GameState::InProgress;
+            //TODO: move new board routine to inside board's start_game() func or in create game funcs
+            let mut board = BoardTrait::new(game_id);
+            game.set_game_start();
             store.set_game(game);
+            
+            //TODO: add game format config setup to board
+            board.start_board();
+            store.set_board(board);
         }
 
-        fn switchSides(
+        // ===== Board Funcs =====
+
+        fn movePiece(
             self: @ComponentState<TContractState>, 
             world: IWorldDispatcher,
             game_id: u128,
             caller_address: ContractAddress,
-        ){
+            move_from: u8,
+            move_to: u8,
+            promotion: u8,
+        ){  
             let store: Store = StoreTrait::new(world);
             let mut game = store.get_game(game_id);
-            assert(game.room_owner_address == caller_address, errors::NOT_OWNER);
-            assert(game.invitee_address != starknet::contract_address_const::<0x0>(),
-                errors::NOT_ENOUGH_PLAYERS);
+            //assert caller in game
+            assert((caller_address == game.white_player_address) || 
+                (caller_address == game.black_player_address), errors::NOT_PLAYER_OF_GAME);
+            //assert game in progress
+            assert(game.game_state == GameState::InProgress, errors::GAME_NOT_IN_PROGRESS);
 
-            game.switch_sides();
-            store.set_game(game);
+            let callerIsWhite = (game.white_player_address == caller_address);
+
+            let mut board = store.get_board(game_id);
+
+            if callerIsWhite {
+                assert(board.side_to_move == Color::White, errors::NOT_PLAYERS_TURN);
+            } else {
+                assert(board.side_to_move == Color::Black, errors::NOT_PLAYERS_TURN);
+            }
+
+            board.move_piece(move_from, move_to, promotion);
+            store.set_board(board);
+
+            // move history
+            // position history
+            // last move time
+            // check if game is over -- checkmate, stalemate, draw, or time
+
         }
     }
 

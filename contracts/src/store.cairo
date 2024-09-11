@@ -12,9 +12,10 @@ use starknet::ContractAddress;
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
 // Models imports
-use rl_chess::models::index::{ Player, Game, Format };
+use rl_chess::models::index::{ Player, Game, Format, Board };
 use rl_chess::models::player::{PlayerTrait};
 use rl_chess::models::game::{GameTrait};
+use rl_chess::models::board::{BoardTrait};
 
 // Structs
 
@@ -47,6 +48,11 @@ impl StoreImpl of StoreTrait {
         get!(self.world, format_id, (Format))
     }
 
+    #[inline]
+    fn get_board(self: Store, game_id: u128)-> Board {
+        get!(self.world, game_id, (Board))
+    }
+
     // ===== Setters ===== //
 
     #[inline]
@@ -62,6 +68,11 @@ impl StoreImpl of StoreTrait {
     #[inline]
     fn set_format(self: Store, format: Format) {
         set!(self.world, (format))
+    }
+
+    #[inline]
+    fn set_board(self: Store, board: Board) {
+        set!(self.world, (board))
     }
 
 

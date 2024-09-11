@@ -72,6 +72,16 @@ impl BoardImpl of BoardTrait {
     }
 
     #[inline]
+    fn start_board(ref self: Board) {
+        self.side_to_move = Color::White;
+    }
+
+    #[inline]
+    fn set_side_to_move(ref self: Board, side: Color) {
+        self.side_to_move = side;
+    }
+
+    #[inline]
     fn set_piece(ref self: Board, piece: Piece, color: Color, square: u8) {
         
         // if one of color or piece is none, both must be none
@@ -253,6 +263,8 @@ impl BoardImpl of BoardTrait {
         // self.position_history.push(new_hash);
 
         // self.last_move = Some((from, to, moving_piece));
+
+        self.last_move_time = get_block_timestamp();
 
     }
 

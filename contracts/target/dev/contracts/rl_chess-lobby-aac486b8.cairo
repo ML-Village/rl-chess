@@ -163,11 +163,58 @@ pub mod lobby {
                     accepted: accepted,
                 );
         }
-        fn create_game(self: @ContractState, game_format_id: u16) -> u128 {
-            88
+        fn create_game(self: @ContractState, game_format_id: u16, invite_expiry: u64) {
+            self
+                .playable
+                .createInviteGame(
+                    world: self.world(),
+                    game_format_id: game_format_id,
+                    room_owner_address: get_caller_address(),
+                    invitee_address: starknet::contract_address_const::<0x0>(),
+                    invite_expiry: invite_expiry,
+                );
         }
-        fn join_game(self: @ContractState, game_id: u128) -> bool {
-            true
+        fn join_game(self: @ContractState, game_id: u128) {
+            self
+                .playable
+                .joinGame(
+                    world: self.world(), game_id: game_id, invitee_address: get_caller_address(),
+                );
+        }
+        fn leave_game(self: @ContractState, game_id: u128) {
+            self
+                .playable
+                .leaveGame(
+                    world: self.world(), game_id: game_id, invitee_address: get_caller_address(),
+                );
+        }
+        fn owner_withdraw_game(self: @ContractState, game_id: u128) {
+            self
+                .playable
+                .ownerWithdrawGame(
+                    world: self.world(), game_id: game_id, room_owner_address: get_caller_address(),
+                );
+        }
+        fn ready_up(self: @ContractState, game_id: u128) {
+            self
+                .playable
+                .readyUp(
+                    world: self.world(), game_id: game_id, caller_address: get_caller_address(),
+                );
+        }
+        fn start_game(self: @ContractState, game_id: u128) {
+            self
+                .playable
+                .startGame(
+                    world: self.world(), game_id: game_id, caller_address: get_caller_address(),
+                );
+        }
+        fn switch_sides(self: @ContractState, game_id: u128) {
+            self
+                .playable
+                .switchSides(
+                    world: self.world(), game_id: game_id, caller_address: get_caller_address(),
+                );
         }
     }
     #[starknet::interface]

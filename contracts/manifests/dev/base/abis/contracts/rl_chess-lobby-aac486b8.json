@@ -266,13 +266,13 @@
           {
             "name": "game_format_id",
             "type": "core::integer::u16"
-          }
-        ],
-        "outputs": [
+          },
           {
-            "type": "core::integer::u128"
+            "name": "invite_expiry",
+            "type": "core::integer::u64"
           }
         ],
+        "outputs": [],
         "state_mutability": "view"
       },
       {
@@ -284,11 +284,67 @@
             "type": "core::integer::u128"
           }
         ],
-        "outputs": [
+        "outputs": [],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "leave_game",
+        "inputs": [
           {
-            "type": "core::bool"
+            "name": "game_id",
+            "type": "core::integer::u128"
           }
         ],
+        "outputs": [],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "ready_up",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::integer::u128"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "owner_withdraw_game",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::integer::u128"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "switch_sides",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::integer::u128"
+          }
+        ],
+        "outputs": [],
+        "state_mutability": "view"
+      },
+      {
+        "type": "function",
+        "name": "start_game",
+        "inputs": [
+          {
+            "name": "game_id",
+            "type": "core::integer::u128"
+          }
+        ],
+        "outputs": [],
         "state_mutability": "view"
       }
     ]

@@ -23,6 +23,7 @@ mod components {
 mod systems {
     mod admin;
     mod lobby;
+    mod gameroom;
 }
 
 mod elements {
@@ -58,9 +59,16 @@ mod utils {
     mod bitboard;
     mod bitboardIterator;
     mod seeder;
+    mod address;
+    mod testers;
 }
 
 #[cfg(test)]
 mod tests {
+    mod setup;
     
+    mod lobby {
+        mod test_setup;
+        mod test_readyup;
+    }
 }

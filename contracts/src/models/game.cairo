@@ -1,15 +1,18 @@
 // Core imports
 
 use core::debug::PrintTrait;
+use core::fmt::{Display, Formatter, Error};
+use core::array::ArrayTrait;
 use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
-use traits::{Into, TryInto};
+use core::traits::{Into, TryInto};
+use rl_chess::utils::address::{address_to_string_literal, address_to_byte_array};
 
 
 // Inernal imports
 
 //use rl_chess::constants::{};
 use rl_chess::models::index::Game;
-use rl_chess::types::gamestate::GameState;
+use rl_chess::types::gamestate::{GameState, IntoGameStateU8, IntoGameStateFelt252};
 
 mod errors {
     const GAME_INVALID_ID: felt252 = 'Game: invalid id';
@@ -127,12 +130,93 @@ impl GameImpl of GameTrait {
 
     #[inline]
     fn set_game_start(ref self: Game){
+        self.game_state = GameState::InProgress;
         self.w_last_move_time = get_block_timestamp();
         self.b_last_move_time = get_block_timestamp();
     }
 
+}
 
+// impl ArrayFelt252Display of Display<Array<felt252>> {
+//     fn fmt(self: @Array<felt252>, ref f: Formatter) -> Result<(), Error> {
+//         write!(f, "{:?}", self)
+//     }
+// }
 
+// impl GameDisplay of Display<Game> {
+//     fn fmt(self: @Game, ref f: Formatter) -> Result<(), Error> {
 
+//         let str: ByteArray = format!("Game (
+//             game_id: {}, 
+//             game_format_id: {}, 
+//             invite_expiry: {}
+//         )", 
+//             *self.game_id, 
+//             *self.game_format_id,
+//             *self.invite_expiry
+//         );
+//         f.buffer.append(@str);
+//         Result::Ok(())
+//     }
+// }
 
+#[cfg(test)]
+mod tests {
+    // Core imports
+    use core::debug::PrintTrait;
+    use starknet::{ContractAddress, get_caller_address, get_block_timestamp};
+
+    // Local imports
+    use super::{Game, GameTrait, 
+        GameState, IntoGameStateU8, IntoGameStateFelt252,
+        address_to_string_literal, address_to_byte_array
+    };
+
+    use rl_chess::utils::testers::printGame;
+
+    // Constants
+
+    const GAME_ID: u128 = 1;
+    
+
+    #[test]
+    fn test_game_new() {
+        let ROOM_OWNER_ADDRESS:ContractAddress = starknet::contract_address_const::<0xb3ff441a68610b30fd5e2abbf3a1548eb6ba6f3559f2862bf2dc757e5828ca>();
+        let ZERO_ADDRESS:ContractAddress = starknet::contract_address_const::<0x0>();
+        
+        let game = GameTrait::new(
+            game_id: GAME_ID,
+            game_format_id: 1,
+            room_owner_address: ROOM_OWNER_ADDRESS,
+            invitee_address: ZERO_ADDRESS,
+            invite_expiry: 0,
+        );
+        assert_eq!(game.game_id, GAME_ID);
+
+        printGame(game);
+    
+    }
+
+    #[test]
+    fn test_game_set_ready() {
+        let ROOM_OWNER_ADDRESS:ContractAddress = starknet::contract_address_const::<0xb3ff441a68610b30fd5e2abbf3a1548eb6ba6f3559f2862bf2dc757e5828ca>();
+        let INVITEE_ADDRESS:ContractAddress = starknet::contract_address_const::<0xe29882a1fcba1e7e10cad46212257fea5c752a4f9b1b1ec683c503a2cf5c8a>();
+        
+        let mut game = GameTrait::new(
+            game_id: GAME_ID,
+            game_format_id: 1,
+            room_owner_address: ROOM_OWNER_ADDRESS,
+            invitee_address: INVITEE_ADDRESS,
+            invite_expiry: 0,
+        );
+
+        game.set_ready(ROOM_OWNER_ADDRESS, true);
+        game.set_ready(INVITEE_ADDRESS, true);
+
+        assert_eq!(game.owner_ready, true);
+        assert_eq!(game.invitee_ready, true);
+
+        printGame(game);
+    
+    }
 }
