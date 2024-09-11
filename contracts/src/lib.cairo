@@ -70,5 +70,6 @@ mod tests {
     mod lobby {
         mod test_setup;
         mod test_readyup;
+        mod test_startgame;
     }
 }

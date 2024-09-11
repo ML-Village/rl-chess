@@ -65,6 +65,7 @@ pub mod lobby {
     // Local imports
 
     use super::ILobby;
+    use rl_chess::models::index::{Player, Game};
     use rl_chess::types::profile::ProfilePicType;
 
     // Components
@@ -98,7 +99,7 @@ pub mod lobby {
             name: felt252,
             profile_pic_type: ProfilePicType,
             profile_pic_uri: u64
-        ) {
+        ) -> Player {
             self
                 .playable
                 .registerPlayer(
@@ -107,7 +108,7 @@ pub mod lobby {
                     name: name,
                     profile_pic_type: profile_pic_type,
                     profile_pic_uri: profile_pic_uri
-                );
+                )
         }
         fn update_player(
             self: @ContractState, profile_pic_type: ProfilePicType, profile_pic_uri: u64
@@ -126,7 +127,7 @@ pub mod lobby {
             game_format_id: u16,
             invitee_address: ContractAddress,
             invite_expiry: u64
-        ) {
+        ) -> u128 {
             self
                 .playable
                 .createInviteGame(
@@ -135,7 +136,7 @@ pub mod lobby {
                     room_owner_address: get_caller_address(),
                     invitee_address: invitee_address,
                     invite_expiry: invite_expiry,
-                );
+                )
         }
         fn update_invitee(
             self: @ContractState,

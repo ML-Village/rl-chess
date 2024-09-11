@@ -150,6 +150,32 @@
     ]
   },
   {
+    "type": "struct",
+    "name": "rl_chess::models::index::Player",
+    "members": [
+      {
+        "name": "address",
+        "type": "core::starknet::contract_address::ContractAddress"
+      },
+      {
+        "name": "name",
+        "type": "core::felt252"
+      },
+      {
+        "name": "profile_pic_type",
+        "type": "rl_chess::types::profile::ProfilePicType"
+      },
+      {
+        "name": "profile_pic_uri",
+        "type": "core::integer::u64"
+      },
+      {
+        "name": "timestamp",
+        "type": "core::integer::u64"
+      }
+    ]
+  },
+  {
     "type": "enum",
     "name": "core::bool",
     "variants": [
@@ -184,7 +210,11 @@
             "type": "core::integer::u64"
           }
         ],
-        "outputs": [],
+        "outputs": [
+          {
+            "type": "rl_chess::models::index::Player"
+          }
+        ],
         "state_mutability": "view"
       },
       {
@@ -220,7 +250,11 @@
             "type": "core::integer::u64"
           }
         ],
-        "outputs": [],
+        "outputs": [
+          {
+            "type": "core::integer::u128"
+          }
+        ],
         "state_mutability": "view"
       },
       {

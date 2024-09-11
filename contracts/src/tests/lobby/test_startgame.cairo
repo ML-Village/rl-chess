@@ -9,7 +9,8 @@ use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 use rl_chess::store::{Store, StoreTrait};
 use rl_chess::models::player::{Player, PlayerTrait};
 use rl_chess::models::game::{Game, GameTrait};
-use rl_chess::types::gamestate::{GameState, IntoGameStateU8};
+use rl_chess::models::board::{Board, BoardTrait};
+use rl_chess::types::gamestate::{GameState, IntoGameStateU8, IntoGameStateFelt252};
 use rl_chess::types::color::Color;
 use rl_chess::systems::lobby::ILobbyDispatcherTrait;
 
@@ -30,11 +31,45 @@ fn test_lobby_startgame() {
 
     let game = store.get_game(context.game_id);
     assert(game.game_id == context.game_id, 'Setup: game id');
-    println!("game state: {}", IntoGameStateU8::into(game.game_state));
-    assert(game.game_state == GameState::InProgress, 'StartGame: Game State not in progress');
+    //println!("game state: {}", IntoGameStateFelt252::into(game.game_state));
 
-    let board = store.get_board(context.game_id);
-    assert(board.side_to_move == Color::White, 'StartGame: Side to move not white');
+    match game.game_state {
+        GameState::Null => {
+            println!("game state: Null");
+        },
+        GameState::Awaiting => {
+            println!("game state: Awaiting");
+        },
+        GameState::Withdrawn => {
+            println!("game state: Withdrawn");
+        },
+        GameState::InProgress => {
+            println!("game state: InProgress");
+        },
+        GameState::Resolved => {
+            println!("game state: Resolved");
+        },
+        GameState::Draw => {
+            println!("game state: Draw");
+        },
+        GameState::Expired => {
+            println!("game state: Expired");
+        },
+        GameState::Accepted => {
+            println!("game state: Accepted");
+        },
+
+        _ => {
+            println!("game state: {}", IntoGameStateU8::into(game.game_state));
+        }
+    }
+
+    assert(game.game_state == GameState::InProgress, 'StartGame:Game not InProgress');
+
+    let mut board = store.get_board(context.game_id);
+    assert(board.side_to_move == Color::White, 'StartGame:Side2mov not W');
+    
+    board.print_board();
     println!("board started at: {}", board.last_move_time);
 
 }

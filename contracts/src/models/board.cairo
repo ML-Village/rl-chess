@@ -146,6 +146,54 @@ impl BoardImpl of BoardTrait {
         if from == 60 { self.castling_rights = 0b0011; } // Black king
     }
 
+    #[inline]
+    fn print_board(ref self: Board) {
+        println!("  a b c d e f g h");
+        println!(" +-+-+-+-+-+-+-+-+");
+        // loop through 8 ranks
+        for rank in array![7,6,5,4,3,2,1,0].span() {
+            print!("{}|", *rank + 1);
+            for file in array![0,1,2,3,4,5,6,7].span() {
+                let square: u8 = ((*rank) * 8) + (*file);
+                let piece = self.piece_at(square);
+                let color = self.color_at(square);
+                match (piece, color ) {
+                    (Option::Some(p), Option::Some(c)) => {
+                        match (p, c) {
+                            (Piece::Pawn, Color::White) => print!("P|"),
+                            (Piece::Rook, Color::White) => print!("R|"),
+                            (Piece::Knight, Color::White) => print!("N|"),
+                            (Piece::Bishop, Color::White) => print!("B|"),
+                            (Piece::Queen, Color::White) => print!("Q|"),
+                            (Piece::King, Color::White) => print!("K|"),
+                            (Piece::Pawn, Color::Black) => print!("p|"),
+                            (Piece::Rook, Color::Black) => print!("r|"),
+                            (Piece::Knight, Color::Black) => print!("n|"),
+                            (Piece::Bishop, Color::Black) => print!("b|"),
+                            (Piece::Queen, Color::Black) => print!("q|"),
+                            (Piece::King, Color::Black) => print!("k|"),
+                            _ => print!(" |"),
+                        }
+                    },
+                    _ => {print!(" |");},
+                };
+            };
+            println!(" {}", *rank + 1);
+            println!(" +-+-+-+-+-+-+-+-+");
+        };
+        println!("  a b c d e f g h");
+        match self.side_to_move {
+            Color::White => println!("Side to move: W"),
+            Color::Black => println!("Side to move: B"),
+            _ => println!("Side to move: None"),
+        };
+        //println!("Castling rights: {:04b}", self.castling_rights);
+        println!("Castling rights: {}", self.castling_rights);
+        println!("En passant square: {:?}", self.en_passant);
+        println!("Halfmove clock: {}", self.halfmove_clock);
+        println!("Fullmove number: {}", self.fullmove_number);
+    }
+
     // this is just for general moving without checking for legalities
     // the proper move would be in the system so that there can be other type of games using this Board model
     #[inline]
