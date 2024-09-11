@@ -10,8 +10,8 @@ use dojo::world::IWorldDispatcher;
 // Interfaces
 
 #[starknet::interface]
-trait IGameRoom<TContractState> {
-    fn move_piece(
+trait IRoom<TContractState> {
+    fn move(
         self: @TContractState,
         game_id: u128,
         move_from: u8,
@@ -23,7 +23,7 @@ trait IGameRoom<TContractState> {
 // Contracts
 
 #[dojo::contract]
-mod gameroom {
+mod room {
     // Component imports
 
     use rl_chess::components::playable::PlayableComponent;
@@ -34,7 +34,7 @@ mod gameroom {
 
     // Local imports
 
-    use super::IGameRoom;
+    use super::IRoom;
 
     // Components
 
@@ -61,9 +61,9 @@ mod gameroom {
     // Implementations
 
     #[abi(embed_v0)]
-    impl GameRoomImpl of IGameRoom<ContractState> {
+    impl RoomImpl of IRoom<ContractState> {
 
-        fn move_piece(
+        fn move(
             self: @ContractState,
             game_id: u128,
             move_from: u8,

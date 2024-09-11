@@ -28,8 +28,8 @@ mod setup {
         IAdmin, IAdminDispatcher, IAdminDispatcherTrait};
     use rl_chess::systems::lobby::{lobby, 
         ILobby, ILobbyDispatcher, ILobbyDispatcherTrait};
-    use rl_chess::systems::gameroom::{gameroom, 
-        IGameRoom, IGameRoomDispatcher, IGameRoomDispatcherTrait};
+    use rl_chess::systems::room::{room, 
+        IRoom, IRoomDispatcher, IRoomDispatcherTrait};
 
     // Constants
     const INITIAL_TIMESTAMP: u64 = 0x100000000;
@@ -51,7 +51,7 @@ mod setup {
     struct Systems {
         admin: IAdminDispatcher,
         lobby: ILobbyDispatcher,
-        gameroom: IGameRoomDispatcher,
+        room: IRoomDispatcher,
     }
 
     #[derive(Drop)]
@@ -88,17 +88,17 @@ mod setup {
             .deploy_contract('salt_admin', admin::TEST_CLASS_HASH.try_into().unwrap());
         let lobby_address = world
             .deploy_contract('salt_lobby', lobby::TEST_CLASS_HASH.try_into().unwrap());
-        let gameroom_address = world
-            .deploy_contract('salt_gameroom', gameroom::TEST_CLASS_HASH.try_into().unwrap());
+        let room_address = world
+            .deploy_contract('salt_room', room::TEST_CLASS_HASH.try_into().unwrap());
 
         let systems = Systems {
             admin: IAdminDispatcher { contract_address: admin_address },
             lobby: ILobbyDispatcher { contract_address: lobby_address },
-            gameroom: IGameRoomDispatcher { contract_address: gameroom_address },
+            room: IRoomDispatcher { contract_address: room_address }
         };
         world.grant_writer(dojo::utils::bytearray_hash(@"rl_chess"), admin_address);
         world.grant_writer(dojo::utils::bytearray_hash(@"rl_chess"), lobby_address);
-        world.grant_writer(dojo::utils::bytearray_hash(@"rl_chess"), gameroom_address);
+        world.grant_writer(dojo::utils::bytearray_hash(@"rl_chess"), room_address);
         world.grant_writer(dojo::utils::bytearray_hash(@"rl_chess"), PLAYER());
 
         // [Setup] Context

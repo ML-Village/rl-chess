@@ -23,7 +23,7 @@ mod components {
 mod systems {
     mod admin;
     mod lobby;
-    mod gameroom;
+    mod room;
 }
 
 mod elements {
@@ -71,5 +71,7 @@ mod tests {
         mod test_setup;
         mod test_readyup;
         mod test_startgame;
+        mod test_move1;
+        mod test_move2;
     }
 }
