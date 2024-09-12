@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import { RegistrationCarousel } from "@/components/Carousels";
 import { usePfpStore, useRegModalStore } from "@/store/index";
 
@@ -151,50 +152,59 @@ export const RegistrationModal: React.FC = () => {
 
           <div className="rounded-md">
             
-            <div>
-                {/* create burners */}
-                <div className="w-full flex py-1">
-                  <Button 
-                  className="bg-orange-300
-                  border border-gray-700
-                  mx-1 ml-auto 
-                  p-1 px-2 rounded-md
-                  text-gray-800 hover:text-white
-                  "
-                    onClick={() => clear()}>
-                        clear burners
+            <div className="">
+              <div className="flex justify-start items-center">
+                  {
+                    isDeploying ?
+                      <Spinner className="ml-4 w-12 text-blue-800 stroke-[3px]"/>
+                      :
+                      <></>
+                  }
+                  {/* create burners */}
+                  <div className="w-full flex py-1 ml-auto">
+                    <Button 
+                    className="bg-orange-300
+                    border border-gray-700
+                    mx-1 ml-auto 
+                    p-1 px-2 rounded-md
+                    text-gray-800 hover:text-white
+                    "
+                      onClick={() => clear()}>
+                          clear burners
+                      </Button>
+                    <Button 
+                    className="bg-blue-900/80
+                    border border-gray-700
+                    p-1 px-2 rounded-md
+                    "
+                    onClick={() => create()}>
+                    {isDeploying ? "deploying burner" : "create burner"}
                     </Button>
-                  <Button 
-                  className="bg-blue-900/80
-                  border border-gray-700
-                  p-1 px-2 rounded-md
-                  "
-                  onClick={() => create()}>
-                  {isDeploying ? "deploying burner" : "create burner"}
-                  </Button>
-                  
+                    
+                  </div>
                 </div>
 
-                {/* select burners */}
-                <div className="flex">
-                  <span className="text-nowrap
-                  p-1 px-2 rounded-md">
-                    select signer:{" "}
-                    </span>
-                  <select className="w-full border border-gray-500/50 rounded-md my-1
-                  py-1 focus:outline-none focus:ring-1 focus:ring-blue-500
-                  "
-                      value={account ? account.address : ""}
-                      onChange={(e) => select(e.target.value)}
-                  >
-                      {list().map((account, index) => {
-                          return (
-                              <option value={account.address} key={index}>
-                                  {account.address}
-                              </option>
-                          );
-                      })}
-                  </select>
+                  {/* select burners */}
+                  <div className="flex mr-2">
+                    <span className="text-nowrap
+                    p-1 px-2 rounded-md">
+                      select signer:{" "}
+                      </span>
+                    <select className="w-full border border-gray-500/50 rounded-md my-1
+                    py-1 focus:outline-none focus:ring-1 focus:ring-blue-500
+                    "
+                        value={account ? account.address : ""}
+                        onChange={(e) => select(e.target.value)}
+                    >
+                        {list().map((account, index) => {
+                            return (
+                                <option value={account.address} key={index}>
+                                    {account.address}
+                                </option>
+                            );
+                        })}
+                    </select>
+                  </div>
                 </div>
                 
                 <div className="flex my-1">
@@ -214,7 +224,7 @@ export const RegistrationModal: React.FC = () => {
                           disabled={playerRegistered}
                         />
                 </div>
-              </div>
+              
           </div>
 
           {/* Carousel Div Row */}
