@@ -106,13 +106,15 @@ export const GameRoom = () => {
     return (
         <div className="flex justify-center items-start
         ">
-            <div className="grid-cols-2 grid gap-2
-            h-[80vh] p-2 pr-4
+            <div className="flex justify-center items-center gap-x-2
+            h-[90vh] p-2 pr-4
+            border border-green-600
             ">
 
                 {/* Chessboard column */}
                 <div className="flex flex-col
-                justify-center items-center h-[78vh] w-[30vw]
+                justify-center items-center h-[88vh] w-[30vw]
+                border border-purple-500
                 ">
 
                     {inviteeNotNull ? 
@@ -177,7 +179,7 @@ export const GameRoom = () => {
                 </div>
 
                 {/* Chat column */}
-                <RoomColumn ownerName={ownerName} inviteeName={inviteeName} />
+                <RoomColumn roomId={roomId??""} ownerName={ownerName} inviteeName={inviteeName} />
 
             </div>
         </div>

@@ -2,24 +2,24 @@ import React from 'react';
 import { TitleBar, GameRoomControls } from '@/components/GameRoom';
 import { Button } from '@/components/ui/button';
 
-export const RoomColumn = ({ownerName, inviteeName}:{ownerName: string, inviteeName: string}) => {
+export const RoomColumn = ({roomId, ownerName, inviteeName}:{roomId:string, ownerName: string, inviteeName: string}) => {
     return (
         <div className="flex flex-col
-                justify-start items-center h-full w-full
+                justify-start items-center h-full w-[28vw]
                 rounded-2xl overflow-hidden
                 text-white bg-gray-800/80
-                border-2 border-blue-950/80">
+                border-2 border-orange-500">
             
             <TitleBar ownerName={ownerName} inviteeName={inviteeName} />
 
-            <GameRoomControls />
+            <GameRoomControls roomId={roomId}/>
 
             <div className="w-full
             my-2
             ">
                 <div className="
                 mx-6 p-4 h-[35vh]
-                bg-blue-500/30
+                bg-black/30
                 border border-blue-950/80 rounded-lg">
                         Move History
                 </div>
