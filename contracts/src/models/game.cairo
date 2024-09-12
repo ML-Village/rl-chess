@@ -86,9 +86,10 @@ impl GameImpl of GameTrait {
     fn switch_sides(ref self: Game) {
         assert(self.game_state != GameState::InProgress, 'Game: game in progress');
 
-        let temp = self.white_player_address;
-        self.white_player_address = self.black_player_address;
-        self.black_player_address = temp;
+        let tempW = self.white_player_address.clone();
+        let tempB = self.black_player_address.clone();
+        self.white_player_address = tempB;
+        self.black_player_address = tempW;
     }
 
     #[inline]

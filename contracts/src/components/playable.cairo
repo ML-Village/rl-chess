@@ -42,6 +42,7 @@ mod PlayableComponent {
         const GAME_NOT_ACCEPTED:felt252 = 'Game not accepted';
         const NOT_ALL_READY:felt252 = 'Not all players ready';
         const NOT_ENOUGH_PLAYERS:felt252 = 'Not enough players';
+        const OWNER_NOT_IN_GAME:felt252 = 'Owner not in game';
 
         const NOT_PLAYERS_TURN:felt252 = 'Not player move turn';
     }
@@ -237,6 +238,13 @@ mod PlayableComponent {
                 errors::ALREADY_OCCUPIED);
 
             game.invitee_address = invitee_address;
+            if(game.room_owner_address==game.white_player_address) {
+                game.black_player_address = invitee_address;
+            } else if (game.room_owner_address==game.black_player_address) {
+                game.white_player_address = invitee_address;
+            } else {
+                assert(false, errors::OWNER_NOT_IN_GAME);
+            }
             game.game_state = GameState::Accepted;
             store.set_game(game);
         }
@@ -303,8 +311,8 @@ mod PlayableComponent {
             let store: Store = StoreTrait::new(world);
             let mut game = store.get_game(game_id);
             assert(game.room_owner_address == caller_address, errors::NOT_OWNER);
-            assert(game.invitee_address != starknet::contract_address_const::<0x0>(),
-                errors::NOT_ENOUGH_PLAYERS);
+            // assert(game.invitee_address != starknet::contract_address_const::<0x0>(),
+            //     errors::NOT_ENOUGH_PLAYERS);
 
             game.switch_sides(); // internal asserts game not in progress
             store.set_game(game);

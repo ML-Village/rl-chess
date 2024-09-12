@@ -53,6 +53,12 @@ export const GameRoom = () => {
     const playerIsOwner = bigintToHex(gameObject?.room_owner_address??0n) == account.address;
     const playerIsInvitee = bigintToHex(gameObject?.invitee_address??0n) == account.address;
     const playerColor = playerInGame ? bigintToHex(gameObject?.white_player_address??0n) == account.address ? "white" : "black" : undefined;
+    
+    console.log("GameRoom: player address", account.address)
+    console.log("GameRoom: room_owner_address", bigintToHex(gameObject?.room_owner_address??0n))
+    console.log("GameRoom: invitee address", bigintToHex(gameObject?.invitee_address??0n))
+    console.log("GameRoom: white_player_address", bigintToHex(gameObject?.white_player_address??0n))
+    console.log("GameRoom: black_player_address", bigintToHex(gameObject?.black_player_address??0n))
     const ownerIsWhite = gameObject?.white_player_address == gameObject?.room_owner_address;
     const ownerColor = ownerIsWhite ? "white" : "black";
     
@@ -103,6 +109,8 @@ export const GameRoom = () => {
             })
         }
     }
+
+    console.log("GameRoom: Player Color:", playerColor)
     return (
         <div className="flex justify-center items-start
         ">

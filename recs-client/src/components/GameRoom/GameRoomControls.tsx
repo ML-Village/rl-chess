@@ -42,55 +42,89 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
         <div className="flex justify-start items-center gap-x-1
         w-full mx-2 px-6
         ">
-            {!gameStarted ?
-                <>
-                    <Button className="py-5 rounded-lg bg-purple-300/80
+            <button className={`py-3 rounded-lg font-semibold
+                    ${
+                        gameObject?.game_state == "Awaiting" ? "bg-yellow-300" :
+                        gameObject?.game_state == "Accepted" ? "bg-orange-400" :
+                        gameObject?.game_state == "InProgress" ? "bg-green-500":
+                        gameObject?.game_state == "Resolved" ? "bg-blue-900/80":
+                        "bg-purple-800/80"
+                    }
+                    text-blue-950 text-xs 2xl:text-sm
+                    px-1 xl:px-2 2xl:px-2
+                    `}
+                    disabled={true}
+                    >
+                Game: {gameObject?.game_state}
+            </button>
+            {playerInGame ?
+                <>{
+                    !gameStarted ?
+                    <>
+                        <Button className="py-5 rounded-lg bg-purple-300/80
+                        text-blue-950 hover:text-white text-xs 2xl:text-sm
+                        px-1 xl:px-2 2xl:px-2
+                        "
+                        onClick={async ()=>{
+                            await client.lobby.switch_sides({account, game_id: BigInt(roomId??0)})
+                        }}
+                        >
+                            Switch Sides
+                        </Button>
+
+                        <Button className={`py-5 rounded-lg 
+                        ${playerIsReady ?"bg-green-500": "bg-orange-400"}
+                        text-blue-950 hover:text-white text-xs 2xl:text-sm
+                        px-1 xl:px-2 2xl:px-2
+                        `}
+
+                        onClick={async()=>{
+                            await client.lobby.ready_up({account, game_id: BigInt(roomId??0)})
+                        }}
+                        disabled={playerIsReady}
+                        >
+                            Ready Up
+                        </Button>
+                        <Button className="py-5 rounded-lg bg-orange-400
+                        text-blue-950 hover:text-white text-xs 2xl:text-sm
+                        px-1 xl:px-2 2xl:px-2
+                        "
+
+                        onClick={async()=>{
+                            await client.lobby.start_game({account, game_id: BigInt(roomId??0)})
+                        }}
+                        disabled={!everyoneIsReady}
+                        >
+                            Start Game
+                        </Button>
+                        
+                    </>
+                    :
+                    null
+                }
+
+                {gameStarted ?
+                <>  
+                    
+                    <Button className="py-5 rounded-lg bg-orange-400
                     text-blue-950 hover:text-white text-xs 2xl:text-sm
                     px-1 xl:px-2 2xl:px-2
                     ">
-                        Switch Sides
-                    </Button>
-
-                    <Button className={`py-5 rounded-lg 
-                    ${playerIsReady ?"bg-green-500": "bg-orange-400"}
-                    text-blue-950 hover:text-white text-xs 2xl:text-sm
-                    px-1 xl:px-2 2xl:px-2
-                    `}
-                    disabled={playerIsReady}
-                    >
-                        Ready Up
+                        Offer Draw
                     </Button>
                     <Button className="py-5 rounded-lg bg-orange-400
                     text-blue-950 hover:text-white text-xs 2xl:text-sm
                     px-1 xl:px-2 2xl:px-2
-                    "
-                    disabled={!everyoneIsReady}
-                    >
-                        Start Game
+                    ">
+                        Resign
                     </Button>
-                    
                 </>
                 :
                 null
-            }
-
-            {gameStarted ?
-            <>
-                <Button className="py-5 rounded-lg bg-orange-400
-                text-blue-950 hover:text-white text-xs 2xl:text-sm
-                px-1 xl:px-2 2xl:px-2
-                ">
-                    Offer Draw
-                </Button>
-                <Button className="py-5 rounded-lg bg-orange-400
-                text-blue-950 hover:text-white text-xs 2xl:text-sm
-                px-1 xl:px-2 2xl:px-2
-                ">
-                    Resign
-                </Button>
-            </>
-            :
-            null
+                }
+                </>
+                :
+                <></>
             }
         </div>
     )
