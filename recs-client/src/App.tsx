@@ -1,7 +1,7 @@
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { BaseNavbar } from "@/components";
-import { Debug, LobbyPage } from '@/pages';
+import { Debug, LobbyPage, GameRoom } from '@/pages';
 
 // dojo stuff
 import { useQuerySync } from "@dojoengine/react";
@@ -28,7 +28,7 @@ function App() {
               {/* Lobby Page */}
               <Route path="/" element={<LobbyPage/>} />
               <Route path="/debug" element={<Debug/>} />
-              {/* <Route path="/room/:roomId" element={<GameRoom />} /> */}
+              <Route path="/room/:roomId" element={<GameRoom />} />
           </Routes>
       </Router>
     </>

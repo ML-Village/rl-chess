@@ -19,30 +19,38 @@ export const BaseNavbar = () => {
     setup: {
         clientComponents: { Player },
     },
-    account,
+    account: {account, count},
 } = useDojo();
 
-  const { setOpen, regCount } = useRegModalStore();
+  const { open, setOpen, regCount } = useRegModalStore();
   const navigate = useNavigate();
 
   //const { address, account } = useAccount();
 
   const entityId = getEntityIdFromKeys([
-    BigInt(account?.account.address),
+    BigInt(account?.address??0n),
   ]) as Entity;
   // get current component values
   const player = useComponentValue(Player, entityId);
 
   useEffect(() => {
+
+    //if it already opened but there is already registered player, then close it (for first time landing)
+    if((player || count>0) && open){
+      setOpen(false)
+      return;
+    }
+
     // if there is no player or account is not yet loaded
-    if (!player || account?.count<0) {
+    if (!player || count<0) {
       console.log("player not registered.")
       setOpen(true) // set Modal open if player not registered
       return;
     }
+
     //regCount == 0 ? setOpen(false) : null;
 
-  },[player, account, regCount])
+  },[player, count])
 
   return (
     <nav className="bg-blue-950 shadow-md

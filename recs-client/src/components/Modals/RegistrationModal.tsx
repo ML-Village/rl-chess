@@ -104,7 +104,7 @@ export const RegistrationModal: React.FC = () => {
       pfpCarouselApi?.scrollTo(player?.profile_pic_uri)
     }
 
-  }, [player, pfpCarouselApi, account]);
+  }, [player, count, pfpCarouselApi, account]);
 
   const registerPlayer = async () => {
     if (!nameValue || nameValue.trim() === '') return;

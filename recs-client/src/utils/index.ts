@@ -63,13 +63,40 @@ export const formatTimestamp = (t: number): string => {
 }
 
 export const formatTimestampElapsed = (start: number): string => {
-const now = Math.floor(new Date().getTime() / 1000)
-return formatTimestampDelta(start, now)
+    const now = Math.floor(new Date().getTime() / 1000)
+    return formatTimestampDelta(start, now)
 }
 
 export const formatTimestampCountdown = (end: number): string => {
-const now = Math.floor(new Date().getTime() / 1000)
-return formatTimestampDelta(now, end)
+    const now = Math.floor(new Date().getTime() / 1000)
+    return formatTimestampDelta(now, end)
+}
+
+export const formatTimestampMinutesSeconds = (t: number): string => {
+    const minutes = Math.floor(t / 60);
+    const seconds = t % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+export const formatTimestampHoursMinutesSeconds = (t: number): string => {
+    const hours = Math.floor(t / 3600);
+    const minutes = Math.floor((t % 3600) / 60);
+    const seconds = t % 60;
+    
+    const formatTwoDigits = (n: number) => n.toString().padStart(2, '0');
+    
+    return `${formatTwoDigits(hours)}H:${formatTwoDigits(minutes)}M:${formatTwoDigits(seconds)}S`;
+}
+
+export const formatTimestampDaysHoursMinutesSeconds = (t: number): string => {
+    const days = Math.floor(t / 86400); // 86400 seconds in a day
+    const hours = Math.floor((t % 86400) / 3600);
+    const minutes = Math.floor((t % 3600) / 60);
+    const seconds = t % 60;
+    
+    const formatTwoDigits = (n: number) => n.toString().padStart(2, '0');
+    
+    return `${days}Days:${formatTwoDigits(hours)}:${formatTwoDigits(minutes)}:${formatTwoDigits(seconds)}`;
 }
 
 export const formatTimestampDelta = (start: number, end: number): string => {
