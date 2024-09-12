@@ -23,13 +23,15 @@ function App() {
   return (
     <>
       <Router>
-          <BaseNavbar />
-          <Routes>
-              {/* Lobby Page */}
-              <Route path="/" element={<LobbyPage/>} />
-              <Route path="/debug" element={<Debug/>} />
-              <Route path="/room/:roomId" element={<GameRoom />} />
-          </Routes>
+        <div className="flex flex-col h-screen">
+            <BaseNavbar />
+            <Routes>
+                {/* Lobby Page */}
+                <Route path="/" element={<LobbyPage/>} />
+                <Route path="/debug" element={<Debug/>} />
+                <Route path="/room/:roomId" element={<GameRoom />} />
+            </Routes>
+          </div>
       </Router>
     </>
   );

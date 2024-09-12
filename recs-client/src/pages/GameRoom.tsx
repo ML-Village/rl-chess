@@ -104,17 +104,15 @@ export const GameRoom = () => {
         }
     }
     return (
-        <div className="flex justify-center items-start flex-1
+        <div className="flex justify-center items-start
         ">
             <div className="grid-cols-2 grid gap-2
-            w-4/5 h-[80vh]
-            p-2
-            
+            h-[80vh] p-2 pr-4
             ">
 
                 {/* Chessboard column */}
                 <div className="flex flex-col
-                justify-center items-center h-[50vw] w-full
+                justify-center items-center h-[78vh] w-[30vw]
                 ">
 
                     {inviteeNotNull ? 
