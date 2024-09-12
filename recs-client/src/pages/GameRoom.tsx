@@ -15,7 +15,7 @@ import { feltToString, stringToFelt } from "@/utils/starknet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNamePanel } from '@/hooks';
 import { Button } from '@/components/ui/button';
-import { PlayerPanel } from '@/components/';
+import { PlayerPanel, RoomColumn } from '@/components/GameRoom';
 
 
 export const GameRoom = () => {
@@ -146,7 +146,6 @@ export const GameRoom = () => {
 
                     <div className="w-4/5 m-2 my-4
                     border-2 border-blue-900/80 rounded-lg
-                    overflow-hidden
                         ">
                         <Chessboard 
                             position={game.fen()} 
@@ -180,20 +179,7 @@ export const GameRoom = () => {
                 </div>
 
                 {/* Chat column */}
-                <div className="flex flex-col
-                justify-start items-center h-full w-full
-                rounded-2xl overflow-hidden
-                text-white bg-slate-900/70
-                border-4 border-gray-700">
-                    <div className="w-full p-3
-                    ">Chat Title Bar</div>
-
-                    <div className="w-full h-[80%]
-                    ">Chat Box</div>
-
-                    <div className="w-full h-[20%]
-                    ">Chat Input</div>
-                </div>
+                <RoomColumn ownerName={ownerName} inviteeName={inviteeName} />
 
             </div>
         </div>
