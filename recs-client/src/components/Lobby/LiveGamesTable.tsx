@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
@@ -23,12 +21,13 @@ import { FaChessBoard, FaRegChessKnight } from "react-icons/fa6";
 import { FaChessKnight } from "react-icons/fa";
 import { IoMdInfinite } from "react-icons/io";
 
-export const OpenRooms = () => {
+export const LiveGamesTable = () => {
 
     const {
         setup: {
             clientComponents: { Game, Player },
         },
+        account: {account}
     } = useDojo();
     const navigate = useNavigate();
 
@@ -49,9 +48,9 @@ export const OpenRooms = () => {
     console.log("OpenRoom: gamesData: ", gamesData)
 
 
-    // Filtering for games that are Awaiting only
+    // Filtering for games that you got invited
     const newGamesData = gamesData?.filter((game) => {
-        return game?.game_state == "Awaiting"
+        return (game?.game_state == "InProgress" || game?.game_state == "Accepted")
     }).map((game) => {
 
         //const ownerAddress = bigintToHex(game?.room_owner_address)
@@ -73,7 +72,7 @@ export const OpenRooms = () => {
             room_start: formatTimestamp(game?.room_start??0),
         }
     })
-    console.log("openrooms.tsx: newGamesData: ", newGamesData)
+    console.log("liveGames.tsx: newGamesData: ", newGamesData)
     return (
         <Table>
             <TableHeader >

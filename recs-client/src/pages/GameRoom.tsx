@@ -13,6 +13,7 @@ import { entityIdToKey, bigintToEntity, keysToEntity, bigintToHex,
 import { useParams } from 'react-router-dom';
 import { feltToString, stringToFelt } from "@/utils/starknet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNamePanel } from '@/hooks';
 import { Button } from '@/components/ui/button';
 import { PlayerPanel } from '@/components/';
 
@@ -90,35 +91,8 @@ export const GameRoom = () => {
     console.log("GameRoom: invitee address: ", gameObject?.invitee_address)
     console.log("GameRoom: invitee entity: ", inviteeEntity)
 
-    const ownerNamePanel = useMemo(()=>{
-        return (
-            <div className="flex">
-                        <span className="mx-4 text-xl">
-                        {ownerName}
-                        </span>
-
-                        <Avatar className="h-8 w-8">
-                            <AvatarImage src={ownerPfPurl} alt={"username"} />
-                            <AvatarFallback>{ownerName}</AvatarFallback>
-                        </Avatar>
-            </div>
-        )
-    },[ownerName, ownerPfPurl])
-
-    const inviteeNamePanel = useMemo(()=>{
-        return (
-            <div className="flex">
-                        <span className="mx-4 text-xl">
-                        {inviteeName}
-                        </span>
-
-                        <Avatar className="h-8 w-8">
-                            <AvatarImage src={inviteePfPurl} alt={"username"} />
-                            <AvatarFallback>{inviteeName}</AvatarFallback>
-                        </Avatar>
-            </div>
-        )
-    },[inviteeName, inviteePfPurl])
+    const ownerNamePanel = useNamePanel({ownerName, ownerPfPurl});
+    const inviteeNamePanel = useNamePanel({ownerName: inviteeName, ownerPfPurl: inviteePfPurl});
 
     const handleJoinGame = async() => {
         console.log("GameRoom: Joining Game...")
@@ -135,13 +109,13 @@ export const GameRoom = () => {
             <div className="grid-cols-2 grid gap-2
             w-4/5 h-[80vh]
             p-2
-            border border-red-500
+            
             ">
 
                 {/* Chessboard column */}
                 <div className="flex flex-col
                 justify-center items-center h-[50vw] w-full
-                border border-green-500">
+                ">
 
                     {inviteeNotNull ? 
                         <PlayerPanel ownerNamePanel={
@@ -170,7 +144,10 @@ export const GameRoom = () => {
                     }
                     
 
-                    <div className="w-4/5 m-2 my-4">
+                    <div className="w-4/5 m-2 my-4
+                    border-2 border-blue-900/80 rounded-lg
+                    overflow-hidden
+                        ">
                         <Chessboard 
                             position={game.fen()} 
                             onPieceDrop={onDrop}

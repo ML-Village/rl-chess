@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tabs";
 
 import { AccountsTable } from "@/components/Lobby/AccountsTable";
-import { OpenRooms } from "@/components/Lobby/OpenRooms";
+import { OpenRooms, InvitesTable, LiveGamesTable } from "@/components/Lobby";
 
 export const LobbyTable = () => {
     return (
@@ -43,13 +43,13 @@ export const LobbyTable = () => {
                 <TabsContent value="invites"
                     className="h-full bg-blue-100/80"
                     >
-                    <AccountsTable />
+                    <InvitesTable />
                 </TabsContent>
 
                 <TabsContent value="livegames"
                     className="h-full bg-blue-100/80"
                     >
-                    <AccountsTable />
+                    <LiveGamesTable />
                 </TabsContent>
 
                 <TabsContent value="accounts"
