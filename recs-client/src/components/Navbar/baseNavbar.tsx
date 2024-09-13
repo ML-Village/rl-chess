@@ -32,11 +32,10 @@ export const BaseNavbar = () => {
   ]) as Entity;
   // get current component values
   const player = useComponentValue(Player, entityId);
-
   useEffect(() => {
 
     //if it already opened but there is already registered player, then close it (for first time landing)
-    if((player || count>0) && open){
+    if((player && count>0) && open){
       setOpen(false)
       return;
     }

@@ -36,7 +36,8 @@ export const GameRoom = () => {
             to: targetSquare,
             promotion: 'q',
         });
-
+        console.log("GameRoom: Game Fen - ")
+        console.log(game.fen())
         if (move === null) return false;
         setGame(new Chess(game.fen()));
         return true
@@ -54,11 +55,11 @@ export const GameRoom = () => {
     const playerIsInvitee = bigintToHex(gameObject?.invitee_address??0n) == account.address;
     const playerColor = playerInGame ? bigintToHex(gameObject?.white_player_address??0n) == account.address ? "white" : "black" : undefined;
     
-    console.log("GameRoom: player address", account.address)
-    console.log("GameRoom: room_owner_address", bigintToHex(gameObject?.room_owner_address??0n))
-    console.log("GameRoom: invitee address", bigintToHex(gameObject?.invitee_address??0n))
-    console.log("GameRoom: white_player_address", bigintToHex(gameObject?.white_player_address??0n))
-    console.log("GameRoom: black_player_address", bigintToHex(gameObject?.black_player_address??0n))
+    // console.log("GameRoom: player address", account.address)
+    // console.log("GameRoom: room_owner_address", bigintToHex(gameObject?.room_owner_address??0n))
+    // console.log("GameRoom: invitee address", bigintToHex(gameObject?.invitee_address??0n))
+    // console.log("GameRoom: white_player_address", bigintToHex(gameObject?.white_player_address??0n))
+    // console.log("GameRoom: black_player_address", bigintToHex(gameObject?.black_player_address??0n))
     const ownerIsWhite = gameObject?.white_player_address == gameObject?.room_owner_address;
     const ownerColor = ownerIsWhite ? "white" : "black";
     
@@ -94,8 +95,8 @@ export const GameRoom = () => {
     const inviteeTimeRemaining = (ownerIsWhite ? gameObject?.b_total_time_left : gameObject?.w_total_time_left)??0;
     const inviteeReady = gameObject?.invitee_ready;
 
-    console.log("GameRoom: invitee address: ", gameObject?.invitee_address)
-    console.log("GameRoom: invitee entity: ", inviteeEntity)
+    // console.log("GameRoom: invitee address: ", gameObject?.invitee_address)
+    // console.log("GameRoom: invitee entity: ", inviteeEntity)
 
     const ownerNamePanel = useNamePanel({ownerName, ownerPfPurl});
     const inviteeNamePanel = useNamePanel({ownerName: inviteeName, ownerPfPurl: inviteePfPurl});
@@ -110,7 +111,7 @@ export const GameRoom = () => {
         }
     }
 
-    console.log("GameRoom: Player Color:", playerColor)
+    //console.log("GameRoom: Player Color:", playerColor)
     return (
         <div className="flex justify-center items-start
         ">
