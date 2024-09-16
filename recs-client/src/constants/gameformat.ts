@@ -209,4 +209,11 @@ export const gameFormatconfig: GameFormatConfig  = {
     },
 
 }
+
+export const gameCategoryOrder = [
+    "Bullet",
+    "Blitz",
+    "Rapid",
+    "Daily",
+]
     

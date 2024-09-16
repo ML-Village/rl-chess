@@ -2,6 +2,8 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { FaChess, FaUserFriends } from "react-icons/fa";
 import { useDojo } from "@/dojo/useDojo";
+import { useNewGameModalStore } from "@/store";
+import { CreateGameModal } from "@/components/Modals";
 //import { useAccount } from '@starknet-react/core';
 
 export const LobbyControls = () => {
@@ -12,36 +14,22 @@ export const LobbyControls = () => {
         },
         account: { account},
     } = useDojo();
-
+    const { open: createGameModalOpen, setOpen: setCreateGameModalOpen } = useNewGameModalStore();
     //const { account, address, isConnected } = useAccount();
 
-    const handleCreateGame = async () => {
-        console.log("LobbyControls: creating game");
-        if (account) {
-            try{
-                //await create_game(account.account as AccountInterface, 1);
-                await client.lobby.create_game({
-                    account,
-                    game_format_id: 1,
-                    invite_expiry: 86400, // 1 day
-                });
-            }catch(e){
-                console.log("error creating game: ", e);
-            }
-        }else{
-            console.log("account not connected");
-            //todo: make toast for error message
-        }
-
-    }  
     
+    
+    const handleCreateGame = () => {
+        setCreateGameModalOpen(true);
+    }
+
 
     return (
         <div className="flex justify-center items-center
             space-x-2
             my-2 py-2
             ">
-                    
+                    <CreateGameModal />
                     <Button className="text-2xl font-bold
                     p-8 rounded-xl
                     bg-gray-800 hover:bg-orange-600/70

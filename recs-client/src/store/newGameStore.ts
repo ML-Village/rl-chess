@@ -5,6 +5,6 @@ interface newGameStoreState {
     setOpen: (value:boolean) => void;
 }
 export const useNewGameModalStore = create<newGameStoreState>((set) => ({
-    open: true,
+    open: false,
     setOpen: (value: boolean) => set({ open: value }),
 }));
