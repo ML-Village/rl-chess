@@ -128,7 +128,7 @@ export const OpenRooms = () => {
                             ">
                                 <div className={`border border-black rounded-full
                                 p-2.5 flex justify-center items-center
-                                ${(g?.white_player_address == g?.room_owner_address) ? "bg-lime-600":"bg-orange-100"}
+                                ${(g?.white_player_address == g?.room_owner_address) ? "bg-orange-500/70":"bg-orange-100"}
                                 `}>
                             {
                                 (g?.white_player_address == g?.room_owner_address)  ? 
@@ -143,14 +143,14 @@ export const OpenRooms = () => {
                         
                         <TableCell className="">
                             <div className="flex flex-nowrap 
-                            justify-center space-x-1
+                            justify-start space-x-1
                             items-center
                             ">
                                 <GameFormatIcon className="font-bold text-lg
                                 
                                 "/>
                                 <span>
-                                    {gameFormatconfig[g?.game_format_id??1]?.name ?? "na"}
+                                    {gameFormatconfig[g?.game_format_id??1]?.description ?? "na"}
                                 </span>
                             </div>
                         </TableCell>

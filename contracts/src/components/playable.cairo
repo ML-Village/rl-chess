@@ -109,7 +109,8 @@ mod PlayableComponent {
             turn_expiry: u64, 
             total_time_per_side: u64, 
             total_time_string: felt252, 
-            increment: u8
+            increment: u8,
+            available: bool
         ){
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
@@ -121,7 +122,8 @@ mod PlayableComponent {
                 turn_expiry,
                 total_time_per_side,
                 total_time_string,
-                increment
+                increment,
+                available
             });
 
         }
@@ -290,12 +292,15 @@ mod PlayableComponent {
             assert(
                 (game.room_owner_address == caller_address
                 || game.invitee_address == caller_address), errors::NOT_PLAYER_OF_GAME);
-            assert(game.game_state == GameState::Accepted, errors::GAME_NOT_ACCEPTED);
+            
+            //assert(game.game_state == GameState::Accepted, errors::GAME_NOT_ACCEPTED);
 
             if(caller_address == game.room_owner_address){
                 game.owner_ready = true;
-            } else {
+            } else if (caller_address == game.invitee_address) {
                 game.invitee_ready = true;
+            } else {
+                assert(false, errors::NOT_PLAYER_OF_GAME);
             }
             store.set_game(game);
         }

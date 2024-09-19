@@ -6,9 +6,9 @@ export const TitleBar = ({ownerName, inviteeName}:{ownerName: string, inviteeNam
         flex items-center justify-center
         gap-x-3 text-3xl font-semibold
                     ">
-            <span className="">{ownerName}</span>
+            <span className="">{ownerName == ""? "??": ownerName}</span>
             <span>vs</span>
-            <span className="">{inviteeName}</span>
+            <span className="">{inviteeName == ""? "??": inviteeName}</span>
         </div>
     )
 }

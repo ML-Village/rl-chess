@@ -23,6 +23,7 @@ impl FormatImpl of FormatTrait {
         total_time_per_side: u64,
         total_time_string: felt252,
         increment: u8,
+        available: bool
         ) -> Format {
 
         Format {
@@ -32,6 +33,7 @@ impl FormatImpl of FormatTrait {
             total_time_per_side,
             total_time_string,
             increment,
+            available
         }
     }
 }

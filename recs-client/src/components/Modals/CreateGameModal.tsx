@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 import { useDojo } from "@/dojo/useDojo";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
-import { useComponentValue } from "@dojoengine/react";
-import { Entity } from "@dojoengine/recs";
+import { useComponentValue, useEntityQuery } from "@dojoengine/react";
+import { Entity, Has, HasValue, getComponentValueStrict, getComponentValue } from "@dojoengine/recs";
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -13,11 +13,13 @@ import { GiBulletBill, GiLightningTrio } from "react-icons/gi";
 import { BiSolidTimer } from "react-icons/bi";
 import { WiDayLightWind } from "react-icons/wi";
 
+import { feltToString, stringToFelt } from "@/utils/starknet";
+
 export const CreateGameModal: React.FC = () => {
 
   const {
     setup: {
-      clientComponents: { Player },
+      clientComponents: { Player, Format },
       client,
   },
     account: {account},
@@ -32,18 +34,29 @@ export const CreateGameModal: React.FC = () => {
 
   // get current component values
   const player = useComponentValue(Player, entityId);
+  const hasFormats = useEntityQuery([Has(Format)]);
+  const formats = hasFormats.map((format) => {
+    const f = getComponentValue(Format, format)
+    return {
+      ...f,
+      description: feltToString(String(f?.description)),
+      total_time_string: feltToString(String(f?.total_time_string)),
+      category: feltToString(String(f?.description))?.split("-")[0]??""
+    }
+  }).sort((a, b) => (a.format_id ?? 0) - (b.format_id ?? 0));
 
-
-  const handleCreateGame = async () => {
+  const handleCreateGame = async (config) => {
     console.log("LobbyControls: creating game");
+    console.log(config)
     if (account) {
         try{
             //await create_game(account.account as AccountInterface, 1);
             await client.lobby.create_game({
                 account,
-                game_format_id: 1,
+                game_format_id: config.format_id??1,
                 invite_expiry: 86400, // 1 day
             });
+            setOpen(false);
         }catch(e){
             console.log("error creating game: ", e);
         }
@@ -56,11 +69,11 @@ export const CreateGameModal: React.FC = () => {
   const gameConfigsWithCategories = Object.entries(gameFormatconfig).map(([_, value]) => {
     return {
       ...value,
-      category: value?.name?.split("-")[0]
+      category: value?.description?.split("-")[0]
     };
   })
 
-  //console.log("createGameModal: create game config -", gameConfigsWithCategories)
+  console.log("createGameModal: create game config -", gameConfigsWithCategories)
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -93,12 +106,30 @@ export const CreateGameModal: React.FC = () => {
                     justify-center items-center
                     ">
                       {
-                        gameConfigsWithCategories.filter((config) => config.category === category).map((config, index) => {
+                        import.meta.env.VITE_USE_CONTRACT_GAME_FORMATS=="true"?
+                        formats.filter((config) => config.category === category).map((config, index) => {
                           return (
-                              <button key={`gameformat-${index}`}
+                              <button key={`gameformat-${config?.format_id??index}`}
                                 className="bg-blue-900 text-white px-4 py-2 rounded-md
                                 grow
-                                ">
+                                hover:bg-blue-400
+                                "
+                                onClick={()=>handleCreateGame(config)}
+                                >
+                                {config.total_time_string}
+                              </button>
+                          )
+                        })
+                        :
+                        gameConfigsWithCategories.filter((config) => config.category === category).map((config, index) => {
+                          return (
+                              <button key={`gameformat-${config?.format_id??index}`}
+                                className="bg-blue-900 text-white px-4 py-2 rounded-md
+                                grow
+                                hover:bg-blue-400
+                                "
+                                onClick={()=>handleCreateGame(config)}
+                                >
                                 {config.total_time_string}
                               </button>
                           )

@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x7d0746147d3951f32fb4424bf2f3ab7cd2e899fa4dd0a43ffd7b7d2cc2de500"
-original_class_hash = "0x7d0746147d3951f32fb4424bf2f3ab7cd2e899fa4dd0a43ffd7b7d2cc2de500"
+class_hash = "0x453bb6786bc7586bc2194dc2daea858fa6ffb655e2fb63b60ef16246faa1ec"
+original_class_hash = "0x453bb6786bc7586bc2194dc2daea858fa6ffb655e2fb63b60ef16246faa1ec"
 abi = "manifests/dev/base/abis/models/rl_chess-Format-6da30a59.json"
 tag = "rl_chess-Format"
 manifest_name = "rl_chess-Format-6da30a59"
@@ -33,4 +33,9 @@ key = false
 [[members]]
 name = "increment"
 type = "u8"
+key = false
+
+[[members]]
+name = "available"
+type = "bool"
 key = false

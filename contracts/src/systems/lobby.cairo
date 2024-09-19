@@ -56,7 +56,7 @@ trait ILobby<TContractState> {
         self: @TContractState,
         game_format_id: u16,
         invite_expiry: u64,
-    );
+    )->u128;
 
     fn join_game(
         self: @TContractState,
@@ -209,14 +209,14 @@ mod lobby {
             self: @ContractState,
             game_format_id: u16,
             invite_expiry: u64,
-        ){
+        )->u128{
             self.playable.createInviteGame(
                 world: self.world(),
                 game_format_id: game_format_id,
                 room_owner_address: get_caller_address(),
                 invitee_address: starknet::contract_address_const::<0x0>(),
                 invite_expiry: invite_expiry,
-            );
+            )
         }
 
         fn join_game(

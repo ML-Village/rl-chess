@@ -12,6 +12,7 @@ trait IAdmin<TContractState> {
         total_time_per_side: u64,
         total_time_string: felt252,
         increment: u8,
+        available: bool
     );
 
     fn remove_game_format(
@@ -73,7 +74,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*60*24, // 1 day
             total_time_string: '1-day',
-            increment: 0
+            increment: 0,
+            available: true
         );
 
         self.playable.addGameFormat(
@@ -82,7 +84,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*60*24*2, // 2 days
             total_time_string: '2-days',
-            increment: 0
+            increment: 0,
+            available: true
         );
 
         self.playable.addGameFormat(
@@ -91,7 +94,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*60*24*3, // 3 days
             total_time_string: '3-days',
-            increment: 0
+            increment: 0,
+            available: true
         );
 
         self.playable.addGameFormat(
@@ -100,7 +104,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*60*24*5, // 7 days
             total_time_string: '5-days',
-            increment: 0
+            increment: 0,
+            available: true
         );
 
         self.playable.addGameFormat(
@@ -109,7 +114,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*60*24*7, // 7 days
             total_time_string: '7-days',
-            increment: 0
+            increment: 0,
+            available: true
         );
 
         self.playable.addGameFormat(
@@ -118,7 +124,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*60*24*14, // 14 days
             total_time_string: '14-days',
-            increment: 0
+            increment: 0,
+            available: true
         );
         
         self.playable.addGameFormat(
@@ -127,7 +134,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*10, // 15 minutes
             total_time_string: '10-mins',
-            increment: 0
+            increment: 0,
+            available: true
         );
 
         self.playable.addGameFormat(
@@ -136,7 +144,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*10, // 15 minutes
             total_time_string: '10 mins | 5s',
-            increment: 5
+            increment: 5,
+            available: true
         );
 
         self.playable.addGameFormat(
@@ -145,7 +154,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*15, // 15 minutes
             total_time_string: '15-mins',
-            increment: 0
+            increment: 0,
+            available: true
         );
         
         self.playable.addGameFormat(
@@ -154,7 +164,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*20, // 15 minutes
             total_time_string: '20  mins',
-            increment: 0
+            increment: 0,
+            available: true
         );
 
         self.playable.addGameFormat(
@@ -163,7 +174,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*30, // 15 minutes
             total_time_string: '30 mins',
-            increment: 0
+            increment: 0,
+            available: true
         );
         
         self.playable.addGameFormat(
@@ -172,7 +184,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*60, // 60 minutes
             total_time_string: '60 mins',
-            increment: 0
+            increment: 0,
+            available: true
         );
 
         self.playable.addGameFormat(
@@ -181,7 +194,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*3, // 3 mins
             total_time_string: '3 mins',
-            increment: 0
+            increment: 0,
+            available: true
         );
         
         self.playable.addGameFormat(
@@ -190,7 +204,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*3, // 3 mins
             total_time_string: '3 mins | 2s',
-            increment: 2
+            increment: 2,
+            available: true
         );
         
         self.playable.addGameFormat(
@@ -199,7 +214,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*5, // 5 mins
             total_time_string: '5 mins',
-            increment: 0
+            increment: 0,
+            available: true
         );
         
         self.playable.addGameFormat(
@@ -208,7 +224,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*5, // 5 mins
             total_time_string: '5 mins | 2s',
-            increment: 2
+            increment: 2,
+            available: true
         );
         
         self.playable.addGameFormat(
@@ -217,7 +234,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*5, // 5 mins
             total_time_string: '5 mins | 5s',
-            increment: 0
+            increment: 0,
+            available: true
         );
 
         self.playable.addGameFormat(
@@ -226,7 +244,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*1, // 1 min
             total_time_string: '1 min',
-            increment: 0
+            increment: 0,
+            available: true
         );
         
         self.playable.addGameFormat(
@@ -235,7 +254,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*1, // 1 min
             total_time_string: '1 min | 1s',
-            increment: 1
+            increment: 1,
+            available: true
         );
         
         self.playable.addGameFormat(
@@ -244,7 +264,8 @@ mod admin {
             turn_expiry: 0,
             total_time_per_side: 60*2, // 2 min
             total_time_string: '2 min | 1s',
-            increment: 1
+            increment: 1,
+            available: true
         );
 
     }
@@ -259,7 +280,9 @@ mod admin {
             turn_expiry: u64, 
             total_time_per_side: u64, 
             total_time_string: felt252, 
-            increment: u8) {
+            increment: u8,
+            available: bool
+        ) {
 
             self.playable.addGameFormat(
                     world: self.world(),
@@ -267,7 +290,8 @@ mod admin {
                     turn_expiry: turn_expiry,
                     total_time_per_side: total_time_per_side,
                     total_time_string: total_time_string,
-                    increment: increment
+                    increment: increment,
+                    available: available
             );
         }
         

@@ -367,6 +367,20 @@
     "interface_name": "rl_chess::models::index::Iformat"
   },
   {
+    "type": "enum",
+    "name": "core::bool",
+    "variants": [
+      {
+        "name": "False",
+        "type": "()"
+      },
+      {
+        "name": "True",
+        "type": "()"
+      }
+    ]
+  },
+  {
     "type": "struct",
     "name": "rl_chess::models::index::Format",
     "members": [
@@ -393,6 +407,10 @@
       {
         "name": "increment",
         "type": "core::integer::u8"
+      },
+      {
+        "name": "available",
+        "type": "core::bool"
       }
     ]
   },

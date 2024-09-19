@@ -136,4 +136,5 @@ pub struct Format {
     pub total_time_per_side: u64, // Unix time, total game time (0 for unlimited)
     pub total_time_string: felt252,
     pub increment: u8, // Unix time, time in seconds added after each turn (0 for no increment)
+    pub available: bool
 }

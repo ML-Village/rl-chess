@@ -164,7 +164,7 @@ pub mod lobby {
                     accepted: accepted,
                 );
         }
-        fn create_game(self: @ContractState, game_format_id: u16, invite_expiry: u64) {
+        fn create_game(self: @ContractState, game_format_id: u16, invite_expiry: u64) -> u128 {
             self
                 .playable
                 .createInviteGame(
@@ -173,7 +173,7 @@ pub mod lobby {
                     room_owner_address: get_caller_address(),
                     invitee_address: starknet::contract_address_const::<0x0>(),
                     invite_expiry: invite_expiry,
-                );
+                )
         }
         fn join_game(self: @ContractState, game_id: u128) {
             self
