@@ -73,7 +73,7 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
                         </Button>
 
                         <Button className={`py-5 rounded-lg 
-                        ${playerIsReady ?"bg-green-500": "bg-orange-400"}
+                        ${playerIsReady ?"bg-green-400": "bg-orange-400"}
                         text-blue-950 hover:text-white text-xs 2xl:text-sm
                         px-1 xl:px-2 2xl:px-2
                         `}

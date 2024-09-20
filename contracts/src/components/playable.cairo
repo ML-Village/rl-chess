@@ -373,6 +373,7 @@ mod PlayableComponent {
 
             if callerIsWhite {
                 assert(board.side_to_move == Color::White, errors::NOT_PLAYERS_TURN);
+                // also update game model
             } else {
                 assert(board.side_to_move == Color::Black, errors::NOT_PLAYERS_TURN);
             }
@@ -382,7 +383,7 @@ mod PlayableComponent {
 
             // move history
             // position history
-            // last move time
+            // last move time (also update in Game model)
             // check if game is over -- checkmate, stalemate, draw, or time
 
         }

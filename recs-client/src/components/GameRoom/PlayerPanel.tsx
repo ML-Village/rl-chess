@@ -1,13 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaClockRotateLeft } from "react-icons/fa6";
 import { formatTimestampDaysHoursMinutesSeconds, 
     formatTimestampHoursMinutesSeconds,
     formatTimestampMinutesSeconds } from '@/utils';
 
-export const PlayerPanel = ({ownerNamePanel, ownerTimeRemaining, ready}
-    :{ownerNamePanel: JSX.Element, ownerTimeRemaining: string, ready: boolean}
+// Dojo stuff
+import { useDojo } from "@/dojo/useDojo";
+import { useComponentValue, useEntityQuery } from "@dojoengine/react";
+import { Entity, Has, HasValue, getComponentValueStrict, getComponentValue } from "@dojoengine/recs";
+import { getEntityIdFromKeys } from "@dojoengine/utils";
+
+export const PlayerPanel = ({ownerNamePanel, ownerLastMoveTime, ownerTimeRemaining, ready, player_turn, game_state}
+    :{ownerNamePanel: JSX.Element, 
+        ownerLastMoveTime: string, 
+        ownerTimeRemaining: string, 
+        ready: boolean, 
+        player_turn: boolean,
+        game_state: string
+    }
 ) => {
-    
+    const lastMoveTime = Number(ownerLastMoveTime);
+    console.log("lastMoveTime", new Date(lastMoveTime * 1000).getTime());
+    console.log("Date.now()", Date.now());
+    const timeDeltaSinceLastMove = lastMoveTime== 0 ? 0 : Date.now() - new Date(lastMoveTime * 1000).getTime();
+    console.log("timeDeltaSinceLastMove", timeDeltaSinceLastMove);
+    const ownerRealRemainingTime = Number(ownerTimeRemaining) - timeDeltaSinceLastMove;
+    console.log("ownerRealRemainingTime", ownerRealRemainingTime);
+
+    const [timeRemaining, setTimeRemaining] = useState(
+        Number(ownerRealRemainingTime) >= 86400 ?
+        formatTimestampDaysHoursMinutesSeconds(Number(ownerRealRemainingTime)) :
+        Number(ownerRealRemainingTime) >= 3600 ?
+        formatTimestampHoursMinutesSeconds(Number(ownerRealRemainingTime)) :
+        formatTimestampMinutesSeconds(Number(ownerRealRemainingTime))
+    );
+
+    // useEffect to update timeRemaining every second
+    // but only start if game_state is "InProgress"
+    useEffect(() => {
+        if (game_state === "InProgress") {
+            const interval = setInterval(() => {
+                setTimeRemaining(formatTimestampDaysHoursMinutesSeconds(Number(ownerRealRemainingTime)));
+            }, 1000);
+            return () => clearInterval(interval);
+        }
+    }, [game_state, ownerRealRemainingTime]);
+
     return (
         <div className="w-full m-4 px-10 flex items-center
         ">
@@ -20,11 +58,7 @@ export const PlayerPanel = ({ownerNamePanel, ownerTimeRemaining, ready}
 
                     <div className="w-full flex items-center">
                         <div className="ml-auto mr-2">{
-                            Number(ownerTimeRemaining) >= 86400 ?
-                            formatTimestampDaysHoursMinutesSeconds(Number(ownerTimeRemaining)) :
-                            Number(ownerTimeRemaining) >= 3600 ?
-                            formatTimestampHoursMinutesSeconds(Number(ownerTimeRemaining)) :
-                            formatTimestampMinutesSeconds(Number(ownerTimeRemaining))
+                            timeRemaining
                         }</div>
                         <FaClockRotateLeft className="mx-2" />
                         <div className={`

@@ -49,6 +49,7 @@ export const GameRoom = () => {
     ]) as Entity;
 
     const gameObject = useComponentValue(Game, entityId);
+    //console.log("GameRoom: gameObject", gameObject)
 
     const playerInGame = bigintToHex(gameObject?.room_owner_address??0n) == account.address || bigintToHex(gameObject?.invitee_address??0n) == account.address;
     const playerIsOwner = bigintToHex(gameObject?.room_owner_address??0n) == account.address;
@@ -79,6 +80,7 @@ export const GameRoom = () => {
     const ownerPlayerObject = useComponentValue(Player, ownerEntity);
     const ownerName = getPlayerName(ownerPlayerObject);
     const ownerPfPurl = getPlayerPfPurlByNum(ownerPlayerObject?.profile_pic_uri??0);
+    const ownerLastMoveTime = (ownerIsWhite ? gameObject?.w_last_move_time : gameObject?.b_last_move_time)??0;
     const ownerTimeRemaining = (ownerIsWhite ? gameObject?.w_total_time_left : gameObject?.b_total_time_left)??0;
     const ownerReady = gameObject?.owner_ready;
 
@@ -92,6 +94,7 @@ export const GameRoom = () => {
     const inviteePlayerObject = useComponentValue(Player, inviteeEntity);
     const inviteeName = inviteeNotNull ? getPlayerName(inviteePlayerObject): "";
     const inviteePfPurl = inviteeNotNull ? getPlayerPfPurlByNum(inviteePlayerObject?.profile_pic_uri??0) : "";
+    const inviteeLastMoveTime = (ownerIsWhite ? gameObject?.b_last_move_time : gameObject?.w_last_move_time)??0;
     const inviteeTimeRemaining = (ownerIsWhite ? gameObject?.b_total_time_left : gameObject?.w_total_time_left)??0;
     const inviteeReady = gameObject?.invitee_ready;
 
@@ -132,14 +135,22 @@ export const GameRoom = () => {
                             (playerIsOwner ? inviteeNamePanel : ownerNamePanel)
                             : inviteeNamePanel
                         } 
+                        
                         ownerTimeRemaining={playerInGame ?
                             (playerIsOwner ?  String(inviteeTimeRemaining) : String(ownerTimeRemaining))
                             :
                             String(inviteeTimeRemaining)
                         } 
+                        ownerLastMoveTime={playerInGame ?
+                            (playerIsOwner ?  String(inviteeLastMoveTime) : String(ownerLastMoveTime))
+                            :
+                            String(inviteeLastMoveTime)
+                        }
                         ready={(playerInGame ?
                             (playerIsOwner ? inviteeReady : ownerReady)
                             : inviteeReady)??false}
+                        
+                        game_state={gameObject?.game_state ?? ""}
                         /> :
                         
                     <div className="w-full p-3 flex items-center
@@ -176,13 +187,19 @@ export const GameRoom = () => {
                     <PlayerPanel ownerNamePanel={playerInGame ?  
                     (playerIsOwner ? ownerNamePanel : inviteeNamePanel)
                     : ownerNamePanel} 
-                        ownerTimeRemaining=
-                        {playerInGame ?  
+                        ownerTimeRemaining={playerInGame ?  
                             (playerIsOwner ? String(ownerTimeRemaining) : String(inviteeTimeRemaining))
                             : String(ownerTimeRemaining)} 
+
+                        ownerLastMoveTime={playerInGame ?
+                            (playerIsOwner ?  String(ownerLastMoveTime) : String(inviteeLastMoveTime))
+                                :
+                                String(ownerLastMoveTime)
+                            }
                         ready={(playerInGame ?
                             (playerIsOwner ? ownerReady : inviteeReady)
                             : ownerReady)??false}
+                        game_state={gameObject?.game_state ?? ""}
                     />
 
                 </div>
