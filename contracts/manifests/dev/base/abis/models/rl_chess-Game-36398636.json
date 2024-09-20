@@ -419,6 +419,24 @@
     ]
   },
   {
+    "type": "enum",
+    "name": "rl_chess::types::color::Color",
+    "variants": [
+      {
+        "name": "None",
+        "type": "()"
+      },
+      {
+        "name": "White",
+        "type": "()"
+      },
+      {
+        "name": "Black",
+        "type": "()"
+      }
+    ]
+  },
+  {
     "type": "struct",
     "name": "rl_chess::models::index::Game",
     "members": [
@@ -493,6 +511,10 @@
       {
         "name": "b_total_time_left",
         "type": "core::integer::u64"
+      },
+      {
+        "name": "side_to_move",
+        "type": "rl_chess::types::color::Color"
       },
       {
         "name": "result",

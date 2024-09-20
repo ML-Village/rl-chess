@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x25f42299de8718412fcb76dd2b667968c6c5bfa2eb09345bfae64517c76baa4"
-original_class_hash = "0x25f42299de8718412fcb76dd2b667968c6c5bfa2eb09345bfae64517c76baa4"
+class_hash = "0x59afc0c266dafa70e5118bfdbd6f6c37dd35ff50cd4d074e03cc88371558842"
+original_class_hash = "0x59afc0c266dafa70e5118bfdbd6f6c37dd35ff50cd4d074e03cc88371558842"
 abi = "manifests/dev/base/abis/models/rl_chess-Game-36398636.json"
 tag = "rl_chess-Game"
 manifest_name = "rl_chess-Game-36398636"
@@ -93,6 +93,11 @@ key = false
 [[members]]
 name = "b_total_time_left"
 type = "u64"
+key = false
+
+[[members]]
+name = "side_to_move"
+type = "Color"
 key = false
 
 [[members]]

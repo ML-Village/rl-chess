@@ -372,14 +372,18 @@ mod PlayableComponent {
             let mut board = store.get_board(game_id);
 
             if callerIsWhite {
-                assert(board.side_to_move == Color::White, errors::NOT_PLAYERS_TURN);
+                assert(board.side_to_move == Color::White && game.side_to_move == Color::White, 
+                    errors::NOT_PLAYERS_TURN);
                 // also update game model
             } else {
-                assert(board.side_to_move == Color::Black, errors::NOT_PLAYERS_TURN);
+                assert(board.side_to_move == Color::Black && game.side_to_move == Color::Black, 
+                    errors::NOT_PLAYERS_TURN);
             }
 
             board.move_piece(move_from, move_to, promotion);
+            game.side_to_move = board.side_to_move;
             store.set_board(board);
+            store.set_game(game);
 
             // move history
             // position history

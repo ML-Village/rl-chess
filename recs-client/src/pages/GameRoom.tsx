@@ -83,6 +83,7 @@ export const GameRoom = () => {
     const ownerLastMoveTime = (ownerIsWhite ? gameObject?.w_last_move_time : gameObject?.b_last_move_time)??0;
     const ownerTimeRemaining = (ownerIsWhite ? gameObject?.w_total_time_left : gameObject?.b_total_time_left)??0;
     const ownerReady = gameObject?.owner_ready;
+    const ownerTurn = (ownerIsWhite && gameObject?.side_to_move == "White") || (!ownerIsWhite && gameObject?.side_to_move == "Black");
 
     // Invitee Stuff
     const inviteeAddressBigInt = gameObject?.invitee_address;
@@ -97,6 +98,7 @@ export const GameRoom = () => {
     const inviteeLastMoveTime = (ownerIsWhite ? gameObject?.b_last_move_time : gameObject?.w_last_move_time)??0;
     const inviteeTimeRemaining = (ownerIsWhite ? gameObject?.b_total_time_left : gameObject?.w_total_time_left)??0;
     const inviteeReady = gameObject?.invitee_ready;
+    const inviteeTurn = (ownerIsWhite && gameObject?.side_to_move == "Black") || (!ownerIsWhite && gameObject?.side_to_move == "White");
 
     // console.log("GameRoom: invitee address: ", gameObject?.invitee_address)
     // console.log("GameRoom: invitee entity: ", inviteeEntity)
@@ -146,6 +148,12 @@ export const GameRoom = () => {
                             :
                             String(inviteeLastMoveTime)
                         }
+
+                        ownerTurn={playerInGame ?
+                            (playerIsOwner ?  inviteeTurn : ownerTurn)
+                            :
+                            false}
+
                         ready={(playerInGame ?
                             (playerIsOwner ? inviteeReady : ownerReady)
                             : inviteeReady)??false}
@@ -199,6 +207,11 @@ export const GameRoom = () => {
                         ready={(playerInGame ?
                             (playerIsOwner ? ownerReady : inviteeReady)
                             : ownerReady)??false}
+
+                        ownerTurn={playerInGame ?
+                            (playerIsOwner ?  ownerTurn : inviteeTurn)
+                            :
+                            false}
                         game_state={gameObject?.game_state ?? ""}
                     />
 

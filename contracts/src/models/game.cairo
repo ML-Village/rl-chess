@@ -11,7 +11,7 @@ use rl_chess::utils::address::{address_to_string_literal, address_to_byte_array}
 // Inernal imports
 
 //use rl_chess::constants::{};
-use rl_chess::models::index::Game;
+use rl_chess::models::index::{Game, Color};
 use rl_chess::types::gamestate::{GameState, IntoGameStateU8, IntoGameStateFelt252};
 
 mod errors {
@@ -60,6 +60,7 @@ impl GameImpl of GameTrait {
             b_last_move_time: 0,
             w_total_time_left: 0,
             b_total_time_left: 0,
+            side_to_move: Color::None,
 
 
             // Result
@@ -132,6 +133,7 @@ impl GameImpl of GameTrait {
     #[inline]
     fn set_game_start(ref self: Game){
         self.game_state = GameState::InProgress;
+        self.side_to_move = Color::White;
         self.room_start = get_block_timestamp();
         self.w_last_move_time = get_block_timestamp();
         self.b_last_move_time = get_block_timestamp();

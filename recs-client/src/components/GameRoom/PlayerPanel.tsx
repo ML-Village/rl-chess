@@ -10,21 +10,22 @@ import { useComponentValue, useEntityQuery } from "@dojoengine/react";
 import { Entity, Has, HasValue, getComponentValueStrict, getComponentValue } from "@dojoengine/recs";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 
-export const PlayerPanel = ({ownerNamePanel, ownerLastMoveTime, ownerTimeRemaining, ready, player_turn, game_state}
+export const PlayerPanel = ({ownerNamePanel, ownerLastMoveTime, ownerTimeRemaining, ready, ownerTurn, game_state}
     :{ownerNamePanel: JSX.Element, 
         ownerLastMoveTime: string, 
-        ownerTimeRemaining: string, 
+        ownerTimeRemaining: string, // in seconds
         ready: boolean, 
-        player_turn: boolean,
+        ownerTurn: boolean,
         game_state: string
     }
 ) => {
     const lastMoveTime = Number(ownerLastMoveTime);
     console.log("lastMoveTime", new Date(lastMoveTime * 1000).getTime());
     console.log("Date.now()", Date.now());
-    const timeDeltaSinceLastMove = lastMoveTime== 0 ? 0 : Date.now() - new Date(lastMoveTime * 1000).getTime();
+    const timeDeltaSinceLastMove = (lastMoveTime== 0 ? 0 : Date.now() - new Date(lastMoveTime * 1000).getTime())/1000;
     console.log("timeDeltaSinceLastMove", timeDeltaSinceLastMove);
-    const ownerRealRemainingTime = Number(ownerTimeRemaining) - timeDeltaSinceLastMove;
+    const ownerRealRemainingTime = parseInt((Number(ownerTimeRemaining) - timeDeltaSinceLastMove).toString());
+    console.log("ownerTimeRemaining", ownerTimeRemaining);
     console.log("ownerRealRemainingTime", ownerRealRemainingTime);
 
     const [timeRemaining, setTimeRemaining] = useState(
@@ -33,18 +34,26 @@ export const PlayerPanel = ({ownerNamePanel, ownerLastMoveTime, ownerTimeRemaini
         Number(ownerRealRemainingTime) >= 3600 ?
         formatTimestampHoursMinutesSeconds(Number(ownerRealRemainingTime)) :
         formatTimestampMinutesSeconds(Number(ownerRealRemainingTime))
+        //ownerRealRemainingTime
     );
 
     // useEffect to update timeRemaining every second
     // but only start if game_state is "InProgress"
     useEffect(() => {
-        if (game_state === "InProgress") {
+        if (game_state === "InProgress" && ownerTurn) {
             const interval = setInterval(() => {
-                setTimeRemaining(formatTimestampDaysHoursMinutesSeconds(Number(ownerRealRemainingTime)));
+                setTimeRemaining(
+                    Number(ownerRealRemainingTime) >= 86400 ?
+                    formatTimestampDaysHoursMinutesSeconds(Number(ownerRealRemainingTime)) :
+                    Number(ownerRealRemainingTime) >= 3600 ?
+                    formatTimestampHoursMinutesSeconds(Number(ownerRealRemainingTime)) :
+                    formatTimestampMinutesSeconds(Number(ownerRealRemainingTime))
+                );
+                //setTimeRemaining(ownerRealRemainingTime);
             }, 1000);
             return () => clearInterval(interval);
         }
-    }, [game_state, ownerRealRemainingTime]);
+    }, [game_state, ownerRealRemainingTime, ownerTurn]);
 
     return (
         <div className="w-full m-4 px-10 flex items-center

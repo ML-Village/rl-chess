@@ -59,7 +59,7 @@ pub struct Game {
     pub b_last_move_time: u64,
     pub w_total_time_left: u64, // Unix time, total game time (0 for unlimited)
     pub b_total_time_left: u64, // Unix time, total game time (0 for unlimited)
-
+    pub side_to_move: Color,
 
     // Result
     pub result: u8, //  0:unresolved, 1:owner, 2:invitee, 3:draw
