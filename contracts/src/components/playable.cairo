@@ -392,15 +392,18 @@ mod PlayableComponent {
             let piece_from = board.piece_at(move_from).unwrap();
             let color_from = board.color_at(move_from).unwrap();
             let enpassant_capture_square = board.is_enpassant_capture(move_from, move_to);
+            let pawnletter: ByteArray = if(enpassant_capture_square<64){
+                format!("{}", ((move_from / 8) + 1))
+            }else{""};
 
             let piece_from_string:ByteArray = match (piece_from, color_from) {
-                (Piece::Pawn, Color::White) => "P",
+                (Piece::Pawn, Color::White) => pawnletter,
                 (Piece::Rook, Color::White) => "R",
                 (Piece::Knight, Color::White) => "N",
                 (Piece::Bishop, Color::White) => "B",
                 (Piece::Queen, Color::White) => "Q",
                 (Piece::King, Color::White) => "K",
-                (Piece::Pawn, Color::Black) => "p",
+                (Piece::Pawn, Color::Black) => pawnletter,
                 (Piece::Rook, Color::Black) => "r",
                 (Piece::Knight, Color::Black) => "n",
                 (Piece::Bishop, Color::Black) => "b",
@@ -468,7 +471,7 @@ mod PlayableComponent {
                 history.move_history_string += capture_string;
                 history.move_history_string += destination_file;
                 history.move_history_string += destination_rank;
-                history.move_history_string += " ";
+                history.move_history_string += " / ";
             }
             
             store.set_board(board);
