@@ -20,13 +20,13 @@ export const PlayerPanel = ({ownerNamePanel, ownerLastMoveTime, ownerTimeRemaini
     }
 ) => {
     const lastMoveTime = Number(ownerLastMoveTime);
-    console.log("lastMoveTime", new Date(lastMoveTime * 1000).getTime());
-    console.log("Date.now()", Date.now());
+    // console.log("lastMoveTime", new Date(lastMoveTime * 1000).getTime());
+    // console.log("Date.now()", Date.now());
     const timeDeltaSinceLastMove = (lastMoveTime== 0 ? 0 : Date.now() - new Date(lastMoveTime * 1000).getTime())/1000;
-    console.log("timeDeltaSinceLastMove", timeDeltaSinceLastMove);
+    //console.log("timeDeltaSinceLastMove", timeDeltaSinceLastMove);
     const ownerRealRemainingTime = parseInt((Number(ownerTimeRemaining) - timeDeltaSinceLastMove).toString());
-    console.log("ownerTimeRemaining", ownerTimeRemaining);
-    console.log("ownerRealRemainingTime", ownerRealRemainingTime);
+    // console.log("ownerTimeRemaining", ownerTimeRemaining);
+    // console.log("ownerRealRemainingTime", ownerRealRemainingTime);
 
     const [timeRemaining, setTimeRemaining] = useState(
         Number(ownerRealRemainingTime) >= 86400 ?

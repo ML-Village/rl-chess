@@ -18,6 +18,11 @@ trait IRoom<TContractState> {
         move_to: u8,
         promotion: u8,
     );
+
+    fn get_fen(
+        self: @TContractState,
+        game_id: u128,
+    ) -> ByteArray;
 }
 
 // Contracts
@@ -80,6 +85,17 @@ mod room {
             );
         }
 
+
+        // view
+        fn get_fen(
+            self: @ContractState,
+            game_id: u128,
+        ) -> ByteArray {
+            self.playable.getFen(
+                world: self.world(),
+                game_id: game_id,
+            )
+        }
     }
 
 

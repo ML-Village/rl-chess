@@ -82,4 +82,6 @@ fn test_lobby_move1() {
     println!("w_total_time_left: {}", game.w_total_time_left);
     println!("b_total_time_left: {}", game.b_total_time_left);
 
+    // print fen
+    println!("FEN: {}", board.to_fen());
 }

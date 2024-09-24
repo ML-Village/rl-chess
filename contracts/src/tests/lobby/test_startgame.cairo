@@ -67,6 +67,8 @@ fn test_lobby_startgame() {
     assert(game.game_state == GameState::InProgress, 'StartGame:Game not InProgress');
 
     let mut board = store.get_board(context.game_id);
+    let mut history = store.get_history(context.game_id);
+
     assert(board.side_to_move == Color::White, 'StartGame:Side2mov not W');
     
     board.print_board();
@@ -88,4 +90,9 @@ fn test_lobby_startgame() {
     println!("w_total_time_left: {}", game.w_total_time_left);
     println!("b_total_time_left: {}", game.b_total_time_left);
 
+
+    // print fen
+    println!("FEN: {}", board.to_fen());
+
+    println!("history fen: {}", history.fen);
 }

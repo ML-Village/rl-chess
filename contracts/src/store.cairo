@@ -12,11 +12,11 @@ use starknet::ContractAddress;
 use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
 // Models imports
-use rl_chess::models::index::{ Player, Game, Format, Board };
+use rl_chess::models::index::{ Player, Game, Format, Board, History };
 use rl_chess::models::player::{PlayerTrait};
 use rl_chess::models::game::{GameTrait};
 use rl_chess::models::board::{BoardTrait};
-
+use rl_chess::models::history::{HistoryTrait};
 // Structs
 
 #[derive(Copy, Drop)]
@@ -53,6 +53,11 @@ impl StoreImpl of StoreTrait {
         get!(self.world, game_id, (Board))
     }
 
+    #[inline]
+    fn get_history(self: Store, game_id: u128)-> History {
+        get!(self.world, game_id, (History))
+    }
+
     // ===== Setters ===== //
 
     #[inline]
@@ -73,6 +78,11 @@ impl StoreImpl of StoreTrait {
     #[inline]
     fn set_board(self: Store, board: Board) {
         set!(self.world, (board))
+    }
+
+    #[inline]
+    fn set_history(self: Store, history: History) {
+        set!(self.world, (history))
     }
 
 

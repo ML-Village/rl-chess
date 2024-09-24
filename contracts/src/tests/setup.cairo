@@ -20,6 +20,7 @@ mod setup {
     use rl_chess::models::index;
     use rl_chess::models::game::Game;
     use rl_chess::models::player::Player;
+    use rl_chess::models::history::History;
     use rl_chess::models::format::Format;
     use rl_chess::models::board::Board;
     
@@ -80,6 +81,7 @@ mod setup {
             index::game::TEST_CLASS_HASH,
             index::board::TEST_CLASS_HASH,
             index::format::TEST_CLASS_HASH,
+            index::history::TEST_CLASS_HASH,
             ];
         let world = spawn_test_world(array!["rl_chess"].span(), models.span());
 
@@ -111,7 +113,8 @@ mod setup {
             turn_expiry: 0,
             total_time_per_side: 60*60*24, // 1 day
             total_time_string: '1-day',
-            increment: 0
+            increment: 0,
+            available: true
         );
 
         // 1. register players

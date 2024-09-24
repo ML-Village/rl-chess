@@ -20,10 +20,11 @@ mod PlayableComponent {
 
     use rl_chess::constants;
     use rl_chess::store::{Store, StoreTrait};
-    use rl_chess::models::index::{Player, Game, Format, Board};
+    use rl_chess::models::index::{Player, Game, Format, Board, History};
     use rl_chess::models::player::{PlayerTrait, PlayerAssert};
     use rl_chess::models::game::{GameTrait};
     use rl_chess::models::board::{BoardTrait};
+    use rl_chess::models::history::{HistoryTrait};
     use rl_chess::types::profile::ProfilePicType;
     use rl_chess::types::gamestate::GameState;
     use rl_chess::types::color::Color;
@@ -163,6 +164,7 @@ mod PlayableComponent {
 
             let game_format = store.get_format(game_format_id);
             let mut board = BoardTrait::new(game_id);
+            let mut history = HistoryTrait::new(game_id);
 
             game.w_turn_expiry_time = game_format.turn_expiry;
             game.b_turn_expiry_time = game_format.turn_expiry;
@@ -180,6 +182,7 @@ mod PlayableComponent {
 
             store.set_game(game);
             store.set_board(board);
+            store.set_history(history);
             game.game_id
 
         }
@@ -332,6 +335,7 @@ mod PlayableComponent {
             let store: Store = StoreTrait::new(world);
             let mut game = store.get_game(game_id);
             let mut board = store.get_board(game_id);
+            let mut history = store.get_history(game_id);
             assert(
                 (game.room_owner_address == caller_address
                 || game.invitee_address == caller_address), errors::NOT_PLAYER_OF_GAME);
@@ -345,7 +349,9 @@ mod PlayableComponent {
             
             //TODO: add game format config setup to board
             board.start_board();
+            history.fen = board.to_fen();
             store.set_board(board);
+            store.set_history(history);
         }
 
         // ===== Board Funcs =====
@@ -370,6 +376,7 @@ mod PlayableComponent {
             let callerIsWhite = (game.white_player_address == caller_address);
 
             let mut board = store.get_board(game_id);
+            let mut history = store.get_history(game_id);
 
             if callerIsWhite {
                 assert(board.side_to_move == Color::White && game.side_to_move == Color::White, 
@@ -382,14 +389,26 @@ mod PlayableComponent {
 
             board.move_piece(move_from, move_to, promotion);
             game.side_to_move = board.side_to_move;
+            history.fen = board.to_fen();
+            
             store.set_board(board);
             store.set_game(game);
-
+            store.set_history(history);
             // move history
             // position history
             // last move time (also update in Game model)
             // check if game is over -- checkmate, stalemate, draw, or time
 
+        }
+
+        fn getFen(
+            self: @ComponentState<TContractState>, 
+            world: IWorldDispatcher,
+            game_id: u128,
+        ) -> ByteArray {
+            let store: Store = StoreTrait::new(world);
+            let mut board = store.get_board(game_id);
+            board.to_fen()
         }
     }
 

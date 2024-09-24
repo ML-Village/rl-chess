@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 import { useComponentValue, useEntityQuery } from "@dojoengine/react";
 import { Entity, Has, HasValue, getComponentValueStrict, getComponentValue } from "@dojoengine/recs";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
@@ -12,25 +12,27 @@ import { entityIdToKey, bigintToEntity, keysToEntity, bigintToHex,
 
 import { useParams } from 'react-router-dom';
 import { feltToString, stringToFelt } from "@/utils/starknet";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNamePanel } from '@/hooks';
 import { Button } from '@/components/ui/button';
 import { PlayerPanel, RoomColumn } from '@/components/GameRoom';
+import { boardMappingIntToString, boardMappingStringToInt } from '@/constants';
 
 
 export const GameRoom = () => {
     const { roomId } = useParams();
     const {
         setup: {
-            clientComponents: { Game, Player },
+            clientComponents: { Game, Board, Player, History },
             client
         },
         account:{account},
     } = useDojo();
 
     const [game, setGame] = useState(new Chess());
-    const onDrop = (sourceSquare: string, targetSquare: string) => {
 
+    const onDrop = async(sourceSquare: string, targetSquare: string) => {
+        // console.log("GameRoom: onDrop - sourceSquare: ", sourceSquare)
+        // console.log("GameRoom: onDrop - targetSquare: ", targetSquare)
         const move = game.move({
             from: sourceSquare,
             to: targetSquare,
@@ -39,6 +41,28 @@ export const GameRoom = () => {
         console.log("GameRoom: Game Fen - ")
         console.log(game.fen())
         if (move === null) return false;
+
+        const move_from = boardMappingStringToInt[
+            sourceSquare as keyof typeof boardMappingStringToInt] ?? boardMappingStringToInt["a1"]
+        const move_to = boardMappingStringToInt[
+            targetSquare as keyof typeof boardMappingStringToInt] ?? boardMappingStringToInt["a1"]
+        
+        console.log("GameRoom: going to move from:", move_from)
+        console.log("GameRoom: going to move to:", move_to)
+        
+        await client.room.move({
+            account: account,
+            game_id: BigInt(roomId??""),
+            
+            move_from: boardMappingStringToInt[
+                sourceSquare as keyof typeof boardMappingStringToInt] ?? boardMappingStringToInt["a1"],
+
+            move_to: boardMappingStringToInt[
+                targetSquare as keyof typeof boardMappingStringToInt] ?? boardMappingStringToInt["a1"],
+                
+            promotion: 5, // 2: ROOK, 3: KNIGHT, 4: BISHOP, 5: QUEEN
+        })
+
         setGame(new Chess(game.fen()));
         return true
     }
@@ -49,7 +73,27 @@ export const GameRoom = () => {
     ]) as Entity;
 
     const gameObject = useComponentValue(Game, entityId);
-    //console.log("GameRoom: gameObject", gameObject)
+    const boardObject = useComponentValue(Board, entityId);
+    const historyObject = useComponentValue(History, entityId);
+    //console.log("GameRoom: History", historyObject);
+    useEffect(() => {
+        if(historyObject?.game_id){
+            console.log("GameRoom: History.fen: ", historyObject?.fen);
+            setGame(new Chess(historyObject?.fen ?? game.fen()));
+        }
+    }, [historyObject]);
+    // useEffect(() => {
+    //     const getFen = async() => {
+    //     if(boardObject){
+    //         const fen = await client.room.get_fen({
+    //             account: account,
+    //             game_id: BigInt(roomId??""),
+    //         })
+    //         console.log("GameRoom: FEN", fen);
+    //         }
+    //     }
+    //     getFen();
+    // }, [boardObject]);
 
     const playerInGame = bigintToHex(gameObject?.room_owner_address??0n) == account.address || bigintToHex(gameObject?.invitee_address??0n) == account.address;
     const playerIsOwner = bigintToHex(gameObject?.room_owner_address??0n) == account.address;

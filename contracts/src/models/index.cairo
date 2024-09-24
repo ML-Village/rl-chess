@@ -121,9 +121,10 @@ pub struct History {
 
     #[key]
     pub game_id: u128,
-
-    pub move_history: Array<(u8, u8)>,
-    pub move_history_string: Array<felt252>,
+    //pub fen: u8,
+    pub fen: ByteArray, 
+    // pub move_history: Array<(felt252, felt252)>,
+    pub move_history_string: Array<felt252>, // DOJO.js not showing felt array (alpha.8, 24/09/24)
 }
 
 #[derive(Copy, Drop, Serde)]

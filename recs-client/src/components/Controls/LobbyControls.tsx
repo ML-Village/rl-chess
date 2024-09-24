@@ -2,8 +2,8 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { FaChess, FaUserFriends } from "react-icons/fa";
 import { useDojo } from "@/dojo/useDojo";
-import { useNewGameModalStore } from "@/store";
-import { CreateGameModal } from "@/components/Modals";
+import { useNewGameModalStore, useInviteGameModalStore } from "@/store";
+import { CreateGameModal, InviteGameModal } from "@/components/Modals";
 //import { useAccount } from '@starknet-react/core';
 
 export const LobbyControls = () => {
@@ -15,12 +15,17 @@ export const LobbyControls = () => {
         account: { account},
     } = useDojo();
     const { open: createGameModalOpen, setOpen: setCreateGameModalOpen } = useNewGameModalStore();
+    const { open: inviteGameModalOpen, setOpen: setInviteGameModalOpen } = useInviteGameModalStore();
     //const { account, address, isConnected } = useAccount();
 
     
     
     const handleCreateGame = () => {
         setCreateGameModalOpen(true);
+    }
+
+    const handleInviteGame = () => {
+        setInviteGameModalOpen(true);
     }
 
 
@@ -30,6 +35,7 @@ export const LobbyControls = () => {
             my-2 py-2
             ">
                     <CreateGameModal />
+                    <InviteGameModal />
                     <Button className="text-2xl font-bold
                     p-8 rounded-xl
                     bg-gray-800 hover:bg-orange-600/70
@@ -43,7 +49,9 @@ export const LobbyControls = () => {
                     <Button className="text-2xl font-bold
                     p-8 rounded-xl
                     bg-gray-800 hover:bg-orange-600/70
-                    ">  
+                    "
+                    onClick={handleInviteGame}
+                    >  
                         
                         <span className="mx-3" >Play A Friend</span>
                         <FaUserFriends className="text-3xl text-orange-700"/>

@@ -10,6 +10,8 @@ use rl_chess::store::{Store, StoreTrait};
 use rl_chess::models::player::{Player, PlayerTrait};
 use rl_chess::models::game::{Game, GameTrait};
 use rl_chess::models::format::{Format, FormatTrait};
+use rl_chess::models::board::{Board, BoardTrait};
+use rl_chess::models::history::{History, HistoryTrait};
 use rl_chess::types::color::Color;
 use rl_chess::systems::lobby::ILobbyDispatcherTrait;
 

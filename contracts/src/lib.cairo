@@ -14,6 +14,7 @@ mod models {
     mod game;
     mod board;
     mod format;
+    mod history;
 }
 
 mod components {

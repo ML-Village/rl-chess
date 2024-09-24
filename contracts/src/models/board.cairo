@@ -67,7 +67,7 @@ impl BoardImpl of BoardTrait {
             en_passant: 88, // 88 is the square index for "no square"
             halfmove_clock: 0,
             fullmove_number: 1,
-            last_move_time: 0,
+            last_move_time: 0
         }
     }
 
@@ -75,6 +75,106 @@ impl BoardImpl of BoardTrait {
     fn start_board(ref self: Board) {
         self.side_to_move = Color::White;
         self.last_move_time = get_block_timestamp();
+    }
+
+    #[inline]
+    fn to_fen(ref self: Board) -> ByteArray {
+        let mut fen: ByteArray = "";
+
+        // 1. Piece placement
+        for rank in array![7,6,5,4,3,2,1,0].span() {
+            let mut empty_count:u8 = 0;
+            for file in array![0,1,2,3,4,5,6,7].span() {
+                let square: u8 = ((*rank) * 8) + (*file);
+                let piece = self.piece_at(square);
+                let color = self.color_at(square);
+                if (piece.is_some() && color.is_some()) {
+                    if empty_count > 0 {
+                        fen += format!("{empty_count}");
+                        empty_count = 0;
+                    }
+
+                    let symbol = match (piece.unwrap(), color.unwrap()){
+                        (Piece::Pawn, Color::White) => "P",
+                        (Piece::Rook, Color::White) => "R",
+                        (Piece::Knight, Color::White) => "N",
+                        (Piece::Bishop, Color::White) => "B",
+                        (Piece::Queen, Color::White) => "Q",
+                        (Piece::King, Color::White) => "K",
+                        (Piece::Pawn, Color::Black) => "p",
+                        (Piece::Rook, Color::Black) => "r",
+                        (Piece::Knight, Color::Black) => "n",
+                        (Piece::Bishop, Color::Black) => "b",
+                        (Piece::Queen, Color::Black) => "q",
+                        (Piece::King, Color::Black) => "k",
+                        _ => "", // suppose to increment empty count
+                    };
+                    fen += symbol;
+                } else {
+                    empty_count += 1;
+                };
+            };
+            if empty_count > 0 {
+                fen += format!("{empty_count}");
+            };
+            if (*rank) > 0 {
+                fen += "/";
+            };
+        };
+
+        // 2. Active color
+        fen += " ";
+        match self.side_to_move {
+            Color::White => fen += "w",
+            Color::Black => fen += "b",
+            _ => {
+                assert(false, errors::BOARD_INVALID_COLOR);
+            },
+        };
+        
+        // 3. Castling availability
+        fen += " ";
+        let mut castling: ByteArray = "";
+        if self.castling_rights == 0 {
+            fen += "-";
+        } else {
+            
+            if self.castling_rights & 0b1000 != 0 { castling +="K"; }
+            if self.castling_rights & 0b0100 != 0 { castling += "Q"; }
+            if self.castling_rights & 0b0010 != 0 { castling += "k"; }
+            if self.castling_rights & 0b0001 != 0 { castling += "q"; }
+            fen += castling;
+        };
+        
+        // 4. En passant target square              
+        fen += " ";
+        if self.en_passant == 88 {  
+            fen += "-";
+        } else {
+            //let file: felt252 = ((self.en_passant % 8).into() + 'a'); // 97 is the ascii value for 'a'
+            let file: ByteArray = match self.en_passant % 8 {
+                0 => "a",
+                1 => "b",
+                2 => "c",
+                3 => "d",
+                4 => "e",
+                5 => "f",
+                6 => "g",
+                7 => "h",
+                _ => "",
+            };
+            let rank: u8 = ((self.en_passant / 8) + 1);
+            fen += file;
+            fen += format!("{}", rank);
+        };
+
+        // 5. Halfmove clock
+        fen += format!(" {}",self.halfmove_clock);
+
+        // 6. Fullmove number
+        fen += format!(" {}",self.fullmove_number);
+
+        return fen; // return snapshot?
     }
 
     #[inline]

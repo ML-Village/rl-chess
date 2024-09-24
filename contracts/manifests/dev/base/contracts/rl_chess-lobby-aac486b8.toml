@@ -1,6 +1,6 @@
 kind = "DojoContract"
-class_hash = "0x708c1846eefe0449a71a0f616892e5ff839115e0bf123e05b5ad9300b69d18f"
-original_class_hash = "0x708c1846eefe0449a71a0f616892e5ff839115e0bf123e05b5ad9300b69d18f"
+class_hash = "0x6651a3e0fab7775020d176f5e7177f74c4c78f01df0da95c0d431ee9735bfb5"
+original_class_hash = "0x6651a3e0fab7775020d176f5e7177f74c4c78f01df0da95c0d431ee9735bfb5"
 base_class_hash = "0x0"
 abi = "manifests/dev/base/abis/contracts/rl_chess-lobby-aac486b8.json"
 reads = []
