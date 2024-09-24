@@ -28,6 +28,7 @@ mod PlayableComponent {
     use rl_chess::types::profile::ProfilePicType;
     use rl_chess::types::gamestate::GameState;
     use rl_chess::types::color::Color;
+    use rl_chess::types::piece::Piece;
     use rl_chess::utils::seeder::{make_seed};
 
     // Errors
@@ -388,6 +389,61 @@ mod PlayableComponent {
             }
 
             let move_integer = format!("{}", board.last_move_integer);
+            let piece_from = board.piece_at(move_from).unwrap();
+            let color_from = board.color_at(move_from).unwrap();
+            let enpassant_capture_square = board.is_enpassant_capture(move_from, move_to);
+
+            let piece_from_string:ByteArray = match (piece_from, color_from) {
+                (Piece::Pawn, Color::White) => "P",
+                (Piece::Rook, Color::White) => "R",
+                (Piece::Knight, Color::White) => "N",
+                (Piece::Bishop, Color::White) => "B",
+                (Piece::Queen, Color::White) => "Q",
+                (Piece::King, Color::White) => "K",
+                (Piece::Pawn, Color::Black) => "p",
+                (Piece::Rook, Color::Black) => "r",
+                (Piece::Knight, Color::Black) => "n",
+                (Piece::Bishop, Color::Black) => "b",
+                (Piece::Queen, Color::Black) => "q",
+                (Piece::King, Color::Black) => "k",
+                _ => "",
+            };
+            let capture_string:ByteArray = if (enpassant_capture_square < 64){
+                "x"
+            } else if (board.is_normal_capture(move_from, move_to)) {
+                "x"
+            } else {
+                ""
+            };
+
+            let destination_file:ByteArray = if (enpassant_capture_square < 64) {
+                match (enpassant_capture_square % 8) {
+                    0 => "a",
+                    1 => "b",
+                    2 => "c",
+                    3 => "d",
+                    4 => "e",
+                    5 => "f",
+                    6 => "g",
+                    7 => "h",
+                    _ => "",
+                }
+            } else {
+                match (move_to % 8) {
+                    0 => "a",
+                    1 => "b",
+                    2 => "c",
+                    3 => "d",
+                    4 => "e",
+                    5 => "f",
+                    6 => "g",
+                    7 => "h",
+                    _ => "",
+                }
+            };
+
+            let destination_rank:ByteArray = format!("{}", ((move_to / 8) + 1));
+
             board.move_piece(move_from, move_to, promotion);
             game.side_to_move = board.side_to_move;
             history.fen = board.to_fen();
@@ -396,7 +452,23 @@ mod PlayableComponent {
             if(board.side_to_move == Color::Black) {
                 history.move_history_integer += format!("{}. {}-{}", move_integer, move_from, move_to);
             } else {
-                history.move_history_integer += format!(" {}-{} ", move_to, move_from);
+                history.move_history_integer += format!(" {}-{} ", move_from, move_to);
+            }
+
+            // update move_history_strings
+            if(board.side_to_move == Color::Black) {
+                history.move_history_string += format!("{}. ", move_integer);
+                history.move_history_string += piece_from_string;
+                history.move_history_string += capture_string;
+                history.move_history_string += destination_file;
+                history.move_history_string += destination_rank;
+            } else {
+                history.move_history_string += " ";
+                history.move_history_string += piece_from_string;
+                history.move_history_string += capture_string;
+                history.move_history_string += destination_file;
+                history.move_history_string += destination_rank;
+                history.move_history_string += " ";
             }
             
             store.set_board(board);

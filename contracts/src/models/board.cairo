@@ -414,13 +414,47 @@ impl BoardImpl of BoardTrait {
         // self.position_history.push(new_hash);
 
         // self.last_move = Some((from, to, moving_piece));
-        
+
         self.last_move_time = get_block_timestamp();
         if (self.side_to_move == Color::White) {
             self.last_move_integer += 1;
         }
 
     }
+
+    #[inline]
+    fn is_normal_capture(ref self: Board, from: u8, to: u8) -> bool {
+        //let piece_from = self.piece_at(from);
+        let color_from = self.color_at(from);
+        
+        let color_to = self.color_at(to);
+        //let target_piece = self.piece_at(to);
+
+        // check if it is normal capture
+        if (
+            (color_from.is_some() && color_to.is_some())
+            &&
+            (color_from.unwrap() == color_to.unwrap().next())
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    #[inline]
+    fn is_enpassant_capture(ref self: Board, from: u8, to: u8) -> u8 {
+        if (self.piece_at(from).unwrap() == Piece::Pawn) && (to == self.en_passant) {
+
+            let captured_pawn_square: u8 = if self.side_to_move == Color::White { to - 8 } else { to + 8 };
+
+            return captured_pawn_square;
+        } else {
+            return 88;
+        }
+    }
+    
+    
 
     
 
