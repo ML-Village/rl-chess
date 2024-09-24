@@ -38,8 +38,6 @@ export const GameRoom = () => {
             to: targetSquare,
             promotion: 'q',
         });
-        console.log("GameRoom: Game Fen - ")
-        console.log(game.fen())
         if (move === null) return false;
 
         const move_from = boardMappingStringToInt[
@@ -75,13 +73,17 @@ export const GameRoom = () => {
     const gameObject = useComponentValue(Game, entityId);
     const boardObject = useComponentValue(Board, entityId);
     const historyObject = useComponentValue(History, entityId);
-    //console.log("GameRoom: History", historyObject);
+    console.log("GameRoom: History", historyObject);
     useEffect(() => {
         if(historyObject?.game_id){
             console.log("GameRoom: History.fen: ", historyObject?.fen);
-            setGame(new Chess(historyObject?.fen ?? game.fen()));
+            const numOfspaces = historyObject?.fen.split(" ").length;
+            console.log("GameRoom: numOfspaces: ", numOfspaces);
+            if(numOfspaces > 4){
+                setGame(new Chess(historyObject?.fen ?? game.fen()));
+            }
         }
-    }, [historyObject]);
+    }, [roomId, boardObject]);
     // useEffect(() => {
     //     const getFen = async() => {
     //     if(boardObject){

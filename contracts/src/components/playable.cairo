@@ -387,9 +387,17 @@ mod PlayableComponent {
                     errors::NOT_PLAYERS_TURN);
             }
 
+            let move_integer = format!("{}", board.last_move_integer);
             board.move_piece(move_from, move_to, promotion);
             game.side_to_move = board.side_to_move;
             history.fen = board.to_fen();
+
+            // update move_history_integers
+            if(board.side_to_move == Color::Black) {
+                history.move_history_integer += format!("{}. {}-{}", move_integer, move_from, move_to);
+            } else {
+                history.move_history_integer += format!(" {}-{} ", move_to, move_from);
+            }
             
             store.set_board(board);
             store.set_game(game);

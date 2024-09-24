@@ -108,6 +108,7 @@ pub struct Board {
     pub halfmove_clock: u8, // For fifty-move rule
     pub fullmove_number: u16,
     pub last_move_time: u64,
+    pub last_move_integer: u64,
 }
 
 
@@ -124,7 +125,8 @@ pub struct History {
     //pub fen: u8,
     pub fen: ByteArray, 
     // pub move_history: Array<(felt252, felt252)>,
-    pub move_history_string: Array<felt252>, // DOJO.js not showing felt array (alpha.8, 24/09/24)
+    pub move_history_string: ByteArray, // DOJO.js not showing felt array (alpha.8, 24/09/24)
+    pub move_history_integer: ByteArray,
 }
 
 #[derive(Copy, Drop, Serde)]

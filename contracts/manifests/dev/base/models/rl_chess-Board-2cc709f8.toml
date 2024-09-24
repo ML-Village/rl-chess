@@ -1,6 +1,6 @@
 kind = "DojoModel"
-class_hash = "0x5c8ddfdced97b158965a1a020b32aafa77bdfb414115a965f7c2739e80ccbcf"
-original_class_hash = "0x5c8ddfdced97b158965a1a020b32aafa77bdfb414115a965f7c2739e80ccbcf"
+class_hash = "0x20afd71c77c72eb638b9aa03839caddf3db85e368cfbf73e85d586dc266642e"
+original_class_hash = "0x20afd71c77c72eb638b9aa03839caddf3db85e368cfbf73e85d586dc266642e"
 abi = "manifests/dev/base/abis/models/rl_chess-Board-2cc709f8.json"
 tag = "rl_chess-Board"
 manifest_name = "rl_chess-Board-2cc709f8"
@@ -127,5 +127,10 @@ key = false
 
 [[members]]
 name = "last_move_time"
+type = "u64"
+key = false
+
+[[members]]
+name = "last_move_integer"
 type = "u64"
 key = false

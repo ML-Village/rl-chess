@@ -487,6 +487,10 @@
       {
         "name": "last_move_time",
         "type": "core::integer::u64"
+      },
+      {
+        "name": "last_move_integer",
+        "type": "core::integer::u64"
       }
     ]
   },

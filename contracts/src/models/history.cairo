@@ -28,7 +28,8 @@ impl HistoryImpl of HistoryTrait {
             //fen: 1,
             fen: "",
             // move_history: ArrayTrait::<(felt252, felt252)>::new(),
-            move_history_string: ArrayTrait::<felt252>::new(),
+            move_history_string: "",
+            move_history_integer: "",
         }
     }
 }
