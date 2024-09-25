@@ -73,7 +73,7 @@ export const GameRoom = () => {
     const gameObject = useComponentValue(Game, entityId);
     const boardObject = useComponentValue(Board, entityId);
     const historyObject = useComponentValue(History, entityId);
-    console.log("GameRoom: History", historyObject);
+    
     useEffect(() => {
         if(historyObject?.game_id){
             console.log("GameRoom: History.fen: ", historyObject?.fen);

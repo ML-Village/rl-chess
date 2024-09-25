@@ -387,7 +387,9 @@ mod PlayableComponent {
                 assert(board.side_to_move == Color::Black && game.side_to_move == Color::Black, 
                     errors::NOT_PLAYERS_TURN);
             }
+            
 
+            // store move history params
             let move_integer = format!("{}", board.last_move_integer);
             let piece_from = board.piece_at(move_from).unwrap();
             let color_from = board.color_at(move_from).unwrap();
