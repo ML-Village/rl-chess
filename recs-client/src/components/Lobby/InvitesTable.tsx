@@ -50,7 +50,10 @@ export const InvitesTable = () => {
 
     // Filtering for games that you got invited
     const newGamesData = gamesData?.filter((game) => {
-        return bigintToHex(game?.invitee_address??0n) == account.address
+        return (
+            bigintToHex(game?.invitee_address??0n) == account.address &&
+            (game?.game_state == "Awaiting")
+        )
     }).map((game) => {
 
         //const ownerAddress = bigintToHex(game?.room_owner_address)
@@ -149,7 +152,7 @@ export const InvitesTable = () => {
                                 
                                 "/>
                                 <span>
-                                    {gameFormatconfig[g?.game_format_id??1]?.name ?? "na"}
+                                    {gameFormatconfig[g?.game_format_id??1]?.description ?? "na"}
                                 </span>
                             </div>
                         </TableCell>

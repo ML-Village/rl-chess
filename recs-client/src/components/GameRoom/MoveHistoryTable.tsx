@@ -61,7 +61,7 @@ export const MoveHistoryTable = ({roomId}:{roomId:string}) => {
                     <div className="text-xs pt-2.5 pb-1 px-3 text-transparent">
                             placeholder
                     </div>
-                    <div ref={tableRef} className="h-full overflow-y-scroll pb-2 pt-1">
+                    <div ref={tableRef} className="h-full overflow-y-auto pb-2 pt-1">
                         <Table className="h-full">
                             <TableBody className="text-sm h-full
                             overflow-y-scroll

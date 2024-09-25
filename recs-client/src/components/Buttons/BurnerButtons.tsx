@@ -11,7 +11,10 @@ import { Entity } from "@dojoengine/recs";
 
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 import { useRegModalStore } from "@/store/index";
-import { getPlayerPfPurlByNum, getPlayerName } from '@/utils';
+import { getPlayerPfPurlByNum, getPlayerName, formatAddress } from '@/utils';
+
+import { FaCopy } from "react-icons/fa";
+
 
 export const BurnerButtons = () => {
     const {
@@ -56,6 +59,15 @@ export const BurnerButtons = () => {
                     className="hover:cursor-pointer"
                     onClick={() => setOpen(true)}>
                     Edit Profile
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem 
+                    className="hover:cursor-pointer"
+                    onClick={() => {
+                        navigator.clipboard.writeText(account?.account.address);
+                    }}>
+                    {formatAddress(account?.account.address)}
+                    <FaCopy className="cursor-pointer mx-2" />
                     </DropdownMenuItem>
 
                     {/* <DropdownMenuItem 

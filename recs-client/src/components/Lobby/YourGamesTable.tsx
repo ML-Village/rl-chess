@@ -3,9 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
-    TableFooter,
     TableHead,
     TableHeader,
     TableRow,
@@ -23,12 +21,13 @@ import { FaChessBoard, FaRegChessKnight } from "react-icons/fa6";
 import { FaChessKnight } from "react-icons/fa";
 import { IoMdInfinite } from "react-icons/io";
 
-export const OpenRooms = () => {
+export const YourGamesTable = () => {
 
     const {
         setup: {
             clientComponents: { Game, Player },
         },
+        account: {account}
     } = useDojo();
     const navigate = useNavigate();
 
@@ -49,9 +48,13 @@ export const OpenRooms = () => {
     //console.log("OpenRoom: gamesData: ", gamesData)
 
 
-    // Filtering for games that are Awaiting only
+    // Filtering for games that you got invited
     const newGamesData = gamesData?.filter((game) => {
-        return (game?.game_state == "Awaiting" && game?.invitee_address == 0n)
+        return (
+            (bigintToHex(game?.invitee_address??0n) == account.address || bigintToHex(game?.room_owner_address??0n) == account.address)
+                &&
+            (game?.game_state == "Accepted" || game?.game_state == "InProgress")
+        )
     }).map((game) => {
 
         //const ownerAddress = bigintToHex(game?.room_owner_address)
@@ -128,7 +131,7 @@ export const OpenRooms = () => {
                             ">
                                 <div className={`border border-black rounded-full
                                 p-2.5 flex justify-center items-center
-                                ${(g?.white_player_address == g?.room_owner_address) ? "bg-orange-500/70":"bg-orange-100"}
+                                ${(g?.white_player_address == g?.room_owner_address) ? "bg-lime-600":"bg-orange-100"}
                                 `}>
                             {
                                 (g?.white_player_address == g?.room_owner_address)  ? 
@@ -143,7 +146,7 @@ export const OpenRooms = () => {
                         
                         <TableCell className="">
                             <div className="flex flex-nowrap 
-                            justify-start space-x-1
+                            justify-center space-x-1
                             items-center
                             ">
                                 <GameFormatIcon className="font-bold text-lg

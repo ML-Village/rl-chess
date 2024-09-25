@@ -68,6 +68,7 @@ export const GameRoom = () => {
     ]) as Entity;
 
     const gameObject = useComponentValue(Game, entityId);
+    console.log("GameRoom: gameObject: ", gameObject)
     const boardObject = useComponentValue(Board, entityId);
     const historyObject = useComponentValue(History, entityId);
 

@@ -73,8 +73,6 @@ export const CreateGameModal: React.FC = () => {
     };
   })
 
-  console.log("createGameModal: create game config -", gameConfigsWithCategories)
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-[425px]

@@ -28,10 +28,11 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
     ]) as Entity;
 
     const gameObject = useComponentValue(Game, entityId);
+    const gameAccepted = gameObject?.game_state == "Accepted";
     const gameStarted = gameObject?.game_state == "InProgress";
     const playerInGame = bigintToHex(gameObject?.room_owner_address??0n) == account.address || bigintToHex(gameObject?.invitee_address??0n) == account.address;
     const playerIsOwner = bigintToHex(gameObject?.room_owner_address??0n) == account.address;
-    //const playerIsInvitee = bigintToHex(gameObject?.invitee_address??0n) == account.address;
+    const playerIsInvitee = bigintToHex(gameObject?.invitee_address??0n) == account.address;
 
     const playerIsReady = playerInGame ? (playerIsOwner ? gameObject?.owner_ready??false : gameObject?.invitee_ready??false) : false;
     const ownerIsReady = gameObject?.owner_ready??false;
@@ -44,6 +45,14 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
         ])
     );
     const winnerName = getPlayerName(winner);
+
+    const handleAcceptInvite = async () => {
+        await client.lobby.reply_invite({
+            account: account,
+            game_id: BigInt(roomId??0),
+            accepted: true,
+        })
+    }
 
     return (
         <div className="flex justify-start items-center gap-x-1
@@ -67,7 +76,35 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
                             >
                         Game: {gameObject?.game_state}
                     </button>
-
+                    {/* Invitee Accept Button */}
+                    { gameObject?.game_state == "Awaiting" ?
+                        
+                        (
+                        playerIsInvitee ?
+                        <Button className="py-2 rounded-lg bg-red-500 font-semibold
+                        text-white hover:text-white text-xs 2xl:text-sm
+                        px-1 xl:px-2 2xl:px-2
+                        grow
+                        "
+                        onClick={handleAcceptInvite}
+                        >
+                            Invitee Pls Accept Invite!!
+                        </Button>
+                        :
+                        <Button className="py-2 rounded-lg border border-red-500
+                        bg-transparent font-semibold
+                        text-red-500 text-xs 2xl:text-sm
+                        px-1 xl:px-2 2xl:px-2
+                        hover:bg-transparent hover:cursor-default
+                        grow
+                        "
+                        >
+                            AWAITING INVITEE ACCEPTANCE
+                        </Button>
+                        )
+                    :
+                    <></>
+                    }
                     {/* Results Panel */}
                     {gameObject?.game_state == "Resolved" ?
                         <div className="flex items-center gap-x-1
@@ -142,6 +179,7 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
                                 onClick={async ()=>{
                                     await client.lobby.switch_sides({account, game_id: BigInt(roomId??0)})
                                 }}
+                                disabled={everyoneIsReady}
                                 >
                                     Switch Sides
                                 </Button>
@@ -167,7 +205,7 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
                                 onClick={async()=>{
                                     await client.lobby.start_game({account, game_id: BigInt(roomId??0)})
                                 }}
-                                disabled={!everyoneIsReady}
+                                disabled={!everyoneIsReady || !gameAccepted || !playerIsOwner}
                                 >
                                     Start Game
                                 </Button>
