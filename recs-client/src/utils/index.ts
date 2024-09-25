@@ -2,7 +2,7 @@ import { BigNumberish } from 'starknet';
 import { getEntityIdFromKeys } from '@dojoengine/utils';
 import { Component, Entity, getComponentValue } from '@dojoengine/recs';
 export * from './gameModelUtils';
-
+export * from './moveHistoryUtils';
 export enum Direction {
     Left = 1,
     Right = 2,
@@ -38,7 +38,6 @@ export function updatePositionWithDirection(
     }
     return value;
 }
-
 
 export const formatAddress = (address: string | undefined): string => {
     if (address && address.length >= 8) {

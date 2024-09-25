@@ -13,6 +13,8 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
+import { parseMoveHistory } from "@/utils";
+
 export const MoveHistoryTable = ({roomId}:{roomId:string}) => {
     const {
         setup: {
@@ -61,19 +63,25 @@ export const MoveHistoryTable = ({roomId}:{roomId:string}) => {
                     </div>
                     <div ref={tableRef} className="h-full overflow-y-scroll pb-2 pt-1">
                         <Table className="h-full">
-                            <TableBody className="text-xs h-full
+                            <TableBody className="text-sm h-full
                             overflow-y-scroll
                             ">
                                 {
                                     move_history_table.map((move, i) => (
                                         <TableRow key={i+"_move_hist"}
-                                            className="hover:bg-inherit border-none w-full">
+                                            className={`border-none w-full ${i % 2 === 0 ? 'bg-transparent hover:bg-inherit' : 'bg-white/10 hover:bg-white/20'}`}>
                                             <TableCell className="p-1 px-2 mx-1 h-6 w-[1em] text-center">{i + 1}.</TableCell>
-                                            <TableCell className="p-1 h-6 mx-2 text-center">
-                                                <span className="hover:bg-white/40 hover:cursor-pointer rounded-sm p-1">{move[0]}</span>
+                                            <TableCell className="p-1 h-8 mx-2 text-center">
+                                                <span className="hover:bg-white/40 hover:cursor-pointer rounded-sm p-1 
+                                                flex items-center justify-end w-[3.5em]">{
+                                                    parseMoveHistory(move[0])}
+                                                </span>
                                             </TableCell>
-                                            <TableCell className="p-1 h-6 mx-2 text-center">
-                                                <span className="hover:bg-white/40 hover:cursor-pointer rounded-sm p-1">{move[1]}</span>
+                                            <TableCell className="p-1 h-8 mx-2 text-center">
+                                                <span className="hover:bg-white/40 hover:cursor-pointer rounded-sm p-1 
+                                                flex items-center justify-end w-[3.5em]">{
+                                                    parseMoveHistory(move[1])}
+                                                </span>
                                             </TableCell>
                                             <TableCell className="p-1 h-6 text-center w-1/3"> </TableCell>
                                         </TableRow>
