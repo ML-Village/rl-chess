@@ -149,7 +149,7 @@ export const LiveGamesTable = () => {
                                 
                                 "/>
                                 <span>
-                                    {gameFormatconfig[g?.game_format_id??1]?.name ?? "na"}
+                                    {gameFormatconfig[g?.game_format_id??1]?.description ?? "na"}
                                 </span>
                             </div>
                         </TableCell>
