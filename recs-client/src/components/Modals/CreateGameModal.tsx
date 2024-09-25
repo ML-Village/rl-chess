@@ -46,8 +46,8 @@ export const CreateGameModal: React.FC = () => {
   }).sort((a, b) => (a.format_id ?? 0) - (b.format_id ?? 0));
 
   const handleCreateGame = async (config) => {
-    console.log("LobbyControls: creating game");
-    console.log(config)
+    //console.log("LobbyControls: creating game");
+    //console.log(config)
     if (account) {
         try{
             //await create_game(account.account as AccountInterface, 1);

@@ -17,7 +17,7 @@ export const LobbyControlsController = () => {
     const { account, address, isConnected } = useAccount();
 
     const handleCreateGame = async () => {
-        console.log("creating game");
+        console.log("Lobby Controls: creating game...");
         if (account && isConnected) {
             try{
                 //await create_game(account.account as AccountInterface, 1);

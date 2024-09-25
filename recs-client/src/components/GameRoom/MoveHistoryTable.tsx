@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect,useRef } from 'react';
 
 import { useComponentValue, useEntityQuery } from "@dojoengine/react";
 import { Entity, Has, HasValue, getComponentValueStrict, getComponentValue } from "@dojoengine/recs";
@@ -20,6 +20,8 @@ export const MoveHistoryTable = ({roomId}:{roomId:string}) => {
         },
     } = useDojo();
 
+    const tableRef = useRef<HTMLDivElement>(null);
+
     const entityId = getEntityIdFromKeys([
         BigInt(roomId??""),
     ]) as Entity;
@@ -40,6 +42,12 @@ export const MoveHistoryTable = ({roomId}:{roomId:string}) => {
         });
     }, [historyObject, entityId]);
 
+    useEffect(() => {
+        if (tableRef.current) {
+            tableRef.current.scrollTop = tableRef.current.scrollHeight;
+        }
+    }, [move_history_table]);
+
     return (
         <div className="w-full
             my-2
@@ -48,10 +56,10 @@ export const MoveHistoryTable = ({roomId}:{roomId:string}) => {
                 mx-6 h-[35vh] px-1
                 bg-black/30
                 border border-blue-950/80 rounded-lg overflow-y-hidden">
-                    <div className="text-xs text-white pt-2.5 pb-1 px-3 text-transparent">
+                    <div className="text-xs pt-2.5 pb-1 px-3 text-transparent">
                             placeholder
                     </div>
-                    <div className="h-full overflow-y-scroll pb-2 pt-1">
+                    <div ref={tableRef} className="h-full overflow-y-scroll pb-2 pt-1">
                         <Table className="h-full">
                             <TableBody className="text-xs h-full
                             overflow-y-scroll

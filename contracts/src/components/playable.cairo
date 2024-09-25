@@ -4,6 +4,7 @@ mod PlayableComponent {
 
     use core::debug::PrintTrait;
     use traits::{Into, TryInto};
+    use core::num::traits::Bounded;
 
     // Starknet imports
 
@@ -45,7 +46,7 @@ mod PlayableComponent {
         const NOT_ALL_READY:felt252 = 'Not all players ready';
         const NOT_ENOUGH_PLAYERS:felt252 = 'Not enough players';
         const OWNER_NOT_IN_GAME:felt252 = 'Owner not in game';
-
+        const TIME_OVER:felt252 = 'Player ran out of time';
         const NOT_PLAYERS_TURN:felt252 = 'Not player move turn';
     }
 
@@ -368,6 +369,8 @@ mod PlayableComponent {
         ){  
             let store: Store = StoreTrait::new(world);
             let mut game = store.get_game(game_id);
+            let mut board = store.get_board(game_id);
+
             //assert caller in game
             assert((caller_address == game.white_player_address) || 
                 (caller_address == game.black_player_address), errors::NOT_PLAYER_OF_GAME);
@@ -376,9 +379,7 @@ mod PlayableComponent {
 
             let callerIsWhite = (game.white_player_address == caller_address);
 
-            let mut board = store.get_board(game_id);
-            let mut history = store.get_history(game_id);
-
+            // check if it's the caller's turn
             if callerIsWhite {
                 assert(board.side_to_move == Color::White && game.side_to_move == Color::White, 
                     errors::NOT_PLAYERS_TURN);
@@ -387,103 +388,137 @@ mod PlayableComponent {
                 assert(board.side_to_move == Color::Black && game.side_to_move == Color::Black, 
                     errors::NOT_PLAYERS_TURN);
             }
-            
 
-            // store move history params
-            let move_integer = format!("{}", board.last_move_integer);
-            let piece_from = board.piece_at(move_from).unwrap();
-            let color_from = board.color_at(move_from).unwrap();
-            let enpassant_capture_square = board.is_enpassant_capture(move_from, move_to);
-            let pawnletter: ByteArray = if(enpassant_capture_square<64){
-                format!("{}", ((move_from / 8) + 1))
-            }else{""};
-
-            let piece_from_string:ByteArray = match (piece_from, color_from) {
-                (Piece::Pawn, Color::White) => pawnletter,
-                (Piece::Rook, Color::White) => "R",
-                (Piece::Knight, Color::White) => "N",
-                (Piece::Bishop, Color::White) => "B",
-                (Piece::Queen, Color::White) => "Q",
-                (Piece::King, Color::White) => "K",
-                (Piece::Pawn, Color::Black) => pawnletter,
-                (Piece::Rook, Color::Black) => "r",
-                (Piece::Knight, Color::Black) => "n",
-                (Piece::Bishop, Color::Black) => "b",
-                (Piece::Queen, Color::Black) => "q",
-                (Piece::King, Color::Black) => "k",
-                _ => "",
-            };
-            let capture_string:ByteArray = if (enpassant_capture_square < 64){
-                "x"
-            } else if (board.is_normal_capture(move_from, move_to)) {
-                "x"
-            } else {
-                ""
+            // check if game is over by time:
+            let current_time: u64 = get_block_timestamp();
+            let player_time_left:i64 = if(callerIsWhite){
+                game.w_total_time_left.try_into().unwrap() - (current_time - game.b_last_move_time).try_into().unwrap()
+            }else{
+                game.b_total_time_left.try_into().unwrap() - (current_time - game.w_last_move_time).try_into().unwrap()
             };
 
-            let destination_file:ByteArray = if (enpassant_capture_square < 64) {
-                match (enpassant_capture_square % 8) {
-                    0 => "a",
-                    1 => "b",
-                    2 => "c",
-                    3 => "d",
-                    4 => "e",
-                    5 => "f",
-                    6 => "g",
-                    7 => "h",
-                    _ => "",
+            // update if player ran out of time, and set game to over
+            if player_time_left <= 0 {
+                if(callerIsWhite){
+                    game.w_total_time_left = 0;
+                    game.result = if(game.white_player_address == game.room_owner_address){2} else {1};
+                    game.winner = game.black_player_address;
+                } else {
+                    game.b_total_time_left = 0;
+                    game.result = if(game.black_player_address == game.room_owner_address){2} else {1};
+                    game.winner = game.white_player_address;
                 }
+                
+                game.game_state = GameState::Resolved;
+                game.room_end = get_block_timestamp();
             } else {
-                match (move_to % 8) {
-                    0 => "a",
-                    1 => "b",
-                    2 => "c",
-                    3 => "d",
-                    4 => "e",
-                    5 => "f",
-                    6 => "g",
-                    7 => "h",
+
+                // if player not out of time, move, update board and history
+                let mut history = store.get_history(game_id);
+                
+                // store move history params
+                let move_integer = format!("{}", board.last_move_integer);
+                let piece_from = board.piece_at(move_from).unwrap();
+                let color_from = board.color_at(move_from).unwrap();
+                let enpassant_capture_square = board.is_enpassant_capture(move_from, move_to);
+                let pawnletter: ByteArray = if(enpassant_capture_square<64){
+                    format!("{}", ((move_from / 8) + 1))
+                }else{""};
+
+                let piece_from_string:ByteArray = match (piece_from, color_from) {
+                    (Piece::Pawn, Color::White) => pawnletter,
+                    (Piece::Rook, Color::White) => "R",
+                    (Piece::Knight, Color::White) => "N",
+                    (Piece::Bishop, Color::White) => "B",
+                    (Piece::Queen, Color::White) => "Q",
+                    (Piece::King, Color::White) => "K",
+                    (Piece::Pawn, Color::Black) => pawnletter,
+                    (Piece::Rook, Color::Black) => "r",
+                    (Piece::Knight, Color::Black) => "n",
+                    (Piece::Bishop, Color::Black) => "b",
+                    (Piece::Queen, Color::Black) => "q",
+                    (Piece::King, Color::Black) => "k",
                     _ => "",
+                };
+                let capture_string:ByteArray = if (enpassant_capture_square < 64){
+                    "x"
+                } else if (board.is_normal_capture(move_from, move_to)) {
+                    "x"
+                } else {
+                    ""
+                };
+
+                let destination_file:ByteArray = if (enpassant_capture_square < 64) {
+                    match (enpassant_capture_square % 8) {
+                        0 => "a",
+                        1 => "b",
+                        2 => "c",
+                        3 => "d",
+                        4 => "e",
+                        5 => "f",
+                        6 => "g",
+                        7 => "h",
+                        _ => "",
+                    }
+                } else {
+                    match (move_to % 8) {
+                        0 => "a",
+                        1 => "b",
+                        2 => "c",
+                        3 => "d",
+                        4 => "e",
+                        5 => "f",
+                        6 => "g",
+                        7 => "h",
+                        _ => "",
+                    }
+                };
+
+                let destination_rank:ByteArray = format!("{}", ((move_to / 8) + 1));
+
+                board.move_piece(move_from, move_to, promotion);
+                game.side_to_move = board.side_to_move;
+                history.fen = board.to_fen();
+
+                // update move_history_integers
+                if(board.side_to_move == Color::Black) {
+                    history.move_history_integer += format!("{}. {}-{}", move_integer, move_from, move_to);
+                } else {
+                    history.move_history_integer += format!(" {}-{} ", move_from, move_to);
                 }
-            };
 
-            let destination_rank:ByteArray = format!("{}", ((move_to / 8) + 1));
+                // update move_history_strings
+                if(board.side_to_move == Color::Black) {
+                    history.move_history_string += format!("{}. ", move_integer);
+                    history.move_history_string += piece_from_string;
+                    history.move_history_string += capture_string;
+                    history.move_history_string += destination_file;
+                    history.move_history_string += destination_rank;
+                } else {
+                    history.move_history_string += " ";
+                    history.move_history_string += piece_from_string;
+                    history.move_history_string += capture_string;
+                    history.move_history_string += destination_file;
+                    history.move_history_string += destination_rank;
+                    history.move_history_string += " / ";
+                }
+                
+                // last move time in Game Model (Board model updated in board.move_piece())
+                if(callerIsWhite){
+                    game.set_total_time_left(1);
+                } else {
+                    game.set_total_time_left(2);
+                }
 
-            board.move_piece(move_from, move_to, promotion);
-            game.side_to_move = board.side_to_move;
-            history.fen = board.to_fen();
+                // check if game is over -- checkmate, stalemate, draw, or time
 
-            // update move_history_integers
-            if(board.side_to_move == Color::Black) {
-                history.move_history_integer += format!("{}. {}-{}", move_integer, move_from, move_to);
-            } else {
-                history.move_history_integer += format!(" {}-{} ", move_from, move_to);
+                // update store
+                store.set_history(history);
             }
 
-            // update move_history_strings
-            if(board.side_to_move == Color::Black) {
-                history.move_history_string += format!("{}. ", move_integer);
-                history.move_history_string += piece_from_string;
-                history.move_history_string += capture_string;
-                history.move_history_string += destination_file;
-                history.move_history_string += destination_rank;
-            } else {
-                history.move_history_string += " ";
-                history.move_history_string += piece_from_string;
-                history.move_history_string += capture_string;
-                history.move_history_string += destination_file;
-                history.move_history_string += destination_rank;
-                history.move_history_string += " / ";
-            }
-            
+            // update store
             store.set_board(board);
             store.set_game(game);
-            store.set_history(history);
-            // move history
-            // position history
-            // last move time (also update in Game model)
-            // check if game is over -- checkmate, stalemate, draw, or time
-
         }
 
         fn getFen(

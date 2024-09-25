@@ -5,11 +5,11 @@ export const useNamePanel = ({ownerName, ownerPfPurl}:{ownerName: string, ownerP
     return useMemo(()=>{
         return (
             <div className="flex">
-                        <Avatar className="h-10 aspect-square mx-2">
+                        <Avatar className="h-8 aspect-square mx-2">
                             <AvatarImage src={ownerPfPurl} alt={"username"} />
                             <AvatarFallback>{ownerName}</AvatarFallback>
                         </Avatar>
-                        <span className="mx-2 flex items-center text-xl">
+                        <span className="mx-2 flex items-center text-lg">
                             {ownerName}
                         </span>
             </div>

@@ -24,7 +24,8 @@ export const PlayerPanel = ({ownerNamePanel, ownerLastMoveTime, ownerTimeRemaini
     // console.log("Date.now()", Date.now());
     const timeDeltaSinceLastMove = (lastMoveTime== 0 ? 0 : Date.now() - new Date(lastMoveTime * 1000).getTime())/1000;
     //console.log("timeDeltaSinceLastMove", timeDeltaSinceLastMove);
-    const ownerRealRemainingTime = parseInt((Number(ownerTimeRemaining) - timeDeltaSinceLastMove).toString());
+    let ownerRealRemainingTime = parseInt((Number(ownerTimeRemaining) - timeDeltaSinceLastMove).toString());
+    ownerRealRemainingTime = ownerRealRemainingTime <= 0 ? 0 : ownerRealRemainingTime;
     // console.log("ownerTimeRemaining", ownerTimeRemaining);
     // console.log("ownerRealRemainingTime", ownerRealRemainingTime);
 
@@ -56,11 +57,12 @@ export const PlayerPanel = ({ownerNamePanel, ownerLastMoveTime, ownerTimeRemaini
     }, [game_state, ownerRealRemainingTime, ownerTurn]);
 
     return (
-        <div className="w-full m-4 px-10 flex items-center
+        <div className="w-full mx-4 px-10 flex items-center
         ">
             <div className="w-full p-3 px-1 flex flex-col justify-center
             rounded-2xl border-2 border-blue-900/80
                 ">
+
                     <div className="flex items-center w-full">
                         {ownerNamePanel}
                     </div>

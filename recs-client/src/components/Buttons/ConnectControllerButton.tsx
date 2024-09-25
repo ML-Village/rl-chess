@@ -53,19 +53,15 @@ export const ConnectControllerButton = () => {
 
 
     const cController = connector as CartridgeConnector
-    console.log("ConnectControllerButton.tsx: isConnected: ", isConnected)
-    console.log("ConnectControllerButton.tsx: address: ", address)
-    // console.log("ConnectControllerButton.tsx: Player: ", player)
-    // console.log("ConnectControllerButton.tsx: PlayerName: ", playerName)
 
     useEffect(() => {
         let username = ""
-        console.log("ConnectControllerButton.tsx: useEffect: ")
+        
         const getUserName = async () => {
             try {
                 username = await cController.username() ?? ""
                 setUserName(username??"")
-                console.log("ConnectControllerButton.tsx: getUserName: ", username)
+                
                 return username
             } catch(error) {
                 console.error("ConnectControllerButton.tsx: Failed to fetch name:", error)

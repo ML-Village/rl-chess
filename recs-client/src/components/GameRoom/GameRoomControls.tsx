@@ -11,6 +11,8 @@ import { entityIdToKey, bigintToEntity, keysToEntity, bigintToHex,
     getPlayerName, getPlayerPfPurlByNum
 } from '@/utils';
 
+import { FaChessKnight } from "react-icons/fa6";
+
 export const GameRoomControls = ({roomId}:{roomId:string}) => {
 
     const {
@@ -29,103 +31,156 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
     const gameStarted = gameObject?.game_state == "InProgress";
     const playerInGame = bigintToHex(gameObject?.room_owner_address??0n) == account.address || bigintToHex(gameObject?.invitee_address??0n) == account.address;
     const playerIsOwner = bigintToHex(gameObject?.room_owner_address??0n) == account.address;
-    const playerIsInvitee = bigintToHex(gameObject?.invitee_address??0n) == account.address;
+    //const playerIsInvitee = bigintToHex(gameObject?.invitee_address??0n) == account.address;
 
     const playerIsReady = playerInGame ? (playerIsOwner ? gameObject?.owner_ready??false : gameObject?.invitee_ready??false) : false;
     const ownerIsReady = gameObject?.owner_ready??false;
     const inviteeIsReady = gameObject?.invitee_ready??false;
     const everyoneIsReady = ownerIsReady && inviteeIsReady;
 
-    console.log("GameRoomControls: Owner is Ready", gameObject?.owner_ready)
-    console.log("GameRoomControls: Invitee is Ready", gameObject?.invitee_ready)
+    const winner = useComponentValue(Player, 
+        getEntityIdFromKeys([
+            gameObject?.winner,
+        ])
+    );
+    const winnerName = getPlayerName(winner);
+
     return (
         <div className="flex justify-start items-center gap-x-1
         w-full mx-2 px-6
-        ">
-            <button className={`py-3 rounded-lg font-semibold
-                    ${
-                        gameObject?.game_state == "Awaiting" ? "bg-yellow-300" :
-                        gameObject?.game_state == "Accepted" ? "bg-orange-400" :
-                        gameObject?.game_state == "InProgress" ? "bg-green-500":
-                        gameObject?.game_state == "Resolved" ? "bg-blue-900/80":
-                        "bg-purple-800/80"
+        ">  
+            {/* Game Status Button */}
+            <div className="w-full flex flex-col gap-y-1">
+                <div className="w-full flex justify-start gap-x-2">
+                    <button className={`py-2 rounded-lg font-semibold
+                            ${
+                                gameObject?.game_state == "Awaiting" ? "bg-yellow-300" :
+                                gameObject?.game_state == "Accepted" ? "bg-orange-400" :
+                                gameObject?.game_state == "InProgress" ? "bg-green-500":
+                                gameObject?.game_state == "Resolved" ? "bg-cyan-400/80":
+                                "bg-purple-800/80"
+                            }
+                            text-blue-950 text-xs 2xl:text-sm
+                            px-1 xl:px-2 2xl:px-2
+                            `}
+                            disabled={true}
+                            >
+                        Game: {gameObject?.game_state}
+                    </button>
+
+                    {/* Results Panel */}
+                    {gameObject?.game_state == "Resolved" ?
+                        <div className="flex items-center gap-x-1
+                        px-2 ml-auto
+                        ">
+                            <span className="text-sm">Winner:</span>
+                            {
+                                (gameObject?.result == 1 || gameObject?.result == 2) ? 
+                                    (
+                                        (gameObject?.winner == gameObject?.white_player_address) ?
+                                        <>
+                                            <span className="p-2 bg-gray-700/80 text-white rounded-full">
+                                                <FaChessKnight className="bg-gray-700/80 text-white" />
+                                            </span>
+                                            <span className="mx-1">{winnerName}</span>
+                                        </>
+                                        :
+                                        <>
+                                            <span className="p-2 bg-white text-black rounded-full">
+                                                <FaChessKnight className="bg-white text-black" />
+                                            </span>
+                                            <span className="mx-1">{winnerName}</span>
+                                        </>
+                                    )
+                                : 
+                                    
+                                    gameObject?.result == 3 ?
+                                    <span className="p-2 bg-orange-400 text-gray-800 rounded-lg">Draw</span>
+                                    :
+                                    <span className="p-2 bg-purple-800/80 text-white rounded-lg">Unresolved</span>
+                            }
+                        </div>
+                        :
+                        <>
+                        </>
                     }
-                    text-blue-950 text-xs 2xl:text-sm
-                    px-1 xl:px-2 2xl:px-2
-                    `}
-                    disabled={true}
-                    >
-                Game: {gameObject?.game_state}
-            </button>
-            {playerInGame ?
-                <>{
-                    !gameStarted ?
-                    <>
-                        <Button className="py-5 rounded-lg bg-purple-300/80
-                        text-blue-950 hover:text-white text-xs 2xl:text-sm
-                        px-1 xl:px-2 2xl:px-2
-                        "
-                        onClick={async ()=>{
-                            await client.lobby.switch_sides({account, game_id: BigInt(roomId??0)})
-                        }}
-                        >
-                            Switch Sides
-                        </Button>
+                </div>
 
-                        <Button className={`py-5 rounded-lg 
-                        ${playerIsReady ?"bg-green-400": "bg-orange-400"}
-                        text-blue-950 hover:text-white text-xs 2xl:text-sm
-                        px-1 xl:px-2 2xl:px-2
-                        `}
+                {/* Game Controls */}
+                <div className="w-full flex gap-x-1
+                
+                ">
+                    {playerInGame ?
+                        <>
 
-                        onClick={async()=>{
-                            await client.lobby.ready_up({account, game_id: BigInt(roomId??0)})
-                        }}
-                        disabled={playerIsReady}
-                        >
-                            Ready Up
-                        </Button>
-                        <Button className="py-5 rounded-lg bg-orange-400
-                        text-blue-950 hover:text-white text-xs 2xl:text-sm
-                        px-1 xl:px-2 2xl:px-2
-                        "
+                        {gameStarted ?
+                        <>  
+                            
+                            <Button className="py-5 rounded-lg bg-orange-400
+                            text-blue-950 hover:text-white text-xs 2xl:text-sm
+                            px-1 xl:px-2 2xl:px-2
+                            ">
+                                Offer Draw
+                            </Button>
+                            <Button className="py-5 rounded-lg bg-orange-400
+                            text-blue-950 hover:text-white text-xs 2xl:text-sm
+                            px-1 xl:px-2 2xl:px-2
+                            ">
+                                Resign
+                            </Button>
+                        </>
+                        :
+                        gameObject?.game_state == "Resolved" ?
+                            <>
+                            </>
+                            :
+                            <>
+                                <Button className="py-5 rounded-lg bg-purple-300/80
+                                text-blue-950 hover:text-white text-xs 2xl:text-sm
+                                px-1 xl:px-2 2xl:px-2
+                                "
+                                onClick={async ()=>{
+                                    await client.lobby.switch_sides({account, game_id: BigInt(roomId??0)})
+                                }}
+                                >
+                                    Switch Sides
+                                </Button>
 
-                        onClick={async()=>{
-                            await client.lobby.start_game({account, game_id: BigInt(roomId??0)})
-                        }}
-                        disabled={!everyoneIsReady}
-                        >
-                            Start Game
-                        </Button>
-                        
-                    </>
-                    :
-                    null
-                }
+                                <Button className={`py-5 rounded-lg 
+                                ${playerIsReady ?"bg-green-400": "bg-orange-400"}
+                                text-blue-950 hover:text-white text-xs 2xl:text-sm
+                                px-1 xl:px-2 2xl:px-2
+                                `}
 
-                {gameStarted ?
-                <>  
-                    
-                    <Button className="py-5 rounded-lg bg-orange-400
-                    text-blue-950 hover:text-white text-xs 2xl:text-sm
-                    px-1 xl:px-2 2xl:px-2
-                    ">
-                        Offer Draw
-                    </Button>
-                    <Button className="py-5 rounded-lg bg-orange-400
-                    text-blue-950 hover:text-white text-xs 2xl:text-sm
-                    px-1 xl:px-2 2xl:px-2
-                    ">
-                        Resign
-                    </Button>
-                </>
-                :
-                null
-                }
-                </>
-                :
-                <></>
-            }
+                                onClick={async()=>{
+                                    await client.lobby.ready_up({account, game_id: BigInt(roomId??0)})
+                                }}
+                                disabled={playerIsReady}
+                                >
+                                    Ready Up
+                                </Button>
+                                <Button className="py-5 rounded-lg bg-orange-400
+                                text-blue-950 hover:text-white text-xs 2xl:text-sm
+                                px-1 xl:px-2 2xl:px-2
+                                "
+
+                                onClick={async()=>{
+                                    await client.lobby.start_game({account, game_id: BigInt(roomId??0)})
+                                }}
+                                disabled={!everyoneIsReady}
+                                >
+                                    Start Game
+                                </Button>
+                                
+                            </>
+                        }
+                        </>
+
+                        :
+                        <></>
+                    }
+                </div>
+            </div>
         </div>
     )
 }

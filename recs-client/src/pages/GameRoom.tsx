@@ -45,9 +45,6 @@ export const GameRoom = () => {
         const move_to = boardMappingStringToInt[
             targetSquare as keyof typeof boardMappingStringToInt] ?? boardMappingStringToInt["a1"]
         
-        console.log("GameRoom: going to move from:", move_from)
-        console.log("GameRoom: going to move to:", move_to)
-        
         await client.room.move({
             account: account,
             game_id: BigInt(roomId??""),
@@ -73,12 +70,13 @@ export const GameRoom = () => {
     const gameObject = useComponentValue(Game, entityId);
     const boardObject = useComponentValue(Board, entityId);
     const historyObject = useComponentValue(History, entityId);
+
+    //console.log("GameRoom: gameObject: ", gameObject)
     
     useEffect(() => {
         if(historyObject?.game_id){
-            console.log("GameRoom: History.fen: ", historyObject?.fen);
+            //console.log("GameRoom: History.fen: ", historyObject?.fen);
             const numOfspaces = historyObject?.fen.split(" ").length;
-            console.log("GameRoom: numOfspaces: ", numOfspaces);
             if(numOfspaces > 4){
                 setGame(new Chess(historyObject?.fen ?? game.fen()));
             }
@@ -173,11 +171,13 @@ export const GameRoom = () => {
 
                 {/* Chessboard column */}
                 <div className="flex flex-col
-                justify-center items-center h-[88vh] w-[30vw]
+                justify-center items-center h-[88vh] w-[36vw]
                 border border-purple-500
                 ">
 
-                    {inviteeNotNull ? 
+                    {/* Top Player Panel */}
+                    {
+                        inviteeNotNull ? 
                         <PlayerPanel ownerNamePanel={
                             playerInGame ?  
                             (playerIsOwner ? inviteeNamePanel : ownerNamePanel)
@@ -206,19 +206,20 @@ export const GameRoom = () => {
                         
                         game_state={gameObject?.game_state ?? ""}
                         /> :
-                        
-                    <div className="w-full p-3 flex items-center
-                        ">
-                        <Button className="bg-orange-600"
-                        onClick={handleJoinGame}
-                        >
-                            Join Game
-                        </Button>
-                    </div>
+
+                        // Join Game Panel
+                        <div className="w-full p-3 flex items-center
+                            ">
+                            <Button className="bg-orange-600"
+                            onClick={handleJoinGame}
+                            >
+                                Join Game
+                            </Button>
+                        </div>
                     }
                     
-
-                    <div className="w-4/5 m-2 my-4
+                    {/* ChessBoard */}
+                    <div className="w-11/12 m-2 my-4
                     border-2 border-blue-900/80 rounded-lg
                         ">
                         <Chessboard 
@@ -237,7 +238,7 @@ export const GameRoom = () => {
                         />
                     </div>
                     
-
+                    {/* Bottom Player Panel */}
                     <PlayerPanel ownerNamePanel={playerInGame ?  
                     (playerIsOwner ? ownerNamePanel : inviteeNamePanel)
                     : ownerNamePanel} 

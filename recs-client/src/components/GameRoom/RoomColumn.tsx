@@ -9,7 +9,7 @@ export const RoomColumn = ({roomId, ownerName, inviteeName}:{roomId:string, owne
                 justify-start items-center h-full w-[28vw]
                 rounded-2xl overflow-hidden
                 text-white bg-gray-800/80
-                border-2 border-orange-500">
+                ">
             
             <TitleBar ownerName={ownerName} inviteeName={inviteeName} />
 

@@ -45,7 +45,7 @@ export const InvitesTable = () => {
             ...g
         }
     })
-    console.log("OpenRoom: gamesData: ", gamesData)
+    //console.log("OpenRoom: gamesData: ", gamesData)
 
 
     // Filtering for games that you got invited
@@ -72,7 +72,7 @@ export const InvitesTable = () => {
             room_start: formatTimestamp(game?.room_start??0),
         }
     })
-    console.log("openrooms.tsx: newGamesData: ", newGamesData)
+    //console.log("openrooms.tsx: newGamesData: ", newGamesData)
     return (
         <Table>
             <TableHeader >
@@ -95,7 +95,7 @@ export const InvitesTable = () => {
                     
                     const GameFormatIcon = gameFormatconfig[g?.game_format_id??1]?.icon ?? FaChessBoard;
                     
-                    console.log("got entity?", g?.game_entity)
+                    //console.log("got entity?", g?.game_entity)
 
                     return (
                     <TableRow key={"accounts_"+i}
