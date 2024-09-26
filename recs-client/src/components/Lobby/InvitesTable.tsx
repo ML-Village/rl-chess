@@ -51,7 +51,7 @@ export const InvitesTable = () => {
     // Filtering for games that you got invited
     const newGamesData = gamesData?.filter((game) => {
         return (
-            bigintToHex(game?.invitee_address??0n) == account.address &&
+            game?.invitee_address == BigInt(account.address) &&
             (game?.game_state == "Awaiting")
         )
     }).map((game) => {

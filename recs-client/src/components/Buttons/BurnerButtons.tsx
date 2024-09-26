@@ -40,17 +40,19 @@ export const BurnerButtons = () => {
                     
                     
                     <Button variant="ghost" 
-                    className="relative p-4 rounded-full
+                    className="relative p-4 rounded-md
                     hover:bg-blue-500/50
                     flex items-center
                     ">
                         <span className="mx-4 text-xl text-white">
                         {playerName}
                         </span>
-                        <Avatar className="h-8 w-8">
-                        <AvatarImage src={getPlayerPfPurlByNum(player?.profile_pic_uri??1)} alt={"username"} />
-                        <AvatarFallback>{playerName}</AvatarFallback>
-                        </Avatar>
+                        <span className="py-1">
+                            <Avatar className="h-7 w-7">
+                                <AvatarImage src={getPlayerPfPurlByNum(player?.profile_pic_uri??1)} alt={"username"} />
+                                <AvatarFallback>{playerName}</AvatarFallback>
+                            </Avatar>
+                        </span>
                     </Button>
 
                 </DropdownMenuTrigger>

@@ -53,7 +53,7 @@ export const YourGamesTable = () => {
         return (
             (bigintToHex(game?.invitee_address??0n) == account.address || bigintToHex(game?.room_owner_address??0n) == account.address)
                 &&
-            (game?.game_state == "Accepted" || game?.game_state == "InProgress")
+            (game?.game_state == "Accepted" || game?.game_state == "InProgress" || game?.game_state == "Awaiting")
         )
     }).map((game) => {
 
