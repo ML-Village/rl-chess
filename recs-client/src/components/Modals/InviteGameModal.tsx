@@ -137,7 +137,6 @@ export const InviteGameModal: React.FC = () => {
 
         <ToggleGroup
           className="w-full flex flex-col justify-center items-start space-y-0
-          border border-red-400
           "
           variant="outline"
 
@@ -163,7 +162,7 @@ export const InviteGameModal: React.FC = () => {
                         null
                       }{category}</div>
                       <div className="flex w-full gap-1 flex-wrap p-1
-                      justify-center items-center border border-green-400
+                      justify-center items-center
                       ">
                         {
                           import.meta.env.VITE_USE_CONTRACT_GAME_FORMATS=="true"?

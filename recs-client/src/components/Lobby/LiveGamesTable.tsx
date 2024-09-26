@@ -20,6 +20,7 @@ import { gameFormatconfig } from "@/constants/gameformat";
 import { FaChessBoard, FaRegChessKnight } from "react-icons/fa6";
 import { FaChessKnight } from "react-icons/fa";
 import { IoMdInfinite } from "react-icons/io";
+import { format as formatDateFNS } from "date-fns";
 
 export const LiveGamesTable = () => {
 
@@ -31,10 +32,11 @@ export const LiveGamesTable = () => {
     } = useDojo();
     const navigate = useNavigate();
 
-    const hasGames = useEntityQuery([Has(Game)]);
+    const hasGames = useEntityQuery([Has(Game), HasValue(Game, {
+        game_state: "InProgress"
+    })]);
 
     const gamesData = hasGames.map((entity) => {
-        //console.log("games data entity:", entity)
         const g = getComponentValue(Game, entity)
         const generatedEntity = getEntityIdFromKeys([
             BigInt(g?.game_id??0n)?? BigInt("0x0"),
@@ -45,34 +47,41 @@ export const LiveGamesTable = () => {
             ...g
         }
     })
-    //console.log("OpenRoom: gamesData: ", gamesData)
-
 
     // Filtering for games that you got invited
-    const newGamesData = gamesData?.filter((game) => {
-        return (game?.game_state == "InProgress" || game?.game_state == "Accepted")
-    }).map((game) => {
+    const newGamesData = gamesData?.map((game) => {
 
         //const ownerAddress = bigintToHex(game?.room_owner_address)
         const ownerEntity = getEntityIdFromKeys([
                                 game?.room_owner_address??0n,
                             ]) as Entity;
-        const player = getComponentValueStrict(Player, ownerEntity)??{}
-        const playerName = feltToString(String(player?.name ?? ""));
-        //const playerPfPnum = 
+        const player = getComponentValue(Player, ownerEntity)??{}
+        const playerName = player?.name ? feltToString(String(player?.name ?? "")) : "???";
+
+        const inviteeEntity = getEntityIdFromKeys([
+            game?.invitee_address??0n,
+        ]) as Entity;
+        const invitee = getComponentValue(Player, inviteeEntity)??{}
+        const inviteeName = invitee?.name ? feltToString(String(invitee?.name ?? "")) : "???";
+    
         return {
             ...game,
             game_format_id: game?.game_format_id,
             game_id: BigInt(game?.game_id??0n).toString(),
-            owner_name: playerName,
-            //room_owner_address: ownerAddress,
+            owner_name: playerName??"??",
+            invitee_name: inviteeName??"??",
+            room_owner_address: player?.address??0n,
+            invitee_address: invitee?.address??0n,
             owner_entity: ownerEntity,
             profile_pic_type: player?.profile_pic_type ?? "",
             profile_pic_uri: player?.profile_pic_uri ?? "0",
+            invitee_pic_type: invitee?.profile_pic_type ?? "",
+            invitee_pic_uri: invitee?.profile_pic_uri ?? "0",
+            owner_color: (game?.white_player_address == game?.room_owner_address) ? "w" : "b",
             room_start: formatTimestamp(game?.room_start??0),
         }
     })
-    //console.log("liveGames.tsx: newGamesData: ", newGamesData)
+    //console.log("openrooms.tsx: newGamesData: ", newGamesData)
     return (
         <Table>
             <TableHeader >
@@ -81,9 +90,9 @@ export const LiveGamesTable = () => {
                 ">
                     
                     <TableHead className="text-white px-8">Creator</TableHead>
-                    <TableHead className="text-center text-white">Owner Color</TableHead>
+                    <TableHead className="text-center text-white">Invitee</TableHead>
                     <TableHead className="text-center text-white">Game Type</TableHead>
-                    <TableHead className="text-center text-white">Total Time</TableHead>
+                    <TableHead className="text-center text-white">Started At</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -91,6 +100,9 @@ export const LiveGamesTable = () => {
 
                     let profilePicNum = g?.profile_pic_uri??0
                     profilePicNum = (typeof(profilePicNum) === "number") ? profilePicNum : 0;
+
+                    let inviteeProfilePicNum = g?.invitee_pic_uri??0
+                    inviteeProfilePicNum = (typeof(inviteeProfilePicNum) === "number") ? inviteeProfilePicNum : 0;
 
                     
                     const GameFormatIcon = gameFormatconfig[g?.game_format_id??1]?.icon ?? FaChessBoard;
@@ -114,32 +126,31 @@ export const LiveGamesTable = () => {
                             justify-start items-center
                             ">
                                 <Avatar className="mx-2">
-                                    <AvatarImage src={pfpCardImageUrl[profilePicNum]} alt={g?.owner_name ?? ""} />
+                                    <AvatarImage src={pfpCardImageUrl[profilePicNum]} alt={g?.owner_name ?? "??"} />
                                     <AvatarFallback>P</AvatarFallback>
                                 </Avatar>
-                                <span className="mx-2">{g?.owner_name ?? ""}</span>
+                                <span className="mx-2">{g?.owner_name ?? "??"}</span>
+                                <FaChessKnight className={`h-6 w-6 p-1 rounded-full
+                                    ${g?.owner_color == "w" ? "text-white bg-lime-600" : "text-black bg-orange-100"}
+                                `}/>
                             </div>
                         </TableCell>
 
-                        <TableCell className="text-center">
-                            <div className="flex justify-center items-center text-xl
-                            py-1
+                        <TableCell className="">
+                            <div className="flex flex-nowrap 
+                            justify-start items-center
                             ">
-                                <div className={`border border-black rounded-full
-                                p-2.5 flex justify-center items-center
-                                ${(g?.white_player_address == g?.room_owner_address) ? "bg-lime-600":"bg-orange-100"}
-                                `}>
-                            {
-                                (g?.white_player_address == g?.room_owner_address)  ? 
-                                <FaChessKnight className="text-white drop-shadow-lg
-                                
-                                "/> 
-                                : <FaChessKnight className="text-black drop-shadow-lg"/>
-                            }
-                                </div>
+                                <Avatar className="mx-2">
+                                    <AvatarImage src={pfpCardImageUrl[inviteeProfilePicNum]} alt={g?.invitee_name ?? "??"} />
+                                    <AvatarFallback>P</AvatarFallback>
+                                </Avatar>
+                                <span className="mx-2">{g?.invitee_name ?? "??"}</span>
+                                <FaChessKnight className={`h-6 w-6 p-1 rounded-full
+                                    ${g?.owner_color == "b" ? "text-white bg-lime-600" : "text-black bg-orange-100"}
+                                `}/>
                             </div>
                         </TableCell>
-                        
+                    
                         <TableCell className="">
                             <div className="flex flex-nowrap 
                             justify-center space-x-1
@@ -154,7 +165,10 @@ export const LiveGamesTable = () => {
                             </div>
                         </TableCell>
 
-                        <TableCell className="text-center">{gameFormatconfig[g?.game_format_id??1]?.total_time_string??<IoMdInfinite/>}</TableCell>
+                        <TableCell className="text-center">{
+                            `${formatDateFNS(g?.room_start, "MMM, d HH:mm")} hrs`
+                            ??<IoMdInfinite/>
+                        }</TableCell>
                         
                     </TableRow>
                     );

@@ -14,9 +14,12 @@ use rl_chess::utils::address::{address_to_string_literal, address_to_byte_array}
 use rl_chess::models::index::{Game, Color};
 use rl_chess::types::gamestate::{GameState, IntoGameStateU8, IntoGameStateFelt252};
 
+use rl_chess::constants::DEFAULT_MAX_EXPIRY_HOURS;
+
 mod errors {
     const GAME_INVALID_ID: felt252 = 'Game: invalid id';
     const GAME_INVALID_FORMAT_ID: felt252 = 'Game: invalid format id';
+    const GAME_INVALID_EXPIRY: felt252 = 'Game: invalid expiry';
 }
 
 #[generate_trait]
@@ -34,6 +37,9 @@ impl GameImpl of GameTrait {
         assert(game_id != 0, errors::GAME_INVALID_ID);
         // [Check] game_format_id is valid
         assert(game_format_id != 0, errors::GAME_INVALID_FORMAT_ID);
+        // [Check] invite_expiry is valid
+        assert(invite_expiry <= DEFAULT_MAX_EXPIRY_HOURS * 3600, errors::GAME_INVALID_EXPIRY);
+        
         // [Return] Game
         Game {
             game_id,
@@ -41,7 +47,7 @@ impl GameImpl of GameTrait {
             w_turn_expiry_time: 0,
             b_turn_expiry_time: 0,
 
-            invite_expiry,
+            invite_expiry: invite_expiry + get_block_timestamp(),
 
             room_owner_address,
             invitee_address,

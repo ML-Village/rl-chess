@@ -13,6 +13,8 @@ import { GiBulletBill, GiLightningTrio } from "react-icons/gi";
 import { BiSolidTimer } from "react-icons/bi";
 import { WiDayLightWind } from "react-icons/wi";
 
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { feltToString, stringToFelt } from "@/utils/starknet";
 
 export const CreateGameModal: React.FC = () => {
@@ -26,6 +28,7 @@ export const CreateGameModal: React.FC = () => {
   } = useDojo();
 
   const { open, setOpen } = useNewGameModalStore();
+  const [expiryTime, setExpiryTime] = useState(24);
 
   // entity id we are syncing
   const entityId = getEntityIdFromKeys([
@@ -54,7 +57,7 @@ export const CreateGameModal: React.FC = () => {
             await client.lobby.create_game({
                 account,
                 game_format_id: config.format_id??1,
-                invite_expiry: 86400, // 1 day
+                invite_expiry: expiryTime*3600, // 1 day
             });
             setOpen(false);
         }catch(e){
@@ -86,6 +89,22 @@ export const CreateGameModal: React.FC = () => {
             Game expires as set.
           </DialogDescription>
         </DialogHeader>
+
+        {/* Expiry Time (Hours) */}
+        <div className="flex items-center gap-x-2">
+          <Label className="flex-1">Expiry Time (Hours)</Label>
+          <Input
+            name="expiry_time"
+            type="number"
+            className="w-2/5 focus-visible:ring-orange-500
+            text-center
+            "
+            min={1}
+            max={72}
+            value={expiryTime}
+            onChange={(e) => setExpiryTime(Number(e.target.value))}
+          />
+        </div>
         
           {
             gameCategoryOrder.map((category) => {

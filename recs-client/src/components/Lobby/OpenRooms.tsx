@@ -23,6 +23,8 @@ import { FaChessBoard, FaRegChessKnight } from "react-icons/fa6";
 import { FaChessKnight } from "react-icons/fa";
 import { IoMdInfinite } from "react-icons/io";
 
+import { format as formatDateFNS } from 'date-fns';
+
 export const OpenRooms = () => {
 
     const {
@@ -32,7 +34,10 @@ export const OpenRooms = () => {
     } = useDojo();
     const navigate = useNavigate();
 
-    const hasGames = useEntityQuery([Has(Game)]);
+    const hasGames = useEntityQuery([Has(Game), HasValue(Game, {
+        game_state: "Awaiting",
+        invitee_address: 0n
+    })]);
 
     const gamesData = hasGames.map((entity) => {
         //console.log("games data entity:", entity)
@@ -46,13 +51,11 @@ export const OpenRooms = () => {
             ...g
         }
     })
-    //console.log("OpenRoom: gamesData: ", gamesData)
+    console.log("OpenRoom: gamesData: ", gamesData)
 
 
     // Filtering for games that are Awaiting only
-    const newGamesData = gamesData?.filter((game) => {
-        return (game?.game_state == "Awaiting" && game?.invitee_address == 0n)
-    }).map((game) => {
+    const newGamesData = gamesData?.map((game) => {
 
         //const ownerAddress = bigintToHex(game?.room_owner_address)
         const ownerEntity = getEntityIdFromKeys([
@@ -80,11 +83,11 @@ export const OpenRooms = () => {
                 <TableRow className="bg-blue-950
                 hover:bg-blue-950
                 ">
-                    
                     <TableHead className="text-white px-8">Creator</TableHead>
+                    <TableHead className="text-center text-white">ELO</TableHead>
                     <TableHead className="text-center text-white">Owner Color</TableHead>
                     <TableHead className="text-center text-white">Game Type</TableHead>
-                    <TableHead className="text-center text-white">Total Time</TableHead>
+                    <TableHead className="text-center text-white">Expiry</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
@@ -123,6 +126,10 @@ export const OpenRooms = () => {
                         </TableCell>
 
                         <TableCell className="text-center">
+                            {g?.owner_elo ?? "na"}
+                        </TableCell>
+                        
+                        <TableCell className="text-center">
                             <div className="flex justify-center items-center text-xl
                             py-1
                             ">
@@ -155,7 +162,9 @@ export const OpenRooms = () => {
                             </div>
                         </TableCell>
 
-                        <TableCell className="text-center">{gameFormatconfig[g?.game_format_id??1]?.total_time_string??<IoMdInfinite/>}</TableCell>
+                        <TableCell className="text-center">{
+                        `${formatDateFNS(g?.invite_expiry * 1000, "MMM, d HH:mm")} hrs`
+                        ??<IoMdInfinite/>}</TableCell>
                         
                     </TableRow>
                     );

@@ -43,7 +43,7 @@ export const AccountsTable = () => {
                 hover:bg-blue-950
                 ">
                     <TableHead className="w-[80px] text-center text-white">Profile</TableHead>
-                    <TableHead className="w-[200px] text-white">UserName</TableHead>
+                    <TableHead className="w-[200px] text-white">Name</TableHead>
                     <TableHead className="text-white">Address</TableHead>
                     <TableHead className="text-center text-white">ELO</TableHead>
                     <TableHead className="text-center text-white">Wins</TableHead>
