@@ -6,8 +6,8 @@ use traits::{Into, TryInto};
 
 use rl_chess::helpers::bitmap::Bitmap;
 use rl_chess::models::board::Board;
-use rl_chess::types::piece::Piece;
-use rl_chess::types::color::Color;
+use rl_chess::types::piece::{Piece, PieceTrait};
+use rl_chess::types::color::{Color, ColorTrait};
 use rl_chess::helpers::from_to::FROM_TO_VEC;
 use rl_chess::constants::{FILE_A, FILE_H, RANK_1, RANK_8,
     DIAGONAL_MASK, ANTI_DIAGONAL_MASK
@@ -26,7 +26,7 @@ pub fn piece_at(board: Board, square: u8) -> Option<Piece> {
 pub fn color_at(board: Board, square: u8) -> Option<Color> {
     if Bitmap::get_bit_at(board.whites, square) { return Option::Some(Color::White); }
     if Bitmap::get_bit_at(board.blacks, square) { return Option::Some(Color::Black); }
-    Option::None
+    Option::Some(Color::None) //changed at 27/09 1030hrs Sg, see if it fails
 }
 
 pub fn is_square_attacked(board: Board, square: u8, by_color: Color) -> bool {
@@ -436,13 +436,18 @@ pub fn wrapping_mul_u64(a: u64, b: u64) -> u64 {
 pub fn generate_sliding_moves(from: u8, board: Board) -> Array<FROM_TO_VEC> {
     let mut moves: Array<FROM_TO_VEC> = ArrayTrait::new();
     let from_piece = piece_at(board, from).unwrap();
-    let from_color = color_at(board, from).unwrap();
+    //let from_color = color_at(board, from).unwrap();
+    
+    // println!("
+    // from_piece: {} from_color: {}
+    // ", 
+    //     from_piece.to_string(), from_color.to_string());
 
     let occupied = board.whites | board.blacks;
 
     // Define directions for rook and bishop
     let rook_directions = array![1, -1, 8, -8];
-    let bishop_directions = array![7, -7, 9, -9];
+    let bishop_directions = array![7, -7, 9, -9]; // 7 is left diag up, -7 is right diag down etc.
 
     let directions = match from_piece {
         Piece::Rook => rook_directions,
@@ -472,17 +477,27 @@ pub fn generate_sliding_moves(from: u8, board: Board) -> Array<FROM_TO_VEC> {
             break;
         }
         let direction = *directions.at(i);
-        let mut to = from;
+        let mut to: i8 = from.try_into().unwrap();
         loop {
-            to = (to.into() + direction).try_into().unwrap();
-            if to >= 64 || (to % 8 == 0 && direction == -1) || (to % 8 == 7 && direction == 1) {
+            to = to + direction; // check by moving 1 direction unit
+            
+            if to >= 64 || to < 0 || // off the board
+            (to % 8 == 0 && (direction == 1 || direction == -7 || direction == 9)) || // the used direction has already caused left wrap
+            (to % 8 == 7 && (direction == -1 || direction == 7 || direction == -9)) { // the used direction has already caused right wrap
                 break; // Off the board or wrapped around
             }
-            moves.append(FROM_TO_VEC { from, to });
-            if Bitmap::get_bit_at(occupied, to) {
-                if color_at(board, to) != Option::Some(from_color) {
-                    // Capture move is already appended
-                }
+            //println!("i: {}, direction: {}, to: {}", i, direction, to);
+            let to_square: u8 = to.try_into().unwrap();
+            //println!("append");
+            moves.append(FROM_TO_VEC { from, to:to_square });
+
+            // check if the square is occupied, if so, it is blocked and we break in this direction
+            if Bitmap::get_bit_at(occupied, to_square) {
+
+                // this is option for doing something if it is a capture move
+                // if color_at(board, to_square) != Option::Some(from_color) {
+                //     // Capture move is already appended
+                // }
                 break; // Blocked by a piece
             }
         };

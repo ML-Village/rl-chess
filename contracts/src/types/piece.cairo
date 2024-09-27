@@ -115,6 +115,19 @@ impl PieceImpl of PieceTrait {
         }
 
     }
+    
+    #[inline]
+    fn to_string(self: Piece) -> ByteArray {
+        match self {
+            Piece::None => "None",
+            Piece::Pawn => "Pawn",
+            Piece::Rook => "Rook",
+            Piece::Knight => "Knight",
+            Piece::Bishop => "Bishop",
+            Piece::Queen => "Queen",
+            Piece::King => "King",
+        }
+    }
 
 }
 

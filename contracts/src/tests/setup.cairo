@@ -132,7 +132,7 @@ mod setup {
         let game_id = systems.lobby.create_invite_game(
             1,
             ANYONE(),
-            1000000000000000000,
+            72*60*60, // 3 days
         );
 
         //let player_id = systems.lobby.create(PLAYER_NAME);

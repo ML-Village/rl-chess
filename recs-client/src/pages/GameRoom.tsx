@@ -62,13 +62,13 @@ export const GameRoom = () => {
         return true
     }
 
-    console.log("room Id: ", roomId)
+    //console.log("room Id: ", roomId)
     const entityId = getEntityIdFromKeys([
         BigInt(roomId??""),
     ]) as Entity;
 
     const gameObject = useComponentValue(Game, entityId);
-    console.log("GameRoom: gameObject: ", gameObject)
+    //console.log("GameRoom: gameObject: ", gameObject)
     const boardObject = useComponentValue(Board, entityId);
     const historyObject = useComponentValue(History, entityId);
 

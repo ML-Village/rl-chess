@@ -25,6 +25,8 @@ impl Bishop of PieceTrait {
         // [Check] The new position is a valid one
         let possible_moves = BishopImpl::generate_possible_bishop_moves(from, board);
         
+        println!("possible_moves: {}", possible_moves.len());
+        
         // Check if the (from, to) move is in the possible moves
         let mut i = 0;
         loop {

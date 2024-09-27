@@ -15,7 +15,7 @@ use traits::{Into, TryInto};
 //use rl_chess::constants::{};
 use rl_chess::models::index::Board;
 use rl_chess::types::color::{Color, ColorTrait};
-use rl_chess::types::piece::{Piece, PieceTrait, IntoU8Piece};
+use rl_chess::types::piece::{Piece, PieceTrait, IntoU8Piece, IntoPieceFelt252};
 use rl_chess::helpers::bitmap::Bitmap;
 use rl_chess::utils::bitboard::{piece_at, color_at};
 use rl_chess::utils::math::{MathTrait, MathU8};
@@ -327,15 +327,30 @@ impl BoardImpl of BoardTrait {
         let color_to = self.color_at(to);
         let target_piece = self.piece_at(to);
         
+        // This part passes
+        // println!("move_from: {} piece_from: {} color_from: {}", 
+        //     from,
+        //     piece_from.unwrap().to_string(),
+        //     color_from.unwrap().to_string()
+        // );
+
         assert(color_to != color_from, 
             errors::BOARD_FRIENDLY_PIECE_AT_DESTINATION); // this also being checked in the subsequent functions
-
+        
         // [Check] if move is within piece's move range (MAIN MOVE LOGIC)
         // can means: - no obstruction in between (pawn, rook, bishop, queen)
         //            - destination is not friendly (all)
         //          not yet: - destination is not attacked by enemy? ( for king ?)
+        
+        
+        // println!("test");
+        // println!("move_from: {} piece_from: {} color_from: {}", 
+        //     from,
+        //     piece_from.unwrap().to_string(),
+        //     color_from.unwrap().to_string()
+        // );
         let piece_can_move = piece_from.unwrap().can(self, from, to);
-
+        
         assert(piece_can_move, errors::BOARD_INVALID_MOVE);
 
         // not checking move legality rules as we leave them to their systems to implement

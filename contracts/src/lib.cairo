@@ -74,5 +74,7 @@ mod tests {
         mod test_startgame;
         mod test_move1;
         mod test_move2;
+        mod test_move_bishops;
+        mod test_move_rooks;
     }
 }
