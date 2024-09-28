@@ -17,6 +17,8 @@ import { Button } from '@/components/ui/button';
 import { PlayerPanel, RoomColumn } from '@/components/GameRoom';
 import { boardMappingIntToString, boardMappingStringToInt } from '@/constants';
 
+import { FaChessBoard } from "react-icons/fa6";
+
 
 export const GameRoom = () => {
     const { roomId } = useParams();
@@ -162,6 +164,19 @@ export const GameRoom = () => {
         }
     }
 
+    if(!gameObject){
+        return <div className="container flex flex-col justify-start items-center h-full">
+                
+                <div className="mt-20 text-xl font-semibold">
+                    No Such Game Room Available
+                    </div>
+                <div>
+                    Click on Logo to go back to Lobby
+                </div>
+
+                <FaChessBoard className="mt-4 w-20 h-20" />
+            </div>
+    }
     //console.log("GameRoom: Player Color:", playerColor)
     return (
         <div className="flex justify-center items-start
