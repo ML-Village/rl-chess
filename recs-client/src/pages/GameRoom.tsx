@@ -17,7 +17,7 @@ import { useNamePanel } from '@/hooks';
 import { Button } from '@/components/ui/button';
 import { PlayerPanel, RoomColumn } from '@/components/GameRoom';
 import { boardMappingIntToString, boardMappingStringToInt } from '@/constants';
-
+import { useToggleSoundStore } from '@/store';
 import { FaChessBoard } from "react-icons/fa6";
 
 
@@ -34,7 +34,7 @@ export const GameRoom = () => {
     const [game, setGame] = useState(new Chess());
     const [lastMoveFromTo, setLastMoveFromTo] = useState<Array<number>>([88,88]);
     const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
-
+    const { mute } = useToggleSoundStore();
     const onDrop = async(sourceSquare: string, targetSquare: string) => {
         console.log("GameRoom: onDrop - sourceSquare: ", sourceSquare)
         console.log("GameRoom: onDrop - targetSquare: ", targetSquare)
@@ -132,13 +132,13 @@ export const GameRoom = () => {
             console.log("GameRoom: isCapture: ", isCapture)
 
             // if it's a capture, play sound
-            if(isCapture && gameObject?.game_state == "InProgress"){
+            if(isCapture && gameObject?.game_state == "InProgress" && !mute){
                 console.log("GameRoom: Playing capture sound")
                 // play sound
                 const captureSound = new Audio('/sounds/capture.mp3');
                 console.log("GameRoom: captureSound played")
                 captureSound.play();
-            } else if (!!lastMoveString && gameObject?.game_state == "InProgress"){
+            } else if (!!lastMoveString && gameObject?.game_state == "InProgress" && !mute){
                 console.log("GameRoom: Playing move sound")
                 // play sound
                 const moveSound = new Audio('/sounds/move-self.mp3');

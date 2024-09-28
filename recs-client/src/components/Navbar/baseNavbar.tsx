@@ -12,6 +12,10 @@ import { RegistrationModal, ControllerRegistrationModal } from '../Modals';
 import { useNavigate } from 'react-router-dom';
 
 import { ConnectControllerButton, BurnerButtons } from "@/components";
+import { FaVolumeHigh } from "react-icons/fa6";
+import { FaVolumeMute } from "react-icons/fa";
+
+import { useToggleSoundStore } from "@/store";
 
 
 export const BaseNavbar = () => {
@@ -23,6 +27,7 @@ export const BaseNavbar = () => {
 } = useDojo();
 
   const { open, setOpen, regCount } = useRegModalStore();
+  const { mute, setMute } = useToggleSoundStore();
   const navigate = useNavigate();
 
   //const { address, account } = useAccount();
@@ -62,8 +67,9 @@ export const BaseNavbar = () => {
         <RegistrationModal />
       }
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
+        <div className="flex justify-start h-16">
           
+          {/* Logo */}
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
               
@@ -81,15 +87,28 @@ export const BaseNavbar = () => {
           </div>
 
 
+          <div className="flex ml-auto justify-end items-center">
+            {/* Volume */}
+            <div className="mx-1 flex items-center rounded-md hover:cursor-pointer hover:bg-blue-400/50 p-2"
+              onClick={()=>setMute(!mute)}
+            >
+              {
+                mute ?
+                <FaVolumeMute className="ml-auto h-5 w-5 text-white" />
+                :
+                <FaVolumeHigh className="ml-auto h-5 w-5 text-white" />
+              }
+            </div>
 
-          {/* Profile Dropdown */}
-          <div className="flex items-center">
-            {
-              import.meta.env.VITE_USECONTROLLER == "true" ?
-            <ConnectControllerButton />
-            :
-            <BurnerButtons/>
-            }
+            {/* Profile Dropdown */}
+            <div className="flex items-center">
+              {
+                import.meta.env.VITE_USECONTROLLER == "true" ?
+              <ConnectControllerButton />
+              :
+              <BurnerButtons/>
+              }
+            </div>
           </div>
         
         </div>
