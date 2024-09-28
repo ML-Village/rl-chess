@@ -32,6 +32,7 @@ export const GameRoom = () => {
 
     const [game, setGame] = useState(new Chess());
     const [lastMoveFromTo, setLastMoveFromTo] = useState<Array<number>>([88,88]);
+    const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
 
     const onDrop = async(sourceSquare: string, targetSquare: string) => {
         console.log("GameRoom: onDrop - sourceSquare: ", sourceSquare)
@@ -73,14 +74,25 @@ export const GameRoom = () => {
         return {
             [boardMappingIntToString[lastMoveFromTo[0]]]: {
                 backgroundColor: 'rgba(255, 255, 0, 0.4)',
-                border: '5px solid rgba(255, 255, 0, 0.3)'
             },
             [boardMappingIntToString[lastMoveFromTo[1]]]: {
                 backgroundColor: 'rgba(255, 255, 0, 0.4)',
-                border: '5px solid rgba(255, 255, 0, 0.3)'
+            },
+            [selectedSquare as string]: {
+                backgroundColor: 'rgba(255, 255, 0, 0.4)',
             }
         }
-    }, [lastMoveFromTo])
+    }, [lastMoveFromTo, selectedSquare])
+
+    const onSquareClick = (square: string) => {
+        console.log("GameRoom: onSquareClick - square: ", square)
+        setSelectedSquare((prevSquare)=>{
+            if(prevSquare == square){
+                return null
+            }
+            return square
+        })
+    }
 
     const entityId = getEntityIdFromKeys([
         BigInt(roomId??""),
@@ -276,6 +288,7 @@ export const GameRoom = () => {
                                 backgroundColor: "#edeed1"
                             }} 
 
+                            onSquareClick={onSquareClick} 
                             customSquareStyles={customLastMoveSquareStyles}
                         />
                     </div>

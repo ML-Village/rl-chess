@@ -1,7 +1,7 @@
 import { moveHistoryPieceMap } from '../constants/moveHistoryPieceMap';
 
 export const parseMoveHistory = (move_string: string) => {
-    if (move_string.length >= 3) {
+    if (move_string.length >= 3 && move_string[0] != '0') {
         const pieceKey = move_string[0] as keyof typeof moveHistoryPieceMap;
         const piece = moveHistoryPieceMap[pieceKey];
         return (
