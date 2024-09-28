@@ -76,5 +76,7 @@ mod tests {
         mod test_move2;
         mod test_move_bishops;
         mod test_move_rooks;
+        //mod test_move_castle_kingside;
+        mod test_move_castle_queenside;
     }
 }

@@ -89,39 +89,46 @@ impl KingImpl of KingTrait {
             let to_col = (from_col.try_into().unwrap() + col_offset).try_into().unwrap_or(88_u8);
 
             if to_row < 8 && to_col < 8 {
-                let to = to_row * 8 + to_col;
+                let to = (to_row * 8) + to_col;
                 let to_bitboard = Bitmap::set_bit_at(0, to, true);
 
                 if to_bitboard & friendly_pieces == 0 {
 
                     // TODO: check if king is in check at to-square
                     moves.append(FROM_TO_VEC { from, to });
+                    //println!("i : {} from: {} to: {}", i, from, to);
                 }
             }
 
             i += 1;
         };
+        //println!("moves: {}", moves.len());
 
 
         // Castling moves (do they check if squares are attacked etc?)
+        //Self::can_castle_kingside(board);
         if Self::can_castle_kingside(board) {
             let kingside_to = if board.side_to_move == Color::White { 6 } else { 62 };
             moves.append(
                 FROM_TO_VEC { from, to: kingside_to }
             );
-        }
+        };
+
+        //Self::can_castle_queenside(board);
         if Self::can_castle_queenside(board) {
             let queenside_to = if board.side_to_move == Color::White { 2 } else { 58 };
             moves.append(
                 FROM_TO_VEC { from, to: queenside_to }
             );
-        }
+        };
 
+        //println!("Total moves including castling: {}", moves.len());
         moves
     }
 
     #[inline]
     fn can_castle_kingside(board: Board) -> bool {
+        //println!("checking for can_castle_kingside...");
         let side_to_move = board.side_to_move;
         let castling_rights = board.castling_rights;
 
@@ -130,29 +137,40 @@ impl KingImpl of KingTrait {
             Color::Black => (60, 63, 0x6000000000000000, 0b0010),
             _ => (0, 0, 0, 0),
         };
-        castling_rights & rights_mask != 0
+        let can_castle = castling_rights & rights_mask != 0
             && piece_at(board, king_square) == Option::Some(Piece::King) // king is there
             && piece_at(board, rook_square) == Option::Some(Piece::Rook) // rook is there
             && (board.whites | board.blacks) & empty_squares == 0 // no pieces in between
             && !is_square_attacked(board, king_square, side_to_move.opposite()) // king is not attacked
-            && !is_square_attacked(board, king_square + 1, side_to_move.opposite()) // king's path is not attacked
+            && !is_square_attacked(board, king_square + 1, side_to_move.opposite()); // king's path is not attacked
+        //println!("can_castle kingside: {}", can_castle);
+        can_castle
     }
 
     fn can_castle_queenside(board: Board) -> bool {
+        //println!("checking for can_castle_queenside...");
         let side_to_move = board.side_to_move;
         let castling_rights = board.castling_rights;
+        //println!("side_to_move: {}, castling_rights: {}", side_to_move.to_string(), castling_rights);
 
         let (king_square, rook_square, empty_squares, rights_mask) = match side_to_move {
             Color::White => (4, 0, 0x0E, 0b0100),
             Color::Black => (60, 56, 0x0E00000000000000, 0b0001),
             _ => (0, 0, 0, 0),
         };
-        castling_rights & rights_mask != 0
+        // println!("whites and blacks: {}", board.whites & board.blacks);
+        // println!("castling rights & mask: {}", castling_rights & rights_mask);
+        // println!("empty squares: {}", board.whites & board.blacks & empty_squares);
+        // println!("{} king is attacked by {}: {}", side_to_move.to_string(), side_to_move.opposite().to_string(), is_square_attacked(board, king_square, side_to_move.opposite()));
+        // println!("king's path {} is attacked: {}", king_square - 1, is_square_attacked(board, king_square - 1, side_to_move.opposite()));
+        let can_castle = (castling_rights & rights_mask != 0)
             && piece_at(board, king_square) == Option::Some(Piece::King) // king is there
             && piece_at(board, rook_square) == Option::Some(Piece::Rook) // rook is there
-            && (board.whites | board.blacks) & empty_squares == 0 // no pieces in between
+            && (board.whites & board.blacks & empty_squares) == 0 // no pieces in between
             && !is_square_attacked(board, king_square, side_to_move.opposite()) // king is not attacked
-            && !is_square_attacked(board, king_square - 1, side_to_move.opposite()) // king's path is not attacked
+            && !is_square_attacked(board, king_square - 1, side_to_move.opposite()); // king's path is not attacked
+        //println!("can_castle queenside: {}", can_castle);
+        can_castle
     }
 
 }

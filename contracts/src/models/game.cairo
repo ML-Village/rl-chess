@@ -143,7 +143,7 @@ impl GameImpl of GameTrait {
         self.room_start = get_block_timestamp();
         self.w_last_move_time = get_block_timestamp();
         self.b_last_move_time = get_block_timestamp();
-        println!("game started at: {}", get_block_timestamp());
+        //println!("game started at: {}", get_block_timestamp());
     }
 
 }

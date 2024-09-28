@@ -17,6 +17,7 @@ use rl_chess::models::index::Board;
 use rl_chess::types::color::{Color, ColorTrait};
 use rl_chess::types::piece::{Piece, PieceTrait, IntoU8Piece, IntoPieceFelt252};
 use rl_chess::helpers::bitmap::Bitmap;
+use rl_chess::helpers::math::{MathTrait as MathSubAbsTrait};
 use rl_chess::utils::bitboard::{piece_at, color_at};
 use rl_chess::utils::math::{MathTrait, MathU8};
 use rl_chess::constants;
@@ -30,6 +31,7 @@ mod errors {
     const BOARD_FRIENDLY_PIECE_AT_DESTINATION: felt252 = 'Board: frenly piece at destn';
     const BOARD_INVALID_MOVE: felt252 = 'Board: invalid move';
     const BOARD_INVALID_PROMOTION: felt252 = 'Board: invalid promotion';
+    const BOARD_INVALID_CASTLING: felt252 = 'Board: invalid castling';
 }
 
 #[generate_trait]
@@ -37,7 +39,6 @@ impl BoardImpl of BoardTrait {
     
     #[inline]
     fn new(game_id: u128) -> Board {
-
         Board {
             game_id,
             whites: constants::DEFAULT_WHITE_POSITIONS,
@@ -241,12 +242,12 @@ impl BoardImpl of BoardTrait {
     #[inline]
     fn update_castling_rights(ref self: Board, from: u8, to: u8) {
         // Remove castling rights if king or rook moves
-        if from == 0 || to == 0 { self.castling_rights = 0b1110; } // White queenside
-        if from == 7 || to == 7 { self.castling_rights = 0b1101; } // White kingside
-        if from == 56 || to == 56 { self.castling_rights = 0b1011; } // Black queenside
-        if from == 63 || to == 63 { self.castling_rights = 0b0111; } // Black kingside
-        if from == 4 { self.castling_rights = 0b1100; } // White king
-        if from == 60 { self.castling_rights = 0b0011; } // Black king
+        if from == 0 || to == 0 { self.castling_rights = self.castling_rights & 0b1011; } // White queenside
+        if from == 7 || to == 7 { self.castling_rights = self.castling_rights & 0b0111; } // White kingside
+        if from == 56 || to == 56 { self.castling_rights = self.castling_rights & 0b1110; } // Black queenside
+        if from == 63 || to == 63 { self.castling_rights = self.castling_rights & 0b1101; } // Black kingside
+        if from == 4 { self.castling_rights = self.castling_rights & 0b0011; } // White king
+        if from == 60 { self.castling_rights = self.castling_rights & 0b1100; } // Black king
     }
 
     #[inline]
@@ -305,6 +306,36 @@ impl BoardImpl of BoardTrait {
         // [Check] if there is a piece to move from
         let mut piece_from = self.piece_at(from);
         let mut color_from = self.color_at(from);
+
+        //println!("{} move from {} to {}", piece_from.unwrap().to_string(), from, to);
+        // match piece_from {
+        //     Option::Some(p) => {
+        //         match p {
+        //             Piece::Pawn => {
+        //                 println!("pawns bit: {}", self.pawns);
+        //             },
+        //             Piece::Rook => {
+        //                 println!("rooks bit: {}", self.rooks);
+        //             },
+        //             Piece::Knight => {
+        //                 println!("knights bit: {}", self.knights);
+        //             },
+        //             Piece::Bishop => {
+        //                 println!("bishops bit: {}", self.bishops);
+        //             },
+        //             Piece::Queen => {
+        //                 println!("queens bit: {}", self.queens);
+        //             },
+        //             Piece::King => {
+        //                 println!("kings bit: {}", self.kings);
+        //             },
+        //             _ => {},
+        //         };
+        //     },
+        //     Option::None => {
+        //         println!("piece_from: None");
+        //     },
+        // };
 
         assert(piece_from != Option::None && color_from != Option::None, 
             errors::BOARD_NO_PIECE_TO_MOVE);
@@ -382,6 +413,34 @@ impl BoardImpl of BoardTrait {
         self.set_piece(Piece::None, Color::None, from); // remove piece from
         self.set_piece(piece_from.unwrap(), color_from.unwrap(), to); // set piece at destination
 
+        // match piece_from {
+        //     Option::Some(p) => {
+        //         match p {
+        //             Piece::Pawn => {
+        //                 println!("pawns bit after move: {}", self.pawns);
+        //             },
+        //             Piece::Rook => {
+        //                 println!("rooks bit after move: {}", self.rooks);
+        //             },
+        //             Piece::Knight => {
+        //                 println!("knights bit after move: {}", self.knights);
+        //             },
+        //             Piece::Bishop => {
+        //                 println!("bishops bit after move: {}", self.bishops);
+        //             },
+        //             Piece::Queen => {
+        //                 println!("queens bit after move: {}", self.queens);
+        //             },
+        //             Piece::King => {
+        //                 println!("kings bit after move: {}", self.kings);
+        //             },
+        //             _ => {},
+        //         };
+        //     },
+        //     Option::None => {
+        //         println!("piece_from: None");
+        //     },
+        // };
 
         // Handle en passant capture
         if (piece_from.unwrap() == Piece::Pawn) && (to == self.en_passant) {
@@ -402,8 +461,44 @@ impl BoardImpl of BoardTrait {
             };
         }
 
+        // Handle castling
+        if (piece_from.unwrap() == Piece::King) && (MathSubAbsTrait::sub_abs(from, to) == 2) {
+            //self.update_castling_rights(from, to);
+            // move rook
+            let (rook_from, rook_to): (u8,u8) = if (from == 4) { // white king at 4
+                    if (to == 6) {
+                        (7, 5) // white kingside
+                    } else if (to == 2) {
+                        (0,3) // white queenside
+                    } else {
+                        println!("Invalid castling King from: {} to: {}", from, to);
+                        assert(false, errors::BOARD_INVALID_CASTLING);
+                        (0,0)
+                    } 
+                } else if (from == 60) { // black king at 60
+
+                    if (to == 62) {
+                        (56, 61) // black kingside
+                    } else if (to == 58) {
+                        (56, 59) // black queenside
+                    } else {
+                        println!("Invalid castling King from: {} to: {}", from, to);
+                        assert(false, errors::BOARD_INVALID_CASTLING);
+                        (0,0)
+                    }
+                } else {
+                    println!("Invalid castling King from: {} to: {}", from, to);
+                    assert(false, errors::BOARD_INVALID_CASTLING);
+                    (0,0)
+                };
+            
+
+            self.set_piece(Piece::None, Color::None, rook_from); // remove rook from
+            self.set_piece(Piece::Rook, color_from.unwrap(), rook_to);
+        };
+
         // Update en passant square
-        self.en_passant = if (piece_from.unwrap() == Piece::Pawn) && (MathU8::abs(from.try_into().unwrap() - to.try_into().unwrap()) == 16) {
+        self.en_passant = if (piece_from.unwrap() == Piece::Pawn) && (MathSubAbsTrait::sub_abs(from, to) == 16) {
             (from + to) / 2
         } else {
             88

@@ -31,8 +31,8 @@ export const GameRoom = () => {
     const [game, setGame] = useState(new Chess());
 
     const onDrop = async(sourceSquare: string, targetSquare: string) => {
-        // console.log("GameRoom: onDrop - sourceSquare: ", sourceSquare)
-        // console.log("GameRoom: onDrop - targetSquare: ", targetSquare)
+        console.log("GameRoom: onDrop - sourceSquare: ", sourceSquare)
+        console.log("GameRoom: onDrop - targetSquare: ", targetSquare)
         const move = game.move({
             from: sourceSquare,
             to: targetSquare,
@@ -44,7 +44,8 @@ export const GameRoom = () => {
             sourceSquare as keyof typeof boardMappingStringToInt] ?? boardMappingStringToInt["a1"]
         const move_to = boardMappingStringToInt[
             targetSquare as keyof typeof boardMappingStringToInt] ?? boardMappingStringToInt["a1"]
-        
+        console.log("GameRoom: onDrop - move_from: ", move_from)
+        console.log("GameRoom: onDrop - move_to: ", move_to)
         await client.room.move({
             account: account,
             game_id: BigInt(roomId??""),

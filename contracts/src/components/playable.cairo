@@ -30,6 +30,7 @@ mod PlayableComponent {
     use rl_chess::types::gamestate::GameState;
     use rl_chess::types::color::Color;
     use rl_chess::types::piece::Piece;
+    use rl_chess::helpers::math::{MathTrait as MathSubAbsTrait};
     use rl_chess::utils::seeder::{make_seed};
 
     // Errors
@@ -48,6 +49,7 @@ mod PlayableComponent {
         const OWNER_NOT_IN_GAME:felt252 = 'Owner not in game';
         const TIME_OVER:felt252 = 'Player ran out of time';
         const NOT_PLAYERS_TURN:felt252 = 'Not player move turn';
+        const INVALID_CASTLING: felt252 = 'Invalid castling';
     }
 
     // Storage
@@ -489,18 +491,50 @@ mod PlayableComponent {
 
                 // update move_history_strings
                 if(board.side_to_move == Color::Black) {
-                    history.move_history_string += format!("{}. ", move_integer);
-                    history.move_history_string += piece_from_string;
-                    history.move_history_string += capture_string;
-                    history.move_history_string += destination_file;
-                    history.move_history_string += destination_rank;
+                    // check for castling
+                    if (piece_from_string == "K" && MathSubAbsTrait::sub_abs(move_from, move_to) == 2) {
+                        
+                        if (move_to == 6){
+                            //kingside castle
+                            history.move_history_string += format!("{}. 0-0", move_integer);
+                        } else if (move_to == 2) {
+                            //queenside castle
+                            history.move_history_string += format!("{}. 0-0-0", move_integer);
+                        } else {
+                            assert(false, errors::INVALID_CASTLING);
+                        }
+
+
+                    } else {
+                        history.move_history_string += format!("{}. ", move_integer);
+                        history.move_history_string += piece_from_string;
+                        history.move_history_string += capture_string;
+                        history.move_history_string += destination_file;
+                        history.move_history_string += destination_rank;
+                    }
+
                 } else {
-                    history.move_history_string += " ";
-                    history.move_history_string += piece_from_string;
-                    history.move_history_string += capture_string;
-                    history.move_history_string += destination_file;
-                    history.move_history_string += destination_rank;
-                    history.move_history_string += " / ";
+
+                    if (piece_from_string == "k" && MathSubAbsTrait::sub_abs(move_from, move_to) == 2) {
+                        
+                        if (move_to == 62){
+                            //kingside castle
+                            history.move_history_string += format!(" 0-0");
+                        } else if (move_to == 58) {
+                            //queenside castle
+                            history.move_history_string += format!(" 0-0-0");
+                        } else {
+                            assert(false, errors::INVALID_CASTLING);
+                        }
+
+                    } else {
+                        history.move_history_string += " ";
+                        history.move_history_string += piece_from_string;
+                        history.move_history_string += capture_string;
+                        history.move_history_string += destination_file;
+                        history.move_history_string += destination_rank;
+                        history.move_history_string += " / ";
+                    }
                 }
                 
                 // last move time in Game Model (Board model updated in board.move_piece())
