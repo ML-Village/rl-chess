@@ -423,8 +423,31 @@ mod PlayableComponent {
                 let piece_from = board.piece_at(move_from).unwrap();
                 let color_from = board.color_at(move_from).unwrap();
                 let enpassant_capture_square = board.is_enpassant_capture(move_from, move_to);
-                let pawnletter: ByteArray = if(enpassant_capture_square<64){
-                    format!("{}", ((move_from / 8) + 1))
+                
+                let capture_string:ByteArray = if (enpassant_capture_square < 64){
+                    "x"
+                } else if (board.is_normal_capture(move_from, move_to)) {
+                    "x"
+                } else {
+                    ""
+                };
+
+                let pawnletter: ByteArray = if(enpassant_capture_square<64 || board.is_normal_capture(move_from, move_to)){
+                    let mut temp_string:ByteArray = "";
+                    let file:ByteArray = match (move_from % 8) {
+                        0 => "a",
+                        1 => "b",
+                        2 => "c",
+                        3 => "d",
+                        4 => "e",
+                        5 => "f",
+                        6 => "g",
+                        7 => "h",
+                        _ => "",
+                    };
+                    temp_string += file;
+                    temp_string += format!("{}", ((move_from / 8) + 1));
+                    temp_string
                 }else{""};
 
                 let piece_from_string:ByteArray = match (piece_from, color_from) {
@@ -441,13 +464,6 @@ mod PlayableComponent {
                     (Piece::Queen, Color::Black) => "q",
                     (Piece::King, Color::Black) => "k",
                     _ => "",
-                };
-                let capture_string:ByteArray = if (enpassant_capture_square < 64){
-                    "x"
-                } else if (board.is_normal_capture(move_from, move_to)) {
-                    "x"
-                } else {
-                    ""
                 };
 
                 let destination_file:ByteArray = if (enpassant_capture_square < 64) {

@@ -11,6 +11,7 @@ import { entityIdToKey, bigintToEntity, keysToEntity, bigintToHex,
 } from '@/utils';
 
 import { useParams } from 'react-router-dom';
+import { getLastMoveString } from '@/utils';
 import { feltToString, stringToFelt } from "@/utils/starknet";
 import { useNamePanel } from '@/hooks';
 import { Button } from '@/components/ui/button';
@@ -107,17 +108,42 @@ export const GameRoom = () => {
     
     useEffect(() => {
         if(historyObject?.game_id){
+
+            // Set board history state update
             //console.log("GameRoom: History.fen: ", historyObject?.fen);
             const numOfspaces = historyObject?.fen.split(" ").length;
             if(numOfspaces > 4){
                 setGame(new Chess(historyObject?.fen ?? game.fen()));
             }
 
+            // set last move from and to for the chessboard highlight
             if(historyObject?.last_move_from != 88 && historyObject?.last_move_to != 88){
                 const lastMoveFrom = historyObject?.last_move_from;
                 const lastMoveTo = historyObject?.last_move_to;
                 console.log("GameRoom: last_move_from: {}, last_move_to: {}", lastMoveFrom, lastMoveTo)
                 setLastMoveFromTo([lastMoveFrom, lastMoveTo])
+            }
+
+            // get last move string to check if it's a capture
+            const lastMoveString = getLastMoveString(historyObject);
+            console.log("GameRoom: LastMoveString exists: ", !!lastMoveString)
+            console.log("GameRoom: lastMoveString: ", lastMoveString)
+            const isCapture = lastMoveString.includes('x');
+            console.log("GameRoom: isCapture: ", isCapture)
+
+            // if it's a capture, play sound
+            if(isCapture && gameObject?.game_state == "InProgress"){
+                console.log("GameRoom: Playing capture sound")
+                // play sound
+                const captureSound = new Audio('/sounds/capture.mp3');
+                console.log("GameRoom: captureSound played")
+                captureSound.play();
+            } else if (!!lastMoveString && gameObject?.game_state == "InProgress"){
+                console.log("GameRoom: Playing move sound")
+                // play sound
+                const moveSound = new Audio('/sounds/move-self.mp3');
+                console.log("GameRoom: moveSound played")
+                moveSound.play();
             }
         }
     }, [roomId, boardObject]);

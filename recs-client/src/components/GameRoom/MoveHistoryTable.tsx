@@ -31,6 +31,8 @@ export const MoveHistoryTable = ({roomId}:{roomId:string}) => {
 
     const move_history_table = useMemo(() => {
         if (!historyObject) return [];
+
+        //console.log("MoveHistoryTable: historyObject: ", historyObject)
         return historyObject?.move_history_string.split('/').map((mh) => {
             return mh.split(' ')
                     .filter(s => s !== '');
