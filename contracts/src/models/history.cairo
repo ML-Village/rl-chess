@@ -30,6 +30,8 @@ impl HistoryImpl of HistoryTrait {
             // move_history: ArrayTrait::<(felt252, felt252)>::new(),
             move_history_string: "",
             move_history_integer: "",
+            last_move_from: 88,
+            last_move_to: 88
         }
     }
 }

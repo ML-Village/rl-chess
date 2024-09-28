@@ -127,6 +127,8 @@ pub struct History {
     // pub move_history: Array<(felt252, felt252)>,
     pub move_history_string: ByteArray, // DOJO.js not showing felt array (alpha.8, 24/09/24)
     pub move_history_integer: ByteArray,
+    pub last_move_from: u8,
+    pub last_move_to: u8
 }
 
 #[derive(Copy, Drop, Serde)]

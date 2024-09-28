@@ -536,6 +536,10 @@ mod PlayableComponent {
                         history.move_history_string += " / ";
                     }
                 }
+
+                // update last move from and to in History model
+                history.last_move_from = move_from;
+                history.last_move_to = move_to;
                 
                 // last move time in Game Model (Board model updated in board.move_piece())
                 if(callerIsWhite){

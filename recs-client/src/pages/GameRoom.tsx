@@ -31,6 +31,7 @@ export const GameRoom = () => {
     } = useDojo();
 
     const [game, setGame] = useState(new Chess());
+    const [lastMoveFromTo, setLastMoveFromTo] = useState<Array<number>>([88,88]);
 
     const onDrop = async(sourceSquare: string, targetSquare: string) => {
         console.log("GameRoom: onDrop - sourceSquare: ", sourceSquare)
@@ -65,7 +66,22 @@ export const GameRoom = () => {
         return true
     }
 
-    //console.log("room Id: ", roomId)
+    const customLastMoveSquareStyles = useMemo(() => {
+        if(lastMoveFromTo[0] == 88 && lastMoveFromTo[1] == 88){
+            return {}
+        }
+        return {
+            [boardMappingIntToString[lastMoveFromTo[0]]]: {
+                backgroundColor: 'rgba(255, 255, 0, 0.4)',
+                border: '5px solid rgba(255, 255, 0, 0.3)'
+            },
+            [boardMappingIntToString[lastMoveFromTo[1]]]: {
+                backgroundColor: 'rgba(255, 255, 0, 0.4)',
+                border: '5px solid rgba(255, 255, 0, 0.3)'
+            }
+        }
+    }, [lastMoveFromTo])
+
     const entityId = getEntityIdFromKeys([
         BigInt(roomId??""),
     ]) as Entity;
@@ -83,6 +99,13 @@ export const GameRoom = () => {
             const numOfspaces = historyObject?.fen.split(" ").length;
             if(numOfspaces > 4){
                 setGame(new Chess(historyObject?.fen ?? game.fen()));
+            }
+
+            if(historyObject?.last_move_from != 88 && historyObject?.last_move_to != 88){
+                const lastMoveFrom = historyObject?.last_move_from;
+                const lastMoveTo = historyObject?.last_move_to;
+                console.log("GameRoom: last_move_from: {}, last_move_to: {}", lastMoveFrom, lastMoveTo)
+                setLastMoveFromTo([lastMoveFrom, lastMoveTo])
             }
         }
     }, [roomId, boardObject]);
@@ -252,6 +275,8 @@ export const GameRoom = () => {
                             }} customLightSquareStyle={{
                                 backgroundColor: "#edeed1"
                             }} 
+
+                            customSquareStyles={customLastMoveSquareStyles}
                         />
                     </div>
                     

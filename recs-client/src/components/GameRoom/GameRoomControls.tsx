@@ -116,15 +116,15 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
                                     (
                                         (gameObject?.winner == gameObject?.white_player_address) ?
                                         <>
-                                            <span className="p-2 bg-gray-700/80 text-white rounded-full">
-                                                <FaChessKnight className="bg-gray-700/80 text-white" />
+                                            <span className="p-2 bg-orange-500/80 text-white rounded-full">
+                                                <FaChessKnight className="bg-orange-500/80 text-white" />
                                             </span>
                                             <span className="mx-1">{winnerName}</span>
                                         </>
                                         :
                                         <>
-                                            <span className="p-2 bg-white text-black rounded-full">
-                                                <FaChessKnight className="bg-white text-black" />
+                                            <span className="p-2 bg-lime-500 text-black rounded-full">
+                                                <FaChessKnight className="bg-lime-500 text-black" />
                                             </span>
                                             <span className="mx-1">{winnerName}</span>
                                         </>
