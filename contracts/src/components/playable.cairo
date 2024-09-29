@@ -569,12 +569,22 @@ mod PlayableComponent {
                     game.set_total_time_left(2);
                 }
 
-                // check if game is over -- checkmate, stalemate, draw, or time
-
+                // check if game is over -- stalemate, draw
                 if (board.is_draw() || history.is_draw_by_repetition()) {
                     game.game_state = GameState::Resolved;
                     game.result = 3;
                     game.winner = starknet::contract_address_const::<0x0>();
+                    game.room_end = get_block_timestamp();
+                }
+
+                // check if game is over -- checkmate
+                if (board.is_checkmate()) {
+                    game.game_state = GameState::Resolved;
+                    game.result = if(callerIsWhite){1} else {2};
+
+                    // because at this point, side_to_move is already updated to the other player,
+                    // other player is being check-mated
+                    game.winner = if(board.side_to_move == Color::White){game.black_player_address} else {game.white_player_address};
                     game.room_end = get_block_timestamp();
                 }
 
