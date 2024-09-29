@@ -498,9 +498,9 @@ mod PlayableComponent {
                 game.side_to_move = board.side_to_move;
                 //history.fen = board.to_fen();
                 let (board_fen, board_fen_hash) = board.to_fen_and_boardfen_hash();
-                history.fen = board_fen;
+                history.fen = board_fen.clone();
                 history.fen_history += format!(" {}{}. ", move_integer, color_from.to_string_char());
-                history.fen_history += board_fen;
+                history.fen_history += board_fen.clone();
                 history.fen_hash_hist.append(board_fen_hash);
 
                 // update move_history_integers

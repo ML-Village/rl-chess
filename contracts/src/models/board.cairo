@@ -16,9 +16,18 @@ use traits::{Into, TryInto};
 use rl_chess::models::index::Board;
 use rl_chess::types::color::{Color, ColorTrait};
 use rl_chess::types::piece::{Piece, PieceTrait, IntoU8Piece, IntoPieceFelt252};
+use rl_chess::elements::pieces::{
+    king::{King, KingTrait},
+    queen::{Queen, QueenTrait},
+    rook::{Rook, RookTrait},
+    bishop::{Bishop, BishopTrait},
+    knight::{Knight, KnightTrait},
+    pawn::{Pawn, PawnTrait}
+};
 use rl_chess::helpers::bitmap::Bitmap;
 use rl_chess::helpers::math::{MathTrait as MathSubAbsTrait};
-use rl_chess::utils::bitboard::{piece_at, color_at};
+use rl_chess::utils::bitboard::{piece_at, color_at, is_square_attacked, 
+    count_ones, trailing_zeros, find_squares};
 use rl_chess::utils::math::{MathTrait, MathU8};
 use rl_chess::utils::hash::hash_byte_array_to_felt252;
 use rl_chess::constants;
@@ -737,11 +746,11 @@ impl BoardImpl of BoardTrait {
     fn is_draw_by_insufficient_material(ref self: Board) -> bool {
         let all_pieces: u64 = self.whites | self.blacks;
 
-        if u64_pop_count(all_pieces) > 4 {
+        if count_ones(all_pieces) > 4 {
             return false;
         };
 
-        match u64_pop_count(all_pieces) {
+        match count_ones(all_pieces) {
             0 => false, // impossible due to above check
             1 => false, // impossible due to above check
             2 => true, // King vs King
@@ -749,16 +758,11 @@ impl BoardImpl of BoardTrait {
             4 => {
                 let white_bishops = self.bishops & self.whites;
                 let black_bishops = self.bishops & self.blacks;
-                self.bishops != 0 && u64_pop_count(white_bishops) == 1 && u64_pop_count(black_bishops) == 1
+                self.bishops != 0 && count_ones(white_bishops) == 1 && count_ones(black_bishops) == 1
                     && ((white_bishops & constants::BLACK_SQUARES != 0) != (black_bishops & constants::BLACK_SQUARES != 0))
             },
             _ => false,
         }
-    }
-
-    #[inline]
-    fn is_draw(ref self: Board) -> bool {
-        self.is_draw_by_insufficient_material() || self.is_fifty_move_rule()
     }
 
     // #[inline]
@@ -766,16 +770,151 @@ impl BoardImpl of BoardTrait {
     //     false
     // }
 
-}
+    #[inline]
+    fn find_king(ref self: Board, color: Color) -> u8 {
+        let king_bitboard = if color == Color::White { self.kings & self.whites } else { self.kings & self.blacks };
+        
+        // Manually find the least significant set bit
+        trailing_zeros(king_bitboard)
+    }
 
-fn u64_pop_count(mut x: u64) -> u8 {
-    let mut count: u8 = 0;
-    loop {
-        if x == 0 {
-            break;
-        }
-        count += 1;
-        x = x & (x - 1);
-    };
-    count
+    #[inline]
+    fn is_in_check(ref self: Board, color: Color) -> bool {
+        let king_square = self.find_king(color);
+        is_square_attacked(self, king_square, color.opposite())
+    }
+
+    #[inline]
+    fn is_stalemate(ref self: Board) -> bool {
+        let color = self.side_to_move;
+        let king_square = self.find_king(color);
+
+        let moves = KingTrait::generate_possible_king_moves(king_square, self);
+        let has_possible_other_moves = self.has_other_possible_moves();
+        
+        !self.is_in_check(color) && (moves.len() == 0) && !has_possible_other_moves
+    }
+
+    #[inline]
+    fn is_draw(ref self: Board) -> bool {
+        self.is_stalemate() || self.is_draw_by_insufficient_material() || self.is_fifty_move_rule()
+    }
+    
+
+    #[inline]
+    fn is_checkmate(ref self: Board) -> bool {
+        let color = self.side_to_move;
+        let king_square = self.find_king(color);
+
+        let moves = KingTrait::generate_possible_king_moves(king_square, self);
+        
+        self.is_in_check(color) && (moves.len() == 0)
+    }
+
+    #[inline]
+    fn has_other_possible_moves(ref self: Board) -> bool {
+        let color = self.side_to_move;
+        let side_bitboard = if color == Color::White { self.whites } else { self.blacks };
+        let mut has_moves: bool = false;
+
+        //iterate through all pieces, if there is a piece that can move, return true
+        
+        //1. ROOKS
+        let rook_locations = self.rooks & side_bitboard;
+        let mut rook_squares = find_squares(rook_locations);
+        let mut r: u32 = 0;
+        loop {
+            if r == rook_squares.len(){
+                break;
+            }
+            let rook_square = @rook_squares;
+            let moves = RookTrait::generate_possible_rook_moves(*rook_square[r], self);
+            if moves.len() > 0 {
+                has_moves = true;
+                break;
+            }
+        };
+        if has_moves {
+            return true;
+        };
+
+        //2. BISHOPS
+        let bishop_locations = self.bishops & side_bitboard;
+        let mut bishop_squares = find_squares(bishop_locations);
+        let mut b: u32 = 0;
+        loop {
+            if b == bishop_squares.len(){
+                break;
+            }
+            let bishop_square = @bishop_squares;
+            let moves = BishopTrait::generate_possible_bishop_moves(*bishop_square[b], self);
+            if moves.len() > 0 {
+                has_moves = true;
+                break;
+            }
+        };
+        if has_moves {
+            return true;
+        };
+
+        //3. KNIGHTS
+        let knight_locations = self.knights & side_bitboard;
+        let mut knight_squares = find_squares(knight_locations);
+        let mut k: u32 = 0;
+        loop {
+            if k == knight_squares.len(){
+                break;
+            }
+            let knight_square = @knight_squares;
+            let moves = KnightTrait::generate_possible_knight_moves(*knight_square[k], self);
+            if moves.len() > 0 {
+                has_moves = true;
+                break;
+            }
+        };
+        if has_moves {
+            return true;
+        };
+
+        //4. QUEENS
+        let queen_locations = self.queens & side_bitboard;
+        let mut queen_squares = find_squares(queen_locations);
+        let mut q: u32 = 0;
+        loop {
+            if q == queen_squares.len(){
+                break;
+            }
+            let queen_square = @queen_squares;
+            let moves = QueenTrait::generate_possible_queen_moves(*queen_square[q], self);
+            if moves.len() > 0 {
+                has_moves = true;
+                break;
+            }
+        };
+        if has_moves {
+            return true;
+        };
+
+        //5. PAWNS
+        let pawn_locations = self.pawns & side_bitboard;
+        let mut pawn_squares = find_squares(pawn_locations);
+        let mut p: u32 = 0;
+        loop {
+            if p == pawn_squares.len(){
+                break;
+            }
+            let pawn_square = @pawn_squares;
+            let moves = PawnTrait::generate_possible_pawn_moves(*pawn_square[p], self);
+            if moves.len() > 0 {
+                has_moves = true;
+                break;
+            }
+        };
+        if has_moves {
+            return true;
+        };
+
+        has_moves
+    }
+
 }

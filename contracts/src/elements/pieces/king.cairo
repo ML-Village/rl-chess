@@ -95,7 +95,9 @@ impl KingImpl of KingTrait {
                 if to_bitboard & friendly_pieces == 0 {
 
                     // TODO: check if king is in check at to-square
-                    moves.append(FROM_TO_VEC { from, to });
+                    if !is_square_attacked(board, to, board.side_to_move.opposite()) {
+                        moves.append(FROM_TO_VEC { from, to });
+                    }
                     //println!("i : {} from: {} to: {}", i, from, to);
                 }
             }

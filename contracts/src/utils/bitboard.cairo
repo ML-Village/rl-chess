@@ -9,6 +9,7 @@ use rl_chess::models::board::Board;
 use rl_chess::types::piece::{Piece, PieceTrait};
 use rl_chess::types::color::{Color, ColorTrait};
 use rl_chess::helpers::from_to::FROM_TO_VEC;
+use rl_chess::helpers::math::Math;
 use rl_chess::constants::{FILE_A, FILE_H, RANK_1, RANK_8,
     DIAGONAL_MASK, ANTI_DIAGONAL_MASK
 };
@@ -125,6 +126,38 @@ pub fn count_ones(mut n: u64) -> u8 {
         n = n & (n - 1);
     };
     count
+}
+
+// finds least significant set bit, so we can find the square of the king
+pub fn trailing_zeros(mut x: u64) -> u8 {
+    if x == 0 {
+        return 88; // Convention: return 64 if no bit is set
+    }
+
+    let mut count: u8 = 0;
+    loop {
+        if x & 1 != 0 {
+            break;
+        }
+        x = x / 2;
+        count += 1;
+    };
+    count
+}
+
+pub fn find_squares(bitboard: u64) -> Array<u8> {
+    let mut squares: Array<u8> = ArrayTrait::<u8>::new();
+    let mut i: u8 = 0;
+    loop {
+        if i == 64 {
+            break;
+        }
+        if (bitboard & Math::pow(2_u8.into(), i.into())) != 0 {
+            squares.append(i);
+        }
+        i += 1;
+    };
+    squares
 }
 
 pub fn generate_knight_moves() -> Array<u64> {
