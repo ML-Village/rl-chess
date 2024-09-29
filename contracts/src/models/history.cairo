@@ -27,12 +27,34 @@ impl HistoryImpl of HistoryTrait {
             game_id: game_id,
             //fen: 1,
             fen: "",
+            fen_hash_hist: ArrayTrait::<felt252>::new(),
+            fen_history: "",
             // move_history: ArrayTrait::<(felt252, felt252)>::new(),
             move_history_string: "",
             move_history_integer: "",
             last_move_from: 88,
             last_move_to: 88
         }
+    }
+
+    #[inline]
+    fn is_draw_by_repetition(ref self: History) -> bool {
+        let mut count: u8 = 0;
+        let mut index: u32 = 0;
+        let last_hash = self.fen_hash_hist[self.fen_hash_hist.len() - 1];
+        loop {
+            if index >= self.fen_hash_hist.len() {
+                break;
+            }
+            if self.fen_hash_hist[index] == last_hash {
+                count += 1;
+                if count >= 3 {
+                    break;
+                }
+            }
+            index += 1;
+        };
+        count >= 3
     }
 }
 

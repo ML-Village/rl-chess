@@ -124,6 +124,8 @@ pub struct History {
     pub game_id: u128,
     //pub fen: u8,
     pub fen: ByteArray, 
+    pub fen_hash_hist: Array<felt252>,
+    pub fen_history: ByteArray,
     // pub move_history: Array<(felt252, felt252)>,
     pub move_history_string: ByteArray, // DOJO.js not showing felt array (alpha.8, 24/09/24)
     pub move_history_integer: ByteArray,

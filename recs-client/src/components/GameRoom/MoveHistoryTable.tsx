@@ -28,6 +28,7 @@ export const MoveHistoryTable = ({roomId}:{roomId:string}) => {
         BigInt(roomId??""),
     ]) as Entity;
     const historyObject = useComponentValue(History, entityId);
+    console.log("MoveHistoryTable: historyObject: ", historyObject)
 
     const move_history_table = useMemo(() => {
         if (!historyObject) return [];

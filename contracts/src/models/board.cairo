@@ -20,6 +20,7 @@ use rl_chess::helpers::bitmap::Bitmap;
 use rl_chess::helpers::math::{MathTrait as MathSubAbsTrait};
 use rl_chess::utils::bitboard::{piece_at, color_at};
 use rl_chess::utils::math::{MathTrait, MathU8};
+use rl_chess::utils::hash::hash_byte_array_to_felt252;
 use rl_chess::constants;
 
 mod errors {
@@ -178,6 +179,169 @@ impl BoardImpl of BoardTrait {
         fen += format!(" {}",self.fullmove_number);
 
         return fen; // return snapshot?
+    }
+
+    #[inline]
+    fn to_boardfen_hash(ref self: Board) -> felt252 {
+        let mut fen: ByteArray = "";
+
+        // 1. Piece placement
+        for rank in array![7,6,5,4,3,2,1,0].span() {
+            let mut empty_count:u8 = 0;
+            for file in array![0,1,2,3,4,5,6,7].span() {
+                let square: u8 = ((*rank) * 8) + (*file);
+                let piece = self.piece_at(square);
+                let color = self.color_at(square);
+                if (piece.is_some() && color.is_some()) {
+                    if empty_count > 0 {
+                        fen += format!("{empty_count}");
+                        empty_count = 0;
+                    }
+
+                    let symbol = match (piece.unwrap(), color.unwrap()){
+                        (Piece::Pawn, Color::White) => "P",
+                        (Piece::Rook, Color::White) => "R",
+                        (Piece::Knight, Color::White) => "N",
+                        (Piece::Bishop, Color::White) => "B",
+                        (Piece::Queen, Color::White) => "Q",
+                        (Piece::King, Color::White) => "K",
+                        (Piece::Pawn, Color::Black) => "p",
+                        (Piece::Rook, Color::Black) => "r",
+                        (Piece::Knight, Color::Black) => "n",
+                        (Piece::Bishop, Color::Black) => "b",
+                        (Piece::Queen, Color::Black) => "q",
+                        (Piece::King, Color::Black) => "k",
+                        _ => "", // suppose to increment empty count
+                    };
+                    fen += symbol;
+                } else {
+                    empty_count += 1;
+                };
+            };
+            if empty_count > 0 {
+                fen += format!("{empty_count}");
+            };
+            if (*rank) > 0 {
+                fen += "/";
+            };
+        };
+
+        // 2. Active color
+        fen += " ";
+        match self.side_to_move {
+            Color::White => fen += "w",
+            Color::Black => fen += "b",
+            _ => {
+                assert(false, errors::BOARD_INVALID_COLOR);
+            },
+        };
+
+        return hash_byte_array_to_felt252(@fen);
+    }
+
+    #[inline]
+    fn to_fen_and_boardfen_hash(ref self: Board) -> (ByteArray, felt252) {
+        let mut fen: ByteArray = "";
+
+        // 1. Piece placement
+        for rank in array![7,6,5,4,3,2,1,0].span() {
+            let mut empty_count:u8 = 0;
+            for file in array![0,1,2,3,4,5,6,7].span() {
+                let square: u8 = ((*rank) * 8) + (*file);
+                let piece = self.piece_at(square);
+                let color = self.color_at(square);
+                if (piece.is_some() && color.is_some()) {
+                    if empty_count > 0 {
+                        fen += format!("{empty_count}");
+                        empty_count = 0;
+                    }
+
+                    let symbol = match (piece.unwrap(), color.unwrap()){
+                        (Piece::Pawn, Color::White) => "P",
+                        (Piece::Rook, Color::White) => "R",
+                        (Piece::Knight, Color::White) => "N",
+                        (Piece::Bishop, Color::White) => "B",
+                        (Piece::Queen, Color::White) => "Q",
+                        (Piece::King, Color::White) => "K",
+                        (Piece::Pawn, Color::Black) => "p",
+                        (Piece::Rook, Color::Black) => "r",
+                        (Piece::Knight, Color::Black) => "n",
+                        (Piece::Bishop, Color::Black) => "b",
+                        (Piece::Queen, Color::Black) => "q",
+                        (Piece::King, Color::Black) => "k",
+                        _ => "", // suppose to increment empty count
+                    };
+                    fen += symbol;
+                } else {
+                    empty_count += 1;
+                };
+            };
+            if empty_count > 0 {
+                fen += format!("{empty_count}");
+            };
+            if (*rank) > 0 {
+                fen += "/";
+            };
+        };
+
+        // 2. Active color
+        fen += " ";
+        match self.side_to_move {
+            Color::White => fen += "w",
+            Color::Black => fen += "b",
+            _ => {
+                assert(false, errors::BOARD_INVALID_COLOR);
+            },
+        };
+
+        // 2b. boardfen_hash
+        let boardfen_hash = hash_byte_array_to_felt252(@fen);
+        
+        // 3. Castling availability
+        fen += " ";
+        let mut castling: ByteArray = "";
+        if self.castling_rights == 0 {
+            fen += "-";
+        } else {
+            
+            if self.castling_rights & 0b1000 != 0 { castling +="K"; }
+            if self.castling_rights & 0b0100 != 0 { castling += "Q"; }
+            if self.castling_rights & 0b0010 != 0 { castling += "k"; }
+            if self.castling_rights & 0b0001 != 0 { castling += "q"; }
+            fen += castling;
+        };
+        
+        // 4. En passant target square              
+        fen += " ";
+        if self.en_passant == 88 {  
+            fen += "-";
+        } else {
+            //let file: felt252 = ((self.en_passant % 8).into() + 'a'); // 97 is the ascii value for 'a'
+            let file: ByteArray = match self.en_passant % 8 {
+                0 => "a",
+                1 => "b",
+                2 => "c",
+                3 => "d",
+                4 => "e",
+                5 => "f",
+                6 => "g",
+                7 => "h",
+                _ => "",
+            };
+            let rank: u8 = ((self.en_passant / 8) + 1);
+            fen += file;
+            fen += format!("{}", rank);
+        };
+
+        // 5. Halfmove clock
+        fen += format!(" {}",self.halfmove_clock);
+
+        // 6. Fullmove number
+        fen += format!(" {}",self.fullmove_number);
+
+        //return fen;
+        
+        return (fen, boardfen_hash);
     }
 
     #[inline]
@@ -564,8 +728,54 @@ impl BoardImpl of BoardTrait {
         }
     }
     
-    
+    #[inline]
+    fn is_fifty_move_rule(ref self: Board) -> bool {
+        self.halfmove_clock >= 100 // 50 full moves (100 half-moves)
+    }
 
-    
+    #[inline]
+    fn is_draw_by_insufficient_material(ref self: Board) -> bool {
+        let all_pieces: u64 = self.whites | self.blacks;
 
+        if u64_pop_count(all_pieces) > 4 {
+            return false;
+        };
+
+        match u64_pop_count(all_pieces) {
+            0 => false, // impossible due to above check
+            1 => false, // impossible due to above check
+            2 => true, // King vs King
+            3 => self.knights != 0 || self.bishops != 0, // King and Bishop/Knight vs King
+            4 => {
+                let white_bishops = self.bishops & self.whites;
+                let black_bishops = self.bishops & self.blacks;
+                self.bishops != 0 && u64_pop_count(white_bishops) == 1 && u64_pop_count(black_bishops) == 1
+                    && ((white_bishops & constants::BLACK_SQUARES != 0) != (black_bishops & constants::BLACK_SQUARES != 0))
+            },
+            _ => false,
+        }
+    }
+
+    #[inline]
+    fn is_draw(ref self: Board) -> bool {
+        self.is_draw_by_insufficient_material() || self.is_fifty_move_rule()
+    }
+
+    // #[inline]
+    // fn is_draw_by_repetition(ref self: Board) -> bool {
+    //     false
+    // }
+
+}
+
+fn u64_pop_count(mut x: u64) -> u8 {
+    let mut count: u8 = 0;
+    loop {
+        if x == 0 {
+            break;
+        }
+        count += 1;
+        x = x & (x - 1);
+    };
+    count
 }

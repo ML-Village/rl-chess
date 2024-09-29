@@ -496,7 +496,10 @@ mod PlayableComponent {
 
                 board.move_piece(move_from, move_to, promotion);
                 game.side_to_move = board.side_to_move;
-                history.fen = board.to_fen();
+                //history.fen = board.to_fen();
+                let (board_fen, board_fen_hash) = board.to_fen_and_boardfen_hash();
+                history.fen = board_fen;
+                history.fen_hash_hist.append(board_fen_hash);
 
                 // update move_history_integers
                 if(board.side_to_move == Color::Black) {
@@ -565,6 +568,13 @@ mod PlayableComponent {
                 }
 
                 // check if game is over -- checkmate, stalemate, draw, or time
+
+                if (board.is_draw() || history.is_draw_by_repetition()) {
+                    game.game_state = GameState::Resolved;
+                    game.result = 3;
+                    game.winner = starknet::contract_address_const::<0x0>();
+                    game.room_end = get_block_timestamp();
+                }
 
                 // update store
                 store.set_history(history);
