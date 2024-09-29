@@ -53,6 +53,15 @@ impl ColorImpl of ColorTrait {
             Color::Black => "Black",
         }
     }
+
+    #[inline]
+    fn to_string_char(self: Color) -> ByteArray {
+        match self {
+            Color::None => "N",
+            Color::White => "W",
+            Color::Black => "B",
+        }
+    }
 }
 
 #[generate_trait]

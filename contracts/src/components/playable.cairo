@@ -28,7 +28,7 @@ mod PlayableComponent {
     use rl_chess::models::history::{HistoryTrait};
     use rl_chess::types::profile::ProfilePicType;
     use rl_chess::types::gamestate::GameState;
-    use rl_chess::types::color::Color;
+    use rl_chess::types::color::{Color, ColorTrait};
     use rl_chess::types::piece::Piece;
     use rl_chess::helpers::math::{MathTrait as MathSubAbsTrait};
     use rl_chess::utils::seeder::{make_seed};
@@ -499,6 +499,7 @@ mod PlayableComponent {
                 //history.fen = board.to_fen();
                 let (board_fen, board_fen_hash) = board.to_fen_and_boardfen_hash();
                 history.fen = board_fen;
+                history.fen_history += format!(" {}{}. ", move_integer, color_from.to_string_char());
                 history.fen_history += board_fen;
                 history.fen_hash_hist.append(board_fen_hash);
 
