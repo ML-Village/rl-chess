@@ -496,6 +496,14 @@ mod PlayableComponent {
 
                 board.move_piece(move_from, move_to, promotion);
                 game.side_to_move = board.side_to_move;
+
+                // check if the move puts the other player in check
+                let check_string:ByteArray = if(board.is_in_check(board.side_to_move)){
+                    "+"
+                } else {
+                    ""
+                };
+
                 //history.fen = board.to_fen();
                 let (board_fen, board_fen_hash) = board.to_fen_and_boardfen_hash();
                 history.fen = board_fen.clone();
@@ -532,6 +540,7 @@ mod PlayableComponent {
                         history.move_history_string += capture_string;
                         history.move_history_string += destination_file;
                         history.move_history_string += destination_rank;
+                        history.move_history_string += check_string;
                     }
 
                 } else {
@@ -554,6 +563,7 @@ mod PlayableComponent {
                         history.move_history_string += capture_string;
                         history.move_history_string += destination_file;
                         history.move_history_string += destination_rank;
+                        history.move_history_string += check_string;
                         history.move_history_string += " / ";
                     }
                 }
