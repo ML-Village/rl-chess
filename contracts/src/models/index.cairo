@@ -23,6 +23,7 @@ pub struct Player {
     pub name: felt252,
     pub profile_pic_type: ProfilePicType,
     pub profile_pic_uri: u64,     // can be anything 
+    pub elo: u16,
     pub timestamp: u64,                 // date registered
 }
 

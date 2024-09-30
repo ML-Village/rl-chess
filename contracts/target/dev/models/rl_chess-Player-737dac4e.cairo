@@ -2,7 +2,7 @@ impl PlayerIntrospect<> of dojo::model::introspect::Introspect<Player<>> {
     #[inline(always)]
     fn size() -> Option<usize> {
         let sizes: Array<Option<usize>> = array![
-            dojo::model::introspect::Introspect::<ProfilePicType>::size(), Option::Some(3)
+            dojo::model::introspect::Introspect::<ProfilePicType>::size(), Option::Some(4)
         ];
 
         if dojo::utils::any_none(@sizes) {
@@ -25,6 +25,10 @@ impl PlayerIntrospect<> of dojo::model::introspect::Introspect<Player<>> {
                 dojo::model::FieldLayout {
                     selector: 377873905795975839677646874633806590921301036337094729468253709378233133597,
                     layout: dojo::model::introspect::Introspect::<u64>::layout()
+                },
+                dojo::model::FieldLayout {
+                    selector: 343640518436777458168841803201677141410145157980799460674139529965071264619,
+                    layout: dojo::model::introspect::Introspect::<u16>::layout()
                 },
                 dojo::model::FieldLayout {
                     selector: 1242883636335185042648196101482844477055185136100498177742807244790485718414,
@@ -63,6 +67,11 @@ impl PlayerIntrospect<> of dojo::model::introspect::Introspect<Player<>> {
                         ty: dojo::model::introspect::Introspect::<u64>::ty()
                     },
                     dojo::model::introspect::Member {
+                        name: 'elo',
+                        attrs: array![].span(),
+                        ty: dojo::model::introspect::Introspect::<u16>::ty()
+                    },
+                    dojo::model::introspect::Member {
                         name: 'timestamp',
                         attrs: array![].span(),
                         ty: dojo::model::introspect::Introspect::<u64>::ty()
@@ -80,6 +89,7 @@ pub struct PlayerEntity {
     pub name: felt252,
     pub profile_pic_type: ProfilePicType,
     pub profile_pic_uri: u64,
+    pub elo: u16,
     pub timestamp: u64,
 }
 
@@ -177,6 +187,35 @@ pub impl PlayerEntityStoreImpl of PlayerEntityStore {
             .set_member(
                 world,
                 377873905795975839677646874633806590921301036337094729468253709378233133597,
+                serialized.span()
+            );
+    }
+
+    fn get_elo(world: dojo::world::IWorldDispatcher, entity_id: felt252) -> u16 {
+        let mut values = dojo::model::ModelEntity::<
+            PlayerEntity
+        >::get_member(
+            world,
+            entity_id,
+            343640518436777458168841803201677141410145157980799460674139529965071264619
+        );
+        let field_value = core::serde::Serde::<u16>::deserialize(ref values);
+
+        if core::option::OptionTrait::<u16>::is_none(@field_value) {
+            panic!("Field `Player::elo`: deserialization failed.");
+        }
+
+        core::option::OptionTrait::<u16>::unwrap(field_value)
+    }
+
+    fn set_elo(self: @PlayerEntity, world: dojo::world::IWorldDispatcher, value: u16) {
+        let mut serialized = core::array::ArrayTrait::new();
+        core::serde::Serde::serialize(@value, ref serialized);
+
+        self
+            .set_member(
+                world,
+                343640518436777458168841803201677141410145157980799460674139529965071264619,
                 serialized.span()
             );
     }
@@ -348,6 +387,39 @@ pub impl PlayerStoreImpl of PlayerStore {
             );
     }
 
+    fn get_elo(world: dojo::world::IWorldDispatcher, address: ContractAddress) -> u16 {
+        let mut serialized = core::array::ArrayTrait::new();
+        core::serde::Serde::serialize(@address, ref serialized);
+
+        let mut values = dojo::model::Model::<
+            Player
+        >::get_member(
+            world,
+            serialized.span(),
+            343640518436777458168841803201677141410145157980799460674139529965071264619
+        );
+
+        let field_value = core::serde::Serde::<u16>::deserialize(ref values);
+
+        if core::option::OptionTrait::<u16>::is_none(@field_value) {
+            panic!("Field `Player::elo`: deserialization failed.");
+        }
+
+        core::option::OptionTrait::<u16>::unwrap(field_value)
+    }
+
+    fn set_elo(self: @Player, world: dojo::world::IWorldDispatcher, value: u16) {
+        let mut serialized = core::array::ArrayTrait::new();
+        core::serde::Serde::serialize(@value, ref serialized);
+
+        self
+            .set_member(
+                world,
+                343640518436777458168841803201677141410145157980799460674139529965071264619,
+                serialized.span()
+            );
+    }
+
     fn get_timestamp(world: dojo::world::IWorldDispatcher, address: ContractAddress) -> u64 {
         let mut serialized = core::array::ArrayTrait::new();
         core::serde::Serde::serialize(@address, ref serialized);
@@ -392,6 +464,7 @@ pub impl PlayerModelEntityImpl of dojo::model::ModelEntity<PlayerEntity> {
         core::array::ArrayTrait::append(ref serialized, *self.name);
         core::serde::Serde::serialize(self.profile_pic_type, ref serialized);
         core::serde::Serde::serialize(self.profile_pic_uri, ref serialized);
+        core::serde::Serde::serialize(self.elo, ref serialized);
         core::serde::Serde::serialize(self.timestamp, ref serialized);
 
         core::array::ArrayTrait::span(@serialized)
@@ -601,6 +674,7 @@ pub impl PlayerModelImpl of dojo::model::Model<Player> {
         core::array::ArrayTrait::append(ref serialized, *self.name);
         core::serde::Serde::serialize(self.profile_pic_type, ref serialized);
         core::serde::Serde::serialize(self.profile_pic_uri, ref serialized);
+        core::serde::Serde::serialize(self.elo, ref serialized);
         core::serde::Serde::serialize(self.timestamp, ref serialized);
 
         core::array::ArrayTrait::span(@serialized)

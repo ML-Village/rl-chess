@@ -1,3 +1,5 @@
+use rl_chess::helpers::math::Math;
+
 #[starknet::component]
 mod PlayableComponent {
     // Core imports
@@ -373,6 +375,8 @@ mod PlayableComponent {
             let store: Store = StoreTrait::new(world);
             let mut game = store.get_game(game_id);
             let mut board = store.get_board(game_id);
+            let mut white_player = store.get_player(game.white_player_address);
+            let mut black_player = store.get_player(game.black_player_address);
 
             //assert caller in game
             assert((caller_address == game.white_player_address) || 
@@ -619,4 +623,23 @@ mod PlayableComponent {
         }
     }
 
+}
+
+fn calculate_elo(white_elo: u16, black_elo: u16, result: u16, k:u16) -> (u16, u16) {
+    let mut white_new_elo: i16 = white_elo.try_into().unwrap();
+    let mut black_new_elo: i16 = black_elo.try_into().unwrap();
+
+    // let eWhitePower: i16 = ((black_new_elo - white_new_elo) / 400).try_into().unwrap();
+    // let eBlackPower: i16 = ((white_new_elo - black_new_elo) / 400).try_into().unwrap();
+
+    // let eWhite:i16 = 1 / (1 + Math::pow(10_i16, eWhitePower));
+    // let eBlack:i16 = 1 / (1 + Math::pow(10_i16, eBlackPower));
+
+    // let saWhite:i16 = if (result == 1) {10} else if (result == 0) {0} else {5};
+    // let saBlack:i16 = if (result == 1) {0} else if (result == 0) {10} else {5};
+
+    // white_new_elo = white_elo.try_into().unwrap() + (k.try_into().unwrap() * (saWhite - (eWhite*10)/10));
+    // black_new_elo = black_elo.try_into().unwrap() + (k.try_into().unwrap() * (saBlack - (eBlack*10)/10));
+    
+    (white_new_elo.try_into().unwrap(), black_new_elo.try_into().unwrap())
 }

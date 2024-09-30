@@ -32,6 +32,7 @@ impl PlayerImpl of PlayerTrait {
             name,
             profile_pic_type,
             profile_pic_uri: profile_pic_uri,
+            elo: 1500,
             timestamp: get_block_timestamp(),
         }
     }

@@ -45,12 +45,12 @@ export const BurnerButtons = () => {
                     flex items-center
                     ">
                         <span className="mx-4 text-xl text-white">
-                        {playerName}
+                        {playerName != "" ? playerName : "Register Name"}
                         </span>
                         <span className="py-1">
                             <Avatar className="h-7 w-7">
                                 <AvatarImage src={getPlayerPfPurlByNum(player?.profile_pic_uri??1)} alt={"username"} />
-                                <AvatarFallback>{playerName}</AvatarFallback>
+                                <AvatarFallback>{playerName != "" ? playerName : "RegisterName"}</AvatarFallback>
                             </Avatar>
                         </span>
                     </Button>
@@ -60,7 +60,7 @@ export const BurnerButtons = () => {
                     <DropdownMenuItem 
                     className="hover:cursor-pointer"
                     onClick={() => setOpen(true)}>
-                    Edit Profile
+                    {playerName != "" ? "Edit Profile" : "Register Name"}
                     </DropdownMenuItem>
 
                     <DropdownMenuItem 
