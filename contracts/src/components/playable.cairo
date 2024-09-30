@@ -243,6 +243,7 @@ mod PlayableComponent {
         ){
             let store: Store = StoreTrait::new(world);
             let mut game = store.get_game(game_id);
+            assert(game.room_owner_address != invitee_address, errors::OWNER_CANNOT_INVITE_SELF);
             assert(game.invitee_address == starknet::contract_address_const::<0x0>(), 
                 errors::ALREADY_OCCUPIED);
 

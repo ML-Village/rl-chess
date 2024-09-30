@@ -250,13 +250,13 @@ export const GameRoom = () => {
         ">
             <div className="flex justify-center items-center gap-x-2
             h-[90vh] p-2 pr-4
-            border border-green-600
+            
             ">
 
                 {/* Chessboard column */}
                 <div className="flex flex-col
                 justify-center items-center h-[88vh] w-[36vw]
-                border border-purple-500
+                
                 ">
 
                     {/* Top Player Panel */}

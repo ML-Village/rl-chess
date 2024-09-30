@@ -18,7 +18,7 @@ export const LobbyEvents = () => {
         return true
     }
     return (
-        <div className="border-2 border-purple-700
+        <div className="
                         w-[550px] h-full
                         flex flex-col justify-start items-center
                         p-2 px-4

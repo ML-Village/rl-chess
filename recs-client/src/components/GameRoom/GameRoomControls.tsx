@@ -7,6 +7,7 @@ import { useComponentValue, useEntityQuery } from "@dojoengine/react";
 import { Entity, Has, HasValue, getComponentValueStrict, getComponentValue } from "@dojoengine/recs";
 import { getEntityIdFromKeys } from "@dojoengine/utils";
 
+import { motion } from 'framer-motion';
 import { entityIdToKey, bigintToEntity, keysToEntity, bigintToHex,
     getPlayerName, getPlayerPfPurlByNum
 } from '@/utils';
@@ -54,6 +55,26 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
         })
     }
 
+    const handleRejectInvite = async () => {
+        await client.lobby.reply_invite({
+            account: account,
+            game_id: BigInt(roomId??0),
+            accepted: false,
+        })
+    }
+
+    const buttonFlickerVariants = {
+        animate: {
+            backgroundColor: ['#EDEED1', '#22c55e', '#EDEED1'],
+            //color: ['#000000', '#ffffff', '#000000'],
+            transition: {
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+            }
+        }
+    };
+
     return (
         <div className="flex justify-start items-center gap-x-1
         w-full mx-2 px-6
@@ -81,15 +102,34 @@ export const GameRoomControls = ({roomId}:{roomId:string}) => {
                         
                         (
                         playerIsInvitee ?
-                        <Button className="py-2 rounded-lg bg-red-500 font-semibold
-                        text-white hover:text-white text-xs 2xl:text-sm
-                        px-1 xl:px-2 2xl:px-2
-                        grow
-                        "
-                        onClick={handleAcceptInvite}
-                        >
-                            Invitee Pls Accept Invite!!
-                        </Button>
+                        <div className="flex gap-x-1 grow justify-center items-center">
+
+                                <motion.div
+                                        variants={buttonFlickerVariants}
+                                        animate="animate"
+                                        className="rounded-lg overflow-hidden" // Add this to ensure the rounded corners are preserved
+                                    >
+                                    <button className="py-2 font-semibold
+                                        bg-transparent text-xs 2xl:text-sm
+                                        px-1 xl:px-2 2xl:px-2
+                                        text-gray-800
+                                        grow
+                                    "
+                                    onClick={handleAcceptInvite}
+                                    >
+                                        Invitee Accept Invite!!
+                                    </button>
+                                </motion.div>
+                                <Button className="py-2 rounded-lg bg-red-500 font-semibold
+                                text-white hover:text-white text-xs 2xl:text-sm
+                                px-1 xl:px-2 2xl:px-2
+                                grow
+                                "
+                                onClick={handleRejectInvite}
+                                >
+                                    Reject Invite!
+                                </Button>   
+                        </div>
                         :
                         <Button className="py-2 rounded-lg border border-red-500
                         bg-transparent font-semibold
