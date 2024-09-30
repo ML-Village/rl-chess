@@ -129,20 +129,26 @@ export const GameRoom = () => {
             console.log("GameRoom: LastMoveString exists: ", !!lastMoveString)
             console.log("GameRoom: lastMoveString: ", lastMoveString)
             const isCapture = lastMoveString.includes('x');
+            const isCheck = lastMoveString.includes('+');
+            const isCastle = lastMoveString.includes('0-0') || lastMoveString.includes('0-0-0');
             console.log("GameRoom: isCapture: ", isCapture)
 
             // if it's a capture, play sound
             if(isCapture && gameObject?.game_state == "InProgress" && !mute){
-                console.log("GameRoom: Playing capture sound")
                 // play sound
                 const captureSound = new Audio('/sounds/capture.mp3');
-                console.log("GameRoom: captureSound played")
                 captureSound.play();
+            } else if (isCheck && gameObject?.game_state == "InProgress" && !mute){
+                // play sound
+                const checkSound = new Audio('/sounds/move-check.mp3');
+                checkSound.play();
+            } else if (isCastle && gameObject?.game_state == "InProgress" && !mute){
+                // play sound
+                const castleSound = new Audio('/sounds/castle.mp3');
+                castleSound.play();
             } else if (!!lastMoveString && gameObject?.game_state == "InProgress" && !mute){
-                console.log("GameRoom: Playing move sound")
                 // play sound
                 const moveSound = new Audio('/sounds/move-self.mp3');
-                console.log("GameRoom: moveSound played")
                 moveSound.play();
             }
         }
