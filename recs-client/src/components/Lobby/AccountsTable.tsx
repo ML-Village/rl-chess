@@ -30,11 +30,12 @@ export const AccountsTable = () => {
 
     const hasPlayers = useEntityQuery([Has(Player)]);
 
+    // sort by highest ELO
     const playerData = hasPlayers.map((entity) => {
         return getComponentValue(Player, entity)
-    })
+    }).sort((a, b) => (b?.elo??0) - (a?.elo??0));
 
-    console.log("playerData", playerData)
+    //console.log("playerData", playerData)
 
     return (
         <Table>

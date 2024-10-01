@@ -51,7 +51,7 @@ export const OpenRooms = () => {
             ...g
         }
     })
-    console.log("OpenRoom: gamesData: ", gamesData)
+    //console.log("OpenRoom: gamesData: ", gamesData)
 
 
     // Filtering for games that are Awaiting only

@@ -61,7 +61,7 @@ export const RegistrationModal: React.FC = () => {
 
     // else player is registered
     setPlayerRegistered(true);
-    console.log("RegModal: player registered.")
+    //console.log("RegModal: player registered.")
 
     // do nothing if there is no name and set the name input to empty
     if (player?.name === undefined) {
@@ -77,15 +77,15 @@ export const RegistrationModal: React.FC = () => {
     }
 
     // if there is a name, set the name input to the name
-    console.log("RegModal:Player Name: ", feltToString(String(player?.name)))
+    //console.log("RegModal:Player Name: ", feltToString(String(player?.name)))
     setNameValue(feltToString(String(player?.name)))
 
     // if no profile pic uri, return
     if (player?.profile_pic_uri === undefined) return;
     
     // parse the profile pic uri to int
-    console.log("RegModal: Native Profile Pic Type?", player?.profile_pic_type == "Native")
-    console.log("RegModal: profile pic uri", player?.profile_pic_uri)
+    //console.log("RegModal: Native Profile Pic Type?", player?.profile_pic_type == "Native")
+    //console.log("RegModal: profile pic uri", player?.profile_pic_uri)
     // const player_profile_pic_uri = player?.profile_pic_type == "Native" ? 
     //   player?.profile_pic_uri.charCodeAt(0) :
     //   JSON.stringify(player?.profile_pic_uri)

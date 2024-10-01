@@ -54,7 +54,7 @@ export const LobbyTable = () => {
         )
     })
 
-    console.log("userLiveGames: ", userLiveGames);
+    //console.log("userLiveGames: ", userLiveGames);
 
 
     return (
