@@ -1,0 +1,479 @@
+[world]
+kind = "WorldContract"
+class_hash = "0x458d0ce5b14a4844092bdb62050f462d53362304a13febbac6d973691d61be2"
+original_class_hash = "0x458d0ce5b14a4844092bdb62050f462d53362304a13febbac6d973691d61be2"
+abi = "manifests/slot/deployment/abis/dojo-world.json"
+address = "0x1fadc313fe86b107b5efb841a1ab04986500f1ab1b7b6589b9a003459471c20"
+transaction_hash = "0x1d06c5ec5b863126ae0746596f454b6bba021928e9caae1de24b783a75f168d"
+block_number = 3
+seed = "dojo_rl_chess"
+manifest_name = "dojo-world"
+
+[world.metadata]
+profile_name = "slot"
+rpc_url = "https://api.cartridge.gg/x/rl-chess-test1/katana"
+
+[base]
+kind = "Class"
+class_hash = "0x2427dd10a58850ac9a5ca6ce04b7771b05330fd18f2e481831ad903b969e6b2"
+original_class_hash = "0x2427dd10a58850ac9a5ca6ce04b7771b05330fd18f2e481831ad903b969e6b2"
+abi = "manifests/slot/deployment/abis/dojo-base.json"
+tag = "dojo-base"
+manifest_name = "dojo-base"
+
+[[contracts]]
+kind = "DojoContract"
+address = "0x3b587d720c20a7b5b067dc2b2fc7d0f54484922a9b9b70fc39b0e3080cc55a1"
+class_hash = "0x541569665d43111ac5fb203b28e0f3d916b6b471cdcc061dbd5bc9f211f198a"
+original_class_hash = "0x541569665d43111ac5fb203b28e0f3d916b6b471cdcc061dbd5bc9f211f198a"
+base_class_hash = "0x2427dd10a58850ac9a5ca6ce04b7771b05330fd18f2e481831ad903b969e6b2"
+abi = "manifests/slot/deployment/abis/contracts/rl_chess-admin-9bec2159.json"
+reads = []
+writes = ["rl_chess-Format"]
+init_calldata = []
+tag = "rl_chess-admin"
+systems = [
+    "add_game_format",
+    "remove_game_format",
+]
+manifest_name = "rl_chess-admin-9bec2159"
+
+[[contracts]]
+kind = "DojoContract"
+address = "0x4eb3d8e90d8eded32effdb92b7c514dd4287eed52c737b4565efdb1d750c76d"
+class_hash = "0x2c353f5fb67110fb9fa8065d98a8f600d67cbbe64c12f0df8f648afc746a120"
+original_class_hash = "0x2c353f5fb67110fb9fa8065d98a8f600d67cbbe64c12f0df8f648afc746a120"
+base_class_hash = "0x2427dd10a58850ac9a5ca6ce04b7771b05330fd18f2e481831ad903b969e6b2"
+abi = "manifests/slot/deployment/abis/contracts/rl_chess-lobby-aac486b8.json"
+reads = []
+writes = [
+    "rl_chess-Player",
+    "rl_chess-Game",
+    "rl_chess-Board",
+    "rl_chess-Format",
+    "rl_chess-History",
+]
+init_calldata = []
+tag = "rl_chess-lobby"
+systems = [
+    "update_player",
+    "update_invitee",
+    "reply_invite",
+    "join_game",
+    "leave_game",
+    "owner_withdraw_game",
+    "ready_up",
+    "start_game",
+    "switch_sides",
+]
+manifest_name = "rl_chess-lobby-aac486b8"
+
+[[contracts]]
+kind = "DojoContract"
+address = "0x567bf6098b0722ade2665c619729f6f87eba155d38644087529ebc4780a3b78"
+class_hash = "0x3c8faefb45e81bcb852811907d9b058e704d2b203f15995350969b42c82a781"
+original_class_hash = "0x3c8faefb45e81bcb852811907d9b058e704d2b203f15995350969b42c82a781"
+base_class_hash = "0x2427dd10a58850ac9a5ca6ce04b7771b05330fd18f2e481831ad903b969e6b2"
+abi = "manifests/slot/deployment/abis/contracts/rl_chess-room-2dc7c374.json"
+reads = []
+writes = [
+    "rl_chess-Player",
+    "rl_chess-Game",
+    "rl_chess-Board",
+    "rl_chess-Format",
+    "rl_chess-History",
+]
+init_calldata = []
+tag = "rl_chess-room"
+systems = ["move"]
+manifest_name = "rl_chess-room-2dc7c374"
+
+[[models]]
+kind = "DojoModel"
+class_hash = "0x20afd71c77c72eb638b9aa03839caddf3db85e368cfbf73e85d586dc266642e"
+original_class_hash = "0x20afd71c77c72eb638b9aa03839caddf3db85e368cfbf73e85d586dc266642e"
+abi = "manifests/slot/deployment/abis/models/rl_chess-Board-2cc709f8.json"
+tag = "rl_chess-Board"
+manifest_name = "rl_chess-Board-2cc709f8"
+
+[[models.members]]
+name = "game_id"
+type = "u128"
+key = true
+
+[[models.members]]
+name = "whites"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "blacks"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "pawns"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "rooks"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "knights"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "bishops"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "queens"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "kings"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "wcp"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "wcr"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "wck"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "wcb"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "wcq"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "bcp"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "bcr"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "bck"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "bcb"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "bcq"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "side_to_move"
+type = "Color"
+key = false
+
+[[models.members]]
+name = "castling_rights"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "en_passant"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "halfmove_clock"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "fullmove_number"
+type = "u16"
+key = false
+
+[[models.members]]
+name = "last_move_time"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "last_move_integer"
+type = "u64"
+key = false
+
+[[models]]
+kind = "DojoModel"
+class_hash = "0x453bb6786bc7586bc2194dc2daea858fa6ffb655e2fb63b60ef16246faa1ec"
+original_class_hash = "0x453bb6786bc7586bc2194dc2daea858fa6ffb655e2fb63b60ef16246faa1ec"
+abi = "manifests/slot/deployment/abis/models/rl_chess-Format-6da30a59.json"
+tag = "rl_chess-Format"
+manifest_name = "rl_chess-Format-6da30a59"
+
+[[models.members]]
+name = "format_id"
+type = "u16"
+key = true
+
+[[models.members]]
+name = "description"
+type = "felt252"
+key = false
+
+[[models.members]]
+name = "turn_expiry"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "total_time_per_side"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "total_time_string"
+type = "felt252"
+key = false
+
+[[models.members]]
+name = "increment"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "available"
+type = "bool"
+key = false
+
+[[models]]
+kind = "DojoModel"
+class_hash = "0x1a54379c1c8a1d8db66fc7eb9d57028829b4fb78fed41b6830364deb71f75da"
+original_class_hash = "0x1a54379c1c8a1d8db66fc7eb9d57028829b4fb78fed41b6830364deb71f75da"
+abi = "manifests/slot/deployment/abis/models/rl_chess-Game-36398636.json"
+tag = "rl_chess-Game"
+manifest_name = "rl_chess-Game-36398636"
+
+[[models.members]]
+name = "game_id"
+type = "u128"
+key = true
+
+[[models.members]]
+name = "game_format_id"
+type = "u16"
+key = false
+
+[[models.members]]
+name = "w_turn_expiry_time"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "b_turn_expiry_time"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "invite_expiry"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "room_owner_address"
+type = "ContractAddress"
+key = false
+
+[[models.members]]
+name = "owner_elo"
+type = "u16"
+key = false
+
+[[models.members]]
+name = "invitee_address"
+type = "ContractAddress"
+key = false
+
+[[models.members]]
+name = "invitee_elo"
+type = "u16"
+key = false
+
+[[models.members]]
+name = "white_player_address"
+type = "ContractAddress"
+key = false
+
+[[models.members]]
+name = "black_player_address"
+type = "ContractAddress"
+key = false
+
+[[models.members]]
+name = "game_state"
+type = "GameState"
+key = false
+
+[[models.members]]
+name = "owner_ready"
+type = "bool"
+key = false
+
+[[models.members]]
+name = "invitee_ready"
+type = "bool"
+key = false
+
+[[models.members]]
+name = "room_start"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "room_end"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "w_last_move_time"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "b_last_move_time"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "w_total_time_left"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "b_total_time_left"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "side_to_move"
+type = "Color"
+key = false
+
+[[models.members]]
+name = "result"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "winner"
+type = "ContractAddress"
+key = false
+
+[[models]]
+kind = "DojoModel"
+class_hash = "0x585cea5f7eb80d2d56969420ad9b997b80e96b0c1240db6e07f1a56b18eb5d"
+original_class_hash = "0x585cea5f7eb80d2d56969420ad9b997b80e96b0c1240db6e07f1a56b18eb5d"
+abi = "manifests/slot/deployment/abis/models/rl_chess-History-344224e0.json"
+tag = "rl_chess-History"
+manifest_name = "rl_chess-History-344224e0"
+
+[[models.members]]
+name = "game_id"
+type = "u128"
+key = true
+
+[[models.members]]
+name = "fen"
+type = "ByteArray"
+key = false
+
+[[models.members]]
+name = "fen_hash_hist"
+type = "Array<felt252>"
+key = false
+
+[[models.members]]
+name = "fen_history"
+type = "ByteArray"
+key = false
+
+[[models.members]]
+name = "move_history_string"
+type = "ByteArray"
+key = false
+
+[[models.members]]
+name = "move_history_integer"
+type = "ByteArray"
+key = false
+
+[[models.members]]
+name = "last_move_from"
+type = "u8"
+key = false
+
+[[models.members]]
+name = "last_move_to"
+type = "u8"
+key = false
+
+[[models]]
+kind = "DojoModel"
+class_hash = "0x5e2d003db2d05fc7c93c39365383f16317b2ef9f6b39e8401a6a50aa83e1e44"
+original_class_hash = "0x5e2d003db2d05fc7c93c39365383f16317b2ef9f6b39e8401a6a50aa83e1e44"
+abi = "manifests/slot/deployment/abis/models/rl_chess-Player-737dac4e.json"
+tag = "rl_chess-Player"
+manifest_name = "rl_chess-Player-737dac4e"
+
+[[models.members]]
+name = "address"
+type = "ContractAddress"
+key = true
+
+[[models.members]]
+name = "name"
+type = "felt252"
+key = false
+
+[[models.members]]
+name = "profile_pic_type"
+type = "ProfilePicType"
+key = false
+
+[[models.members]]
+name = "profile_pic_uri"
+type = "u64"
+key = false
+
+[[models.members]]
+name = "elo"
+type = "u16"
+key = false
+
+[[models.members]]
+name = "timestamp"
+type = "u64"
+key = false

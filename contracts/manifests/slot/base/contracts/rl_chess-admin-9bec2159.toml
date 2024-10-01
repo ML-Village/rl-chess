@@ -1,0 +1,14 @@
+kind = "DojoContract"
+class_hash = "0x541569665d43111ac5fb203b28e0f3d916b6b471cdcc061dbd5bc9f211f198a"
+original_class_hash = "0x541569665d43111ac5fb203b28e0f3d916b6b471cdcc061dbd5bc9f211f198a"
+base_class_hash = "0x0"
+abi = "manifests/slot/base/abis/contracts/rl_chess-admin-9bec2159.json"
+reads = []
+writes = []
+init_calldata = []
+tag = "rl_chess-admin"
+systems = [
+    "add_game_format",
+    "remove_game_format",
+]
+manifest_name = "rl_chess-admin-9bec2159"

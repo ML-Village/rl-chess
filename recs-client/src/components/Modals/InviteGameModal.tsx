@@ -172,7 +172,9 @@ export const InviteGameModal: React.FC = () => {
                                   className="bg-blue-400/50 text-gray-800/80 px-4 py-2 rounded-md
                                   grow
                                   data-[state=on]:bg-blue-900 data-[state=on]:text-white
+                                  disabled:bg-gray-400 disabled:text-gray-200
                                   "
+                                  disabled={config.available==false}
                                   value={config.format_id?.toString()??index.toString()}
                                   >
                                   {config.total_time_string}
@@ -185,8 +187,10 @@ export const InviteGameModal: React.FC = () => {
                                 <ToggleGroupItem key={`gameformat-${config?.format_id??index}`}
                                   className="px-4 py-2 rounded-md
                                   grow
-                                  data-[state=on]:bg-orange-500 data-[state=on]:text-white
+                                  data-[state=on]:bg-orange-500 data-[state=on]:text-white 
+                                  disabled:bg-gray-400 disabled:text-gray-200
                                   "
+                                  disabled={config.available==false}
                                   value={config.format_id??index.toString()}
                                   >
                                   {config.total_time_string}

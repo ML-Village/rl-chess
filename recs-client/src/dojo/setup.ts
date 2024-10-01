@@ -19,6 +19,11 @@ export async function setup({ ...config }: DojoConfig) {
     relayUrl: "",
     worldAddress: config.manifest.world.address || "",
   });
+  console.log("katanaAddress", config.rpcUrl);
+  console.log("toriiUrl", config.toriiUrl);
+  // console.log("masterAddress", config.masterAddress);
+  // console.log("masterPrivateKey", config.masterPrivateKey);
+  // console.log("accountClassHash", config.accountClassHash);
 
   // create contract components
   const contractComponents = defineContractComponents(world);
@@ -28,6 +33,9 @@ export async function setup({ ...config }: DojoConfig) {
 
   // create dojo provider
   const dojoProvider = new DojoProvider(config.manifest, config.rpcUrl);
+  console.log("dojoProvider ...");
+  //const contractClass = await dojoProvider.provider.getClassAt("0x6f467d1e985434ec7e737e5ece570366735001d8a6d84bb43a2301a63864fe8");
+  //console.log("Class Hash:", contractClass);
 
   const sync = await getSyncEntities(
     toriiClient,
@@ -37,7 +45,7 @@ export async function setup({ ...config }: DojoConfig) {
 
   // setup world
   const client = await setupWorld(dojoProvider);
-
+  //console.log("client complete: ", client);
   // create burner manager
   const burnerManager = new BurnerManager({
     masterAccount: new Account(
@@ -53,11 +61,13 @@ export async function setup({ ...config }: DojoConfig) {
   });
 
   try {
+    console.log("initializing burner manager");
     await burnerManager.init();
     if (burnerManager.list().length === 0) {
       await burnerManager.create();
     }
   } catch (e) {
+    console.log("Burner not initialized");
     console.error(e);
   }
 

@@ -13,3 +13,11 @@ migrate = "sozo build && sozo migrate apply"
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.0.0-alpha.6" }
 
 [[target.dojo]]
+
+[profile.slot.tool.dojo.env]
+rpc_url = "https://api.cartridge.gg/x/rl-chess-test1/katana"
+account_address = "0x6f467d1e985434ec7e737e5ece570366735001d8a6d84bb43a2301a63864fe8"
+private_key = "0x70d98b8b4fe45d33ed2f7ee786175a158f72eaef287e943f99a268dd45f418f"
+world_address = "0x1fadc313fe86b107b5efb841a1ab04986500f1ab1b7b6589b9a003459471c20"
+
+

@@ -1,0 +1,121 @@
+kind = "DojoModel"
+class_hash = "0x1a54379c1c8a1d8db66fc7eb9d57028829b4fb78fed41b6830364deb71f75da"
+original_class_hash = "0x1a54379c1c8a1d8db66fc7eb9d57028829b4fb78fed41b6830364deb71f75da"
+abi = "manifests/slot/base/abis/models/rl_chess-Game-36398636.json"
+tag = "rl_chess-Game"
+manifest_name = "rl_chess-Game-36398636"
+
+[[members]]
+name = "game_id"
+type = "u128"
+key = true
+
+[[members]]
+name = "game_format_id"
+type = "u16"
+key = false
+
+[[members]]
+name = "w_turn_expiry_time"
+type = "u64"
+key = false
+
+[[members]]
+name = "b_turn_expiry_time"
+type = "u64"
+key = false
+
+[[members]]
+name = "invite_expiry"
+type = "u64"
+key = false
+
+[[members]]
+name = "room_owner_address"
+type = "ContractAddress"
+key = false
+
+[[members]]
+name = "owner_elo"
+type = "u16"
+key = false
+
+[[members]]
+name = "invitee_address"
+type = "ContractAddress"
+key = false
+
+[[members]]
+name = "invitee_elo"
+type = "u16"
+key = false
+
+[[members]]
+name = "white_player_address"
+type = "ContractAddress"
+key = false
+
+[[members]]
+name = "black_player_address"
+type = "ContractAddress"
+key = false
+
+[[members]]
+name = "game_state"
+type = "GameState"
+key = false
+
+[[members]]
+name = "owner_ready"
+type = "bool"
+key = false
+
+[[members]]
+name = "invitee_ready"
+type = "bool"
+key = false
+
+[[members]]
+name = "room_start"
+type = "u64"
+key = false
+
+[[members]]
+name = "room_end"
+type = "u64"
+key = false
+
+[[members]]
+name = "w_last_move_time"
+type = "u64"
+key = false
+
+[[members]]
+name = "b_last_move_time"
+type = "u64"
+key = false
+
+[[members]]
+name = "w_total_time_left"
+type = "u64"
+key = false
+
+[[members]]
+name = "b_total_time_left"
+type = "u64"
+key = false
+
+[[members]]
+name = "side_to_move"
+type = "Color"
+key = false
+
+[[members]]
+name = "result"
+type = "u8"
+key = false
+
+[[members]]
+name = "winner"
+type = "ContractAddress"
+key = false

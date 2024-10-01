@@ -1,0 +1,7 @@
+tag = "rl_chess-admin"
+writes = [
+    "rl_chess-Format",
+]
+
+init_calldata = []
+

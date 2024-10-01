@@ -1,0 +1,136 @@
+kind = "DojoModel"
+class_hash = "0x20afd71c77c72eb638b9aa03839caddf3db85e368cfbf73e85d586dc266642e"
+original_class_hash = "0x20afd71c77c72eb638b9aa03839caddf3db85e368cfbf73e85d586dc266642e"
+abi = "manifests/slot/base/abis/models/rl_chess-Board-2cc709f8.json"
+tag = "rl_chess-Board"
+manifest_name = "rl_chess-Board-2cc709f8"
+
+[[members]]
+name = "game_id"
+type = "u128"
+key = true
+
+[[members]]
+name = "whites"
+type = "u64"
+key = false
+
+[[members]]
+name = "blacks"
+type = "u64"
+key = false
+
+[[members]]
+name = "pawns"
+type = "u64"
+key = false
+
+[[members]]
+name = "rooks"
+type = "u64"
+key = false
+
+[[members]]
+name = "knights"
+type = "u64"
+key = false
+
+[[members]]
+name = "bishops"
+type = "u64"
+key = false
+
+[[members]]
+name = "queens"
+type = "u64"
+key = false
+
+[[members]]
+name = "kings"
+type = "u64"
+key = false
+
+[[members]]
+name = "wcp"
+type = "u8"
+key = false
+
+[[members]]
+name = "wcr"
+type = "u8"
+key = false
+
+[[members]]
+name = "wck"
+type = "u8"
+key = false
+
+[[members]]
+name = "wcb"
+type = "u8"
+key = false
+
+[[members]]
+name = "wcq"
+type = "u8"
+key = false
+
+[[members]]
+name = "bcp"
+type = "u8"
+key = false
+
+[[members]]
+name = "bcr"
+type = "u8"
+key = false
+
+[[members]]
+name = "bck"
+type = "u8"
+key = false
+
+[[members]]
+name = "bcb"
+type = "u8"
+key = false
+
+[[members]]
+name = "bcq"
+type = "u8"
+key = false
+
+[[members]]
+name = "side_to_move"
+type = "Color"
+key = false
+
+[[members]]
+name = "castling_rights"
+type = "u8"
+key = false
+
+[[members]]
+name = "en_passant"
+type = "u8"
+key = false
+
+[[members]]
+name = "halfmove_clock"
+type = "u8"
+key = false
+
+[[members]]
+name = "fullmove_number"
+type = "u16"
+key = false
+
+[[members]]
+name = "last_move_time"
+type = "u64"
+key = false
+
+[[members]]
+name = "last_move_integer"
+type = "u64"
+key = false

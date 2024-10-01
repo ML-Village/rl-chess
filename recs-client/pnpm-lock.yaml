@@ -18,8 +18,8 @@ importers:
         specifier: 1.0.0-alpha.8
         version: 1.0.0-alpha.8(starknet@6.11.0(encoding@0.1.13))(typescript@5.5.4)
       '@dojoengine/create-burner':
-        specifier: 1.0.0-alpha.8
-        version: 1.0.0-alpha.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(starknet@6.11.0(encoding@0.1.13))(typescript@5.5.4)
+        specifier: 1.0.0-alpha.15
+        version: 1.0.0-alpha.15(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(starknet@6.11.0(encoding@0.1.13))(typescript@5.5.4)
       '@dojoengine/react':
         specifier: 1.0.0-alpha.8
         version: 1.0.0-alpha.8(@types/node@20.16.5)(@types/react@18.3.5)(react@18.3.1)(starknet@6.11.0(encoding@0.1.13))(type-fest@0.20.2)(typescript@5.5.4)(zod@3.23.8)
@@ -348,14 +348,20 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@dojoengine/core@1.0.0-alpha.15':
+    resolution: {integrity: sha512-ukemj1rnk1+90rAgVBn7v/FqS65VTyBqz0jaqwCv4//zf/T1f5/a8heUNJzBOhxggJi5byjgZ8PAzDcOxQX+Og==}
+    hasBin: true
+    peerDependencies:
+      starknet: 6.11.0
+
   '@dojoengine/core@1.0.0-alpha.8':
     resolution: {integrity: sha512-xbHiHMTNExGkvLXewfhdwyDaiFbvefnEIjXb1LQoZRtIp102LKrOaoM9UENzldMPR/Qm9zBC44ouNEZUmGFtcA==}
     hasBin: true
     peerDependencies:
       starknet: 6.11.0
 
-  '@dojoengine/create-burner@1.0.0-alpha.8':
-    resolution: {integrity: sha512-8jutMRiIR7ODDdsQNW/11uxPNP4P+ov6rr1MmlXDdpglrATwudA2JCTN96tGj87JtZu/Z9KLLcgT5VRqFeHRNg==}
+  '@dojoengine/create-burner@1.0.0-alpha.15':
+    resolution: {integrity: sha512-m+xZ48FOAv66V9RDKUS2zvdHBAnZuk/Qde57AchgnEIt/Hyr4wZELWvctj4hJiT1O5+k0A4otpdjAxWfzPX+Yw==}
     peerDependencies:
       react: ^18.2.0
       react-dom: ^18.2.0
@@ -3655,6 +3661,16 @@ snapshots:
   '@cbor-extract/cbor-extract-win32-x64@2.2.0':
     optional: true
 
+  '@dojoengine/core@1.0.0-alpha.15(starknet@6.11.0(encoding@0.1.13))(typescript@5.5.4)':
+    dependencies:
+      '@dojoengine/recs': 2.0.13(typescript@5.5.4)(zod@3.23.8)
+      starknet: 6.11.0(encoding@0.1.13)
+      zod: 3.23.8
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+
   '@dojoengine/core@1.0.0-alpha.8(starknet@6.11.0(encoding@0.1.13))(typescript@5.5.4)':
     dependencies:
       '@dojoengine/recs': 2.0.13(typescript@5.5.4)(zod@3.23.8)
@@ -3665,9 +3681,9 @@ snapshots:
       - typescript
       - utf-8-validate
 
-  '@dojoengine/create-burner@1.0.0-alpha.8(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(starknet@6.11.0(encoding@0.1.13))(typescript@5.5.4)':
+  '@dojoengine/create-burner@1.0.0-alpha.15(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(starknet@6.11.0(encoding@0.1.13))(typescript@5.5.4)':
     dependencies:
-      '@dojoengine/core': 1.0.0-alpha.8(starknet@6.11.0(encoding@0.1.13))(typescript@5.5.4)
+      '@dojoengine/core': 1.0.0-alpha.15(starknet@6.11.0(encoding@0.1.13))(typescript@5.5.4)
       '@scure/bip32': 1.5.0
       '@starknet-react/core': 2.3.0(get-starknet-core@3.3.3(starknet@6.11.0(encoding@0.1.13)))(react@18.3.1)(starknet@6.11.0(encoding@0.1.13))
       encoding: 0.1.13

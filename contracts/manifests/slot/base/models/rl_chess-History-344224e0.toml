@@ -1,0 +1,46 @@
+kind = "DojoModel"
+class_hash = "0x585cea5f7eb80d2d56969420ad9b997b80e96b0c1240db6e07f1a56b18eb5d"
+original_class_hash = "0x585cea5f7eb80d2d56969420ad9b997b80e96b0c1240db6e07f1a56b18eb5d"
+abi = "manifests/slot/base/abis/models/rl_chess-History-344224e0.json"
+tag = "rl_chess-History"
+manifest_name = "rl_chess-History-344224e0"
+
+[[members]]
+name = "game_id"
+type = "u128"
+key = true
+
+[[members]]
+name = "fen"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "fen_hash_hist"
+type = "Array<felt252>"
+key = false
+
+[[members]]
+name = "fen_history"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "move_history_string"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "move_history_integer"
+type = "ByteArray"
+key = false
+
+[[members]]
+name = "last_move_from"
+type = "u8"
+key = false
+
+[[members]]
+name = "last_move_to"
+type = "u8"
+key = false

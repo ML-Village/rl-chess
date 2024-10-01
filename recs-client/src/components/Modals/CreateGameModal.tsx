@@ -48,6 +48,8 @@ export const CreateGameModal: React.FC = () => {
     }
   }).sort((a, b) => (a.format_id ?? 0) - (b.format_id ?? 0));
 
+  console.log("formats: ", formats)
+
   const handleCreateGame = async (config) => {
     //console.log("LobbyControls: creating game");
     //console.log(config)
@@ -130,7 +132,9 @@ export const CreateGameModal: React.FC = () => {
                                 className="bg-blue-900 text-white px-4 py-2 rounded-md
                                 grow
                                 hover:bg-blue-400
+                                disabled:bg-gray-400 disabled:text-gray-200
                                 "
+                                disabled={config.available==false}
                                 onClick={()=>handleCreateGame(config)}
                                 >
                                 {config.total_time_string}
@@ -144,8 +148,10 @@ export const CreateGameModal: React.FC = () => {
                                 className="bg-blue-900 text-white px-4 py-2 rounded-md
                                 grow
                                 hover:bg-blue-400
+                                disabled:bg-gray-400 disabled:text-gray-200
                                 "
                                 onClick={()=>handleCreateGame(config)}
+                                disabled={config.available==false}
                                 >
                                 {config.total_time_string}
                               </button>

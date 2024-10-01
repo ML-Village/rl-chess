@@ -195,7 +195,7 @@ mod admin {
             total_time_per_side: 60*3, // 3 mins
             total_time_string: '3 mins',
             increment: 0,
-            available: true
+            available: false
         );
         
         self.playable.addGameFormat(
@@ -205,7 +205,7 @@ mod admin {
             total_time_per_side: 60*3, // 3 mins
             total_time_string: '3 mins | 2s',
             increment: 2,
-            available: true
+            available: false
         );
         
         self.playable.addGameFormat(
@@ -215,7 +215,7 @@ mod admin {
             total_time_per_side: 60*5, // 5 mins
             total_time_string: '5 mins',
             increment: 0,
-            available: true
+            available: false
         );
         
         self.playable.addGameFormat(
@@ -225,7 +225,7 @@ mod admin {
             total_time_per_side: 60*5, // 5 mins
             total_time_string: '5 mins | 2s',
             increment: 2,
-            available: true
+            available: false
         );
         
         self.playable.addGameFormat(
@@ -235,7 +235,7 @@ mod admin {
             total_time_per_side: 60*5, // 5 mins
             total_time_string: '5 mins | 5s',
             increment: 0,
-            available: true
+            available: false
         );
 
         self.playable.addGameFormat(
@@ -245,7 +245,7 @@ mod admin {
             total_time_per_side: 60*1, // 1 min
             total_time_string: '1 min',
             increment: 0,
-            available: true
+            available: false
         );
         
         self.playable.addGameFormat(
@@ -255,7 +255,7 @@ mod admin {
             total_time_per_side: 60*1, // 1 min
             total_time_string: '1 min | 1s',
             increment: 1,
-            available: true
+            available: false
         );
         
         self.playable.addGameFormat(
@@ -265,7 +265,7 @@ mod admin {
             total_time_per_side: 60*2, // 2 min
             total_time_string: '2 min | 1s',
             increment: 1,
-            available: true
+            available: false
         );
 
     }

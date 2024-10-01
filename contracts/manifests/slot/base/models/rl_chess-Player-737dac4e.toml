@@ -1,0 +1,36 @@
+kind = "DojoModel"
+class_hash = "0x5e2d003db2d05fc7c93c39365383f16317b2ef9f6b39e8401a6a50aa83e1e44"
+original_class_hash = "0x5e2d003db2d05fc7c93c39365383f16317b2ef9f6b39e8401a6a50aa83e1e44"
+abi = "manifests/slot/base/abis/models/rl_chess-Player-737dac4e.json"
+tag = "rl_chess-Player"
+manifest_name = "rl_chess-Player-737dac4e"
+
+[[members]]
+name = "address"
+type = "ContractAddress"
+key = true
+
+[[members]]
+name = "name"
+type = "felt252"
+key = false
+
+[[members]]
+name = "profile_pic_type"
+type = "ProfilePicType"
+key = false
+
+[[members]]
+name = "profile_pic_uri"
+type = "u64"
+key = false
+
+[[members]]
+name = "elo"
+type = "u16"
+key = false
+
+[[members]]
+name = "timestamp"
+type = "u64"
+key = false

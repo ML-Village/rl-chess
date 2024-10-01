@@ -36,8 +36,8 @@ export const GameRoom = () => {
     const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
     const { mute } = useToggleSoundStore();
     const onDrop = async(sourceSquare: string, targetSquare: string) => {
-        console.log("GameRoom: onDrop - sourceSquare: ", sourceSquare)
-        console.log("GameRoom: onDrop - targetSquare: ", targetSquare)
+        // console.log("GameRoom: onDrop - sourceSquare: ", sourceSquare)
+        // console.log("GameRoom: onDrop - targetSquare: ", targetSquare)
         const move = game.move({
             from: sourceSquare,
             to: targetSquare,
@@ -49,8 +49,8 @@ export const GameRoom = () => {
             sourceSquare as keyof typeof boardMappingStringToInt] ?? boardMappingStringToInt["a1"]
         const move_to = boardMappingStringToInt[
             targetSquare as keyof typeof boardMappingStringToInt] ?? boardMappingStringToInt["a1"]
-        console.log("GameRoom: onDrop - move_from: ", move_from)
-        console.log("GameRoom: onDrop - move_to: ", move_to)
+        // console.log("GameRoom: onDrop - move_from: ", move_from)
+        // console.log("GameRoom: onDrop - move_to: ", move_to)
         await client.room.move({
             account: account,
             game_id: BigInt(roomId??""),
@@ -113,6 +113,7 @@ export const GameRoom = () => {
     const gameObject = useComponentValue(Game, entityId);
     //console.log("GameRoom: gameObject: ", gameObject)
     const boardObject = useComponentValue(Board, entityId);
+    console.log(boardObject)
     const historyObject = useComponentValue(History, entityId);
 
     //console.log("GameRoom: gameObject: ", gameObject)
@@ -131,18 +132,18 @@ export const GameRoom = () => {
             if(historyObject?.last_move_from != 88 && historyObject?.last_move_to != 88){
                 const lastMoveFrom = historyObject?.last_move_from;
                 const lastMoveTo = historyObject?.last_move_to;
-                console.log("GameRoom: last_move_from: {}, last_move_to: {}", lastMoveFrom, lastMoveTo)
+                //console.log("GameRoom: last_move_from: {}, last_move_to: {}", lastMoveFrom, lastMoveTo)
                 setLastMoveFromTo([lastMoveFrom, lastMoveTo])
             }
 
             // get last move string to check if it's a capture
             const lastMoveString = getLastMoveString(historyObject);
-            console.log("GameRoom: LastMoveString exists: ", !!lastMoveString)
-            console.log("GameRoom: lastMoveString: ", lastMoveString)
+            // console.log("GameRoom: LastMoveString exists: ", !!lastMoveString)
+            // console.log("GameRoom: lastMoveString: ", lastMoveString)
             const isCapture = lastMoveString.includes('x');
             const isCheck = lastMoveString.includes('+');
             const isCastle = lastMoveString.includes('0-0') || lastMoveString.includes('0-0-0');
-            console.log("GameRoom: isCapture: ", isCapture)
+            //console.log("GameRoom: isCapture: ", isCapture)
 
             // if it's a capture, play sound
             if(isCapture && gameObject?.game_state == "InProgress" && !mute){

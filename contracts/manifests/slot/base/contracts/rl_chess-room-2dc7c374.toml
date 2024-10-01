@@ -1,0 +1,11 @@
+kind = "DojoContract"
+class_hash = "0x3c8faefb45e81bcb852811907d9b058e704d2b203f15995350969b42c82a781"
+original_class_hash = "0x3c8faefb45e81bcb852811907d9b058e704d2b203f15995350969b42c82a781"
+base_class_hash = "0x0"
+abi = "manifests/slot/base/abis/contracts/rl_chess-room-2dc7c374.json"
+reads = []
+writes = []
+init_calldata = []
+tag = "rl_chess-room"
+systems = ["move"]
+manifest_name = "rl_chess-room-2dc7c374"
