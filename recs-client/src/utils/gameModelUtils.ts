@@ -1,4 +1,3 @@
-import { ContractComponents } from "@/dojo/generated/contractComponents";
 import { feltToString } from "./starknet";
 
 import { pfpCardImageUrl } from '@/constants/assetspath';

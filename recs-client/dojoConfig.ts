@@ -1,6 +1,6 @@
 import { createDojoConfig } from "@dojoengine/core";
-//import manifest from "../contracts/manifests/dev/deployment/manifest.json";
-import manifest from "../contracts/manifests/slot/deployment/manifest.json"
+import manifest from "../contracts/manifests/dev/deployment/manifest.json";
+//import manifest from "../contracts/manifests/slot/deployment/manifest.json"
 
 // const getManifest = async () => {
 //   const manifestPath = import.meta.env.VITE_DEPLOYMENT === "slot"
@@ -18,8 +18,8 @@ import manifest from "../contracts/manifests/slot/deployment/manifest.json"
 //     manifest: manifest,
 //     rpcUrl: import.meta.env.VITE_DEPLOYMENT === "slot" ? import.meta.env.VITE_KATANA_ADDRESS : "http://localhost:5050/",
 //     toriiUrl: import.meta.env.VITE_DEPLOYMENT === "slot" ? import.meta.env.VITE_TORII_ADDRESS : "https://localhost:8080/",
-//     masterAddress: import.meta.env.VITE_DEPLOYMENT === "slot" ? import.meta.env.VITE_MASTER_ADDRESS : "0xb3ff441a68610b30fd5e2abbf3a1548eb6ba6f3559f2862bf2dc757e5828ca",
-//     masterPrivateKey: import.meta.env.VITE_DEPLOYMENT === "slot" ? import.meta.env.VITE_MASTER_PRIVATE_KEY : "0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a",
+//     // masterAddress: import.meta.env.VITE_DEPLOYMENT === "slot" ? import.meta.env.VITE_MASTER_ADDRESS : "0xb3ff441a68610b30fd5e2abbf3a1548eb6ba6f3559f2862bf2dc757e5828ca",
+//     // masterPrivateKey: import.meta.env.VITE_DEPLOYMENT === "slot" ? import.meta.env.VITE_MASTER_PRIVATE_KEY : "0x2bbf4f9fd0bbb2e60b0316c1fe0b76cf7a4d0198bd493ced9b8df2a3a24d68a",
 //     //toriiUrl: import.meta.env.VITE_USECONTROLLER ? import.meta.env.VITE_TORII_ADDRESS : "https://localhost:8080/",
 //   });
 // };

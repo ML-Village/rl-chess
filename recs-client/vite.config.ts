@@ -11,6 +11,7 @@ export default defineConfig({
     //mkcert()
 
   ],
+  
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
