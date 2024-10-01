@@ -26,15 +26,15 @@ fn calculate_elo(white_elo: u16, black_elo: u16, result: u16, k: u16) -> (u16, u
 
     // Apply changes
     let new_white_elo = if negative_white {
-        white_elo_f - (change_white)
+        white_elo_f - (change_white / 100)
     } else {
-        white_elo_f + (change_white)
+        white_elo_f + (change_white / 100)
     };
 
     let new_black_elo = if negative_black {
-        black_elo_f - (change_black)
+        black_elo_f - (change_black / 100)
     } else {
-        black_elo_f + (change_black)
+        black_elo_f + (change_black / 100)
     };
 
     (new_white_elo.try_into().unwrap(), new_black_elo.try_into().unwrap())
