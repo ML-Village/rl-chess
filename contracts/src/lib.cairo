@@ -53,6 +53,7 @@ mod helpers {
 
 mod utils {
     mod bitwise;
+    mod chessmath;
     mod hash;
     mod math;
     mod short_string;

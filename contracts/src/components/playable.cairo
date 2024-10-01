@@ -1,4 +1,3 @@
-use rl_chess::helpers::math::Math;
 
 #[starknet::component]
 mod PlayableComponent {
@@ -32,9 +31,9 @@ mod PlayableComponent {
     use rl_chess::types::gamestate::GameState;
     use rl_chess::types::color::{Color, ColorTrait};
     use rl_chess::types::piece::Piece;
-    use rl_chess::helpers::math::{MathTrait as MathSubAbsTrait};
+    use rl_chess::helpers::math::{Math, MathTrait};
     use rl_chess::utils::seeder::{make_seed};
-
+    use rl_chess::utils::chessmath::{calculate_elo};
     // Errors
 
     mod errors {
@@ -159,13 +158,16 @@ mod PlayableComponent {
             let store: Store = StoreTrait::new(world);
             let game_id = make_seed(room_owner_address, world.uuid());
             assert(room_owner_address != invitee_address, errors::OWNER_CANNOT_INVITE_SELF);
-
+            let owner = store.get_player(room_owner_address);
+            let invitee = store.get_player(invitee_address);
             let mut game = GameTrait::new(
                     game_id,
                     game_format_id,
                     room_owner_address,
-                    invitee_address,
-                    invite_expiry,
+                    owner_elo: owner.elo,
+                    invitee_address: invitee_address,
+                    invitee_elo: invitee.elo,
+                    invite_expiry: invite_expiry,
                 );
 
             let game_format = store.get_format(game_format_id);
@@ -204,9 +206,11 @@ mod PlayableComponent {
             // [Setup] Datastore
             let store: Store = StoreTrait::new(world);
             let mut game = store.get_game(game_id);
+            let invitee = store.get_player(invitee_address);
             assert(game.room_owner_address == room_owner_address, errors::NOT_OWNER);
 
             game.invitee_address = invitee_address;
+            game.invitee_elo = invitee.elo;
             game.invite_expiry = invite_expiry; // TODO: update with real calculation of time + expiry
             store.set_game(game);
         }
@@ -233,6 +237,7 @@ mod PlayableComponent {
                 game.game_state = GameState::Accepted;
             } else {
                 game.invitee_address = starknet::contract_address_const::<0x0>();
+                game.invitee_elo = 0;
             }
             store.set_game(game);
         }
@@ -245,11 +250,13 @@ mod PlayableComponent {
         ){
             let store: Store = StoreTrait::new(world);
             let mut game = store.get_game(game_id);
+            let invitee = store.get_player(invitee_address);
             assert(game.room_owner_address != invitee_address, errors::OWNER_CANNOT_INVITE_SELF);
             assert(game.invitee_address == starknet::contract_address_const::<0x0>(), 
                 errors::ALREADY_OCCUPIED);
 
             game.invitee_address = invitee_address;
+            game.invitee_elo = invitee.elo;
             if(game.room_owner_address==game.white_player_address) {
                 game.black_player_address = invitee_address;
             } else if (game.room_owner_address==game.black_player_address) {
@@ -526,7 +533,7 @@ mod PlayableComponent {
                 // update move_history_strings
                 if(board.side_to_move == Color::Black) {
                     // check for castling
-                    if (piece_from_string == "K" && MathSubAbsTrait::sub_abs(move_from, move_to) == 2) {
+                    if (piece_from_string == "K" && MathTrait::sub_abs(move_from, move_to) == 2) {
                         
                         if (move_to == 6){
                             //kingside castle
@@ -550,7 +557,7 @@ mod PlayableComponent {
 
                 } else {
 
-                    if (piece_from_string == "k" && MathSubAbsTrait::sub_abs(move_from, move_to) == 2) {
+                    if (piece_from_string == "k" && MathTrait::sub_abs(move_from, move_to) == 2) {
                         
                         if (move_to == 62){
                             //kingside castle
@@ -590,6 +597,11 @@ mod PlayableComponent {
                     game.result = 3;
                     game.winner = starknet::contract_address_const::<0x0>();
                     game.room_end = get_block_timestamp();
+
+                    // update ELO
+                    let (white_elo, black_elo): (u16, u16) = calculate_elo(white_player.elo, black_player.elo, 3, 32);
+                    white_player.elo = white_elo;
+                    black_player.elo = black_elo;
                 }
 
                 // check if game is over -- checkmate
@@ -601,6 +613,13 @@ mod PlayableComponent {
                     // other player is being check-mated
                     game.winner = if(board.side_to_move == Color::White){game.black_player_address} else {game.white_player_address};
                     game.room_end = get_block_timestamp();
+
+                    // update ELO
+                    let (white_elo, black_elo): (u16, u16) = calculate_elo(white_player.elo, black_player.elo, 
+                        if(callerIsWhite){1} else {2}, 
+                        32);
+                    white_player.elo = white_elo;
+                    black_player.elo = black_elo;
                 }
 
                 // update store
@@ -610,6 +629,8 @@ mod PlayableComponent {
             // update store
             store.set_board(board);
             store.set_game(game);
+            store.set_player(white_player);
+            store.set_player(black_player);
         }
 
         fn getFen(
@@ -623,23 +644,4 @@ mod PlayableComponent {
         }
     }
 
-}
-
-fn calculate_elo(white_elo: u16, black_elo: u16, result: u16, k:u16) -> (u16, u16) {
-    let mut white_new_elo: i16 = white_elo.try_into().unwrap();
-    let mut black_new_elo: i16 = black_elo.try_into().unwrap();
-
-    // let eWhitePower: i16 = ((black_new_elo - white_new_elo) / 400).try_into().unwrap();
-    // let eBlackPower: i16 = ((white_new_elo - black_new_elo) / 400).try_into().unwrap();
-
-    // let eWhite:i16 = 1 / (1 + Math::pow(10_i16, eWhitePower));
-    // let eBlack:i16 = 1 / (1 + Math::pow(10_i16, eBlackPower));
-
-    // let saWhite:i16 = if (result == 1) {10} else if (result == 0) {0} else {5};
-    // let saBlack:i16 = if (result == 1) {0} else if (result == 0) {10} else {5};
-
-    // white_new_elo = white_elo.try_into().unwrap() + (k.try_into().unwrap() * (saWhite - (eWhite*10)/10));
-    // black_new_elo = black_elo.try_into().unwrap() + (k.try_into().unwrap() * (saBlack - (eBlack*10)/10));
-    
-    (white_new_elo.try_into().unwrap(), black_new_elo.try_into().unwrap())
 }

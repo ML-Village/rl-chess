@@ -1,7 +1,19 @@
 //! # Fast power algorithm
+use core::num::traits::Sqrt;
 
 #[generate_trait]
 pub impl Math of MathTrait {
+
+    fn sixteenth_rootU256(x: u256) -> u256 {
+        // Approximation of 16th root using repeated square roots
+        let mut result = x;
+        result = Sqrt::sqrt(result).try_into().unwrap();
+        result = Sqrt::sqrt(result).try_into().unwrap();
+        result = Sqrt::sqrt(result).try_into().unwrap();
+        result = Sqrt::sqrt(result).try_into().unwrap();
+        result.try_into().unwrap()
+    }
+
     fn sub_abs<T, +Sub<T>, +PartialOrd<T>, +Copy<T>, +Drop<T>>(lhs: T, rhs: T) -> T {
         if lhs > rhs {
             lhs - rhs

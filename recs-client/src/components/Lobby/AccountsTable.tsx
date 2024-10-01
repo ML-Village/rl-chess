@@ -78,7 +78,7 @@ export const AccountsTable = () => {
                             <FaCopy className="cursor-pointer"
                             onClick={() => navigator.clipboard.writeText(bigintToHex(p?.address))} />
                         </div> :""}</TableCell>
-                        <TableCell className="text-center">0</TableCell>
+                        <TableCell className="text-center">{p?.elo ? p?.elo : "??"}</TableCell>
                         <TableCell className="text-center">0</TableCell>
                         <TableCell className="text-center">0</TableCell>
                         <TableCell className="text-center">0</TableCell>

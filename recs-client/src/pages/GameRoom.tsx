@@ -86,12 +86,23 @@ export const GameRoom = () => {
     }, [lastMoveFromTo, selectedSquare])
 
     const onSquareClick = (square: string) => {
-        console.log("GameRoom: onSquareClick - square: ", square)
+        //console.log("GameRoom: onSquareClick - square: ", square)
         setSelectedSquare((prevSquare)=>{
             if(prevSquare == square){
                 return null
             }
             return square
+        })
+    }
+
+    const onPieceDragBegin = (piece: string, sourceSquare: string) => {
+        //console.log("GameRoom: onPieceDragBegin - sourceSquare: ", sourceSquare)
+        //console.log("GameRoom: onPieceDragBegin - piece: ", piece)
+        setSelectedSquare((prevSquare)=>{
+            if(prevSquare == sourceSquare){
+                return prevSquare
+            }
+            return sourceSquare
         })
     }
 
@@ -320,6 +331,7 @@ export const GameRoom = () => {
                                 backgroundColor: "#edeed1"
                             }} 
 
+                            onPieceDragBegin={onPieceDragBegin}
                             onSquareClick={onSquareClick} 
                             customSquareStyles={customLastMoveSquareStyles}
                         />

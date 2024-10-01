@@ -1,16 +1,16 @@
 [world]
 name = "RL-Chess"
 description = "A fully onchain Chess game with RL integration design considerations"
-cover_uri = "file://assets/cover.png"
-icon_uri = "file://assets/icon.png"
-website = "https://github.com/dojoengine/dojo-starter"
+# cover_uri = "file://assets/cover.png"
+# icon_uri = "file://assets/icon.png"
+# website = "https://github.com/dojoengine/dojo-starter"
 seed = "dojo_rl_chess"
 
-[world.socials]
-x = "https://x.com/ohayo_dojo"
-discord = "https://discord.gg/FB2wR6uF"
-github = "https://github.com/dojoengine/starter-rpg"
-telegram = "https://t.me/dojoengine"
+# [world.socials]
+# x = "https://x.com/ohayo_dojo"
+# discord = "https://discord.gg/FB2wR6uF"
+# github = "https://github.com/dojoengine/starter-rpg"
+# telegram = "https://t.me/dojoengine"
 
 [namespace]
 default = "rl_chess"

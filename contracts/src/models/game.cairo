@@ -30,7 +30,9 @@ impl GameImpl of GameTrait {
         game_id: u128,
         game_format_id: u16,
         room_owner_address: ContractAddress,
+        owner_elo: u16,
         invitee_address: ContractAddress,
+        invitee_elo: u16,
         invite_expiry: u64,
         ) -> Game {
         // [Check] game_id is valid
@@ -50,7 +52,9 @@ impl GameImpl of GameTrait {
             invite_expiry: invite_expiry + get_block_timestamp(),
 
             room_owner_address,
+            owner_elo,
             invitee_address,
+            invitee_elo,
             white_player_address: room_owner_address,
             black_player_address: invitee_address,
             

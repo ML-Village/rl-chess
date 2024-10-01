@@ -42,7 +42,9 @@ pub struct Game {
     pub invite_expiry: u64, // Unix time, time for challenge to expire (0 for unlimited)
 
     pub room_owner_address: ContractAddress, //creator wallet address
+    pub owner_elo: u16,
     pub invitee_address: ContractAddress, //invitee wallet address
+    pub invitee_elo: u16,
 
     pub white_player_address: ContractAddress,
     pub black_player_address: ContractAddress,

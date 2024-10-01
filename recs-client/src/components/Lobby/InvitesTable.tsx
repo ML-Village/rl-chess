@@ -124,7 +124,7 @@ export const InvitesTable = () => {
                         </TableCell>
 
                         <TableCell className="text-center">
-                            {g?.owner_elo ?? "na"}
+                            {g?.owner_elo ?? "??"}
                         </TableCell>
 
                         <TableCell className="text-center">
