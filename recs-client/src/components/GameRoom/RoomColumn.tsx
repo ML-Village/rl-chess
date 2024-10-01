@@ -37,7 +37,7 @@ export const RoomColumn = ({roomId, ownerName, inviteeName}:{roomId:string, owne
             <GameRoomControls roomId={roomId}/>
             
             {/* Move History Table */}
-            {/* <MoveHistoryTable roomId={roomId} /> */}
+            <MoveHistoryTable roomId={roomId} />
                 {/* Chat Window */}
             <div className="w-full
             flex-1 pb-2

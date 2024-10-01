@@ -28,12 +28,11 @@ export const MoveHistoryTable = ({roomId}:{roomId:string}) => {
         BigInt(roomId??""),
     ]) as Entity;
     const historyObject = useComponentValue(History, entityId);
-    console.log("MoveHistoryTable: historyObject: ", historyObject)
+    //console.log("MoveHistoryTable: historyObject: ", historyObject)
 
     const move_history_table = useMemo(() => {
         if (!historyObject) return [];
-
-        //console.log("MoveHistoryTable: historyObject: ", historyObject)
+        //console.log("MoveHistoryTable: historyObject?.move_history_string: ", historyObject?.move_history_string)
         return historyObject?.move_history_string.split('/').map((mh) => {
             return mh.split(' ')
                     .filter(s => s !== '');
@@ -71,19 +70,20 @@ export const MoveHistoryTable = ({roomId}:{roomId:string}) => {
                             ">
                                 {
                                     move_history_table.map((move, i) => (
+                                        console.log("MoveHistoryTable: move: ", move),
                                         <TableRow key={i+"_move_hist"}
                                             className={`border-none w-full ${i % 2 === 0 ? 'bg-transparent hover:bg-inherit' : 'bg-white/10 hover:bg-white/20'}`}>
                                             <TableCell className="p-1 px-2 mx-1 h-6 w-[1em] text-center">{i + 1}.</TableCell>
                                             <TableCell className="p-1 h-8 mx-2 text-center">
                                                 <span className="hover:bg-white/40 hover:cursor-pointer rounded-sm p-1 
                                                 flex items-center justify-end w-[3.5em]">{
-                                                    parseMoveHistory(move[0])}
+                                                    parseMoveHistory(move[0]??"??")}
                                                 </span>
                                             </TableCell>
                                             <TableCell className="p-1 h-8 mx-2 text-center">
                                                 <span className="hover:bg-white/40 hover:cursor-pointer rounded-sm p-1 
                                                 flex items-center justify-end w-[3.5em]">{
-                                                    parseMoveHistory(move[1])}
+                                                    parseMoveHistory(move[1]??"??")}
                                                 </span>
                                             </TableCell>
                                             <TableCell className="p-1 h-6 text-center w-1/3"> </TableCell>

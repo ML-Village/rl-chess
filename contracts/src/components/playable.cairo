@@ -561,10 +561,10 @@ mod PlayableComponent {
                         
                         if (move_to == 62){
                             //kingside castle
-                            history.move_history_string += format!(" 0-0");
+                            history.move_history_string += format!(" 0-0 ");
                         } else if (move_to == 58) {
                             //queenside castle
-                            history.move_history_string += format!(" 0-0-0");
+                            history.move_history_string += format!(" 0-0-0 ");
                         } else {
                             assert(false, errors::INVALID_CASTLING);
                         }

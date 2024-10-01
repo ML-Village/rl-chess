@@ -651,7 +651,7 @@ impl BoardImpl of BoardTrait {
                 } else if (from == 60) { // black king at 60
 
                     if (to == 62) {
-                        (56, 61) // black kingside
+                        (63, 61) // black kingside
                     } else if (to == 58) {
                         (56, 59) // black queenside
                     } else {
@@ -797,7 +797,8 @@ impl BoardImpl of BoardTrait {
 
     #[inline]
     fn is_draw(ref self: Board) -> bool {
-        self.is_stalemate() || self.is_draw_by_insufficient_material() || self.is_fifty_move_rule()
+        //self.is_stalemate() || 
+        self.is_draw_by_insufficient_material() || self.is_fifty_move_rule()
     }
     
 
