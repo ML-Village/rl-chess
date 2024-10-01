@@ -1230,8 +1230,8 @@
       }
     ],
     "address": "0x1fadc313fe86b107b5efb841a1ab04986500f1ab1b7b6589b9a003459471c20",
-    "transaction_hash": "0x1d06c5ec5b863126ae0746596f454b6bba021928e9caae1de24b783a75f168d",
-    "block_number": 3,
+    "transaction_hash": "0x53e8bba8b7dd6bb0e2c92802aea998277d0c159e7b40fe2bc9cba33b00ffdf0",
+    "block_number": 5,
     "seed": "dojo_rl_chess",
     "metadata": {
       "profile_name": "slot",
@@ -2066,8 +2066,8 @@
     {
       "kind": "DojoContract",
       "address": "0x567bf6098b0722ade2665c619729f6f87eba155d38644087529ebc4780a3b78",
-      "class_hash": "0x3c8faefb45e81bcb852811907d9b058e704d2b203f15995350969b42c82a781",
-      "original_class_hash": "0x3c8faefb45e81bcb852811907d9b058e704d2b203f15995350969b42c82a781",
+      "class_hash": "0x27f3eeba60ef02ab70761eed6993c640cc5d120e6ddf6250ba57ef38a6f17e9",
+      "original_class_hash": "0x27f3eeba60ef02ab70761eed6993c640cc5d120e6ddf6250ba57ef38a6f17e9",
       "base_class_hash": "0x2427dd10a58850ac9a5ca6ce04b7771b05330fd18f2e481831ad903b969e6b2",
       "abi": [
         {

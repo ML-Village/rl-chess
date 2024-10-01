@@ -4,7 +4,7 @@ import App from "./App.tsx";
 import "./index.css";
 import { setup } from "./dojo/setup.ts";
 import { DojoProvider } from "./dojo/DojoContext.tsx";
-import { dojoConfig } from "../dojoConfig.ts";
+//import { dojoConfig } from "../dojoConfig.ts";
 import { dojoConfigSlot } from "../dojoConfigSlot.ts";
 
 async function init() {
@@ -12,8 +12,11 @@ async function init() {
   if (!rootElement) throw new Error("React root not found");
   const root = ReactDOM.createRoot(rootElement as HTMLElement);
 
+  // const setupResult = await setup(
+  //   import.meta.env.VITE_DEPLOYMENT === "slot" ? dojoConfigSlot : dojoConfig
+  // );
   const setupResult = await setup(
-    import.meta.env.VITE_DEPLOYMENT === "slot" ? dojoConfigSlot : dojoConfig
+    dojoConfigSlot
   );
 
   !setupResult && <div>Loading....</div>;
